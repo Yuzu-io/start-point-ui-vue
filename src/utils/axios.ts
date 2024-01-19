@@ -1,6 +1,7 @@
 import { useUserStore } from '@/plugins/stores'
 import axios, {
   type AxiosRequestConfig,
+  type AxiosResponse,
   type Canceler,
   type InternalAxiosRequestConfig
 } from 'axios'
@@ -23,12 +24,21 @@ export const getUrl = (): string => {
 /**
  * 创建 axios
  */
-
 export default function createAxios<T>(
   axiosConfig: AxiosRequestConfig,
-  options: Options,
-  loading: boolean | TdLoadingProps
-): IPromise<T> {
+  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat: true },
+  loading?: boolean | TdLoadingProps
+): IPromise<T>
+export default function createAxios<T>(
+  axiosConfig: AxiosRequestConfig,
+  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat: false },
+  loading?: boolean | TdLoadingProps
+): APromise<T>
+export default function createAxios<T>(
+  axiosConfig: AxiosRequestConfig,
+  options: Options = {},
+  loading: boolean | TdLoadingProps = {}
+): IPromise<T> | APromise<T> {
   const userStore = useUserStore()
 
   const instance = axios.create({
@@ -92,7 +102,7 @@ export default function createAxios<T>(
     }
   )
 
-  return instance(axiosConfig)
+  return instance(axiosConfig) as IPromise<T> | APromise<T>
 }
 
 /**
@@ -234,7 +244,8 @@ interface LoadingInstance {
   count: number
 }
 
-type IPromise<T> = Promise<IResponse<T>>
+export type IPromise<T> = Promise<IResponse<T>>
+export type APromise<T> = Promise<AxiosResponse<T>>
 interface IResponse<T> {
   code: number
   data: T
