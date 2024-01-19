@@ -1,0 +1,17 @@
+$div-base-box-shadow:0px 0px 12px rgba(0, 0, 0, 0.12);
+$div-base-border-radius:5px;
+
+@mixin divInitialization($bs:$div-base-box-shadow,$br:$div-base-border-radius) {
+  box-shadow: $bs;
+  border-radius: $br;
+  overflow: hidden;
+}
+
+$ais:flex-start;
+$jc: flex-start;
+
+@mixin flexInit($ais: $ais, $jc: $jc) {
+  display: flex;
+  align-items: $ais;
+  justify-content: $jc;
+}
