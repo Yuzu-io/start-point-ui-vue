@@ -25,7 +25,7 @@ import { MessagePlugin } from 'tdesign-vue-next'
 
   &__item {
     padding: 0 20px;
-    height: 56px;
+    height: 45px;
     cursor: pointer;
     @include flexInit($ais: center);
 

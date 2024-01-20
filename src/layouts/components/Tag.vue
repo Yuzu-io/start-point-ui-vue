@@ -19,44 +19,44 @@
       </div>
       <div class="tag-active-box" :style="{ width: tagWidth, left: tagLeftPosition }"></div>
     </div>
-    <div
-      class="tag-dropdown-box"
-      ref="tagDropdownBox"
-      v-show="showTagMenu"
-      :style="{ left: tagMenuPosition.x, top: tagMenuPosition.y }"
+  </div>
+  <div
+    class="tag-dropdown-box"
+    ref="tagDropdownBox"
+    v-show="showTagMenu"
+    :style="{ left: tagMenuPosition.x, top: tagMenuPosition.y }"
+  >
+    <t-button
+      block
+      variant="text"
+      @click="tagMenuOperation(TagMenuType.Refresh)"
+      :disabled="!isCurrentTag"
     >
-      <t-button
-        block
-        variant="text"
-        @click="tagMenuOperation(TagMenuType.Refresh)"
-        :disabled="!isCurrentTag"
-      >
-        <mdicon class="btn-icon" name="reload" size="18" />
-        重新加载
-      </t-button>
-      <t-button block variant="text" @click="tagMenuOperation(TagMenuType.Close)">
-        <mdicon class="btn-icon" name="close" size="18" />
-        关闭标签
-      </t-button>
-      <t-button
-        block
-        variant="text"
-        @click="tagMenuOperation(TagMenuType.Other)"
-        :disabled="tagStore.tagList.length <= 1"
-      >
-        <mdicon class="btn-icon" name="minus" size="18" />
-        关闭其他标签
-      </t-button>
-      <t-button
-        block
-        variant="text"
-        @click="tagMenuOperation(TagMenuType.All)"
-        :disabled="tagStore.tagList.length <= 1"
-      >
-        <mdicon class="btn-icon" name="square" size="18" />
-        关闭全部标签
-      </t-button>
-    </div>
+      <mdicon class="btn-icon" name="reload" size="18" />
+      重新加载
+    </t-button>
+    <t-button block variant="text" @click="tagMenuOperation(TagMenuType.Close)">
+      <mdicon class="btn-icon" name="close" size="18" />
+      关闭标签
+    </t-button>
+    <t-button
+      block
+      variant="text"
+      @click="tagMenuOperation(TagMenuType.Other)"
+      :disabled="tagStore.tagList.length <= 1"
+    >
+      <mdicon class="btn-icon" name="minus" size="18" />
+      关闭其他标签
+    </t-button>
+    <t-button
+      block
+      variant="text"
+      @click="tagMenuOperation(TagMenuType.All)"
+      :disabled="tagStore.tagList.length <= 1"
+    >
+      <mdicon class="btn-icon" name="square" size="18" />
+      关闭全部标签
+    </t-button>
   </div>
 </template>
 
@@ -221,8 +221,9 @@ enum TagMenuType {
 <style lang="scss" scoped>
 .tag {
   overflow-x: scroll;
-  height: 56px;
+  height: 45px;
   margin-right: 15px;
+  position: relative;
 
   &::-webkit-scrollbar {
     height: 5px;
@@ -237,13 +238,13 @@ enum TagMenuType {
   }
 
   &-list {
-    position: relative;
+    position: absolute;
     @include flexInit($ais: center);
     flex-wrap: nowrap;
 
     &__item {
       flex: none;
-      padding: 10px 20px;
+      padding: 6px 16px;
       position: relative;
       z-index: 3;
       cursor: pointer;
@@ -292,25 +293,25 @@ enum TagMenuType {
 
     @include divInitialization();
   }
+}
 
-  .tag-dropdown-box {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 4;
-    background-color: #fff;
-    padding: 10px 0;
-    @include divInitialization();
+.tag-dropdown-box {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  background-color: #fff;
+  padding: 10px 0;
+  @include divInitialization();
 
-    .t-button {
-      width: 100%;
-      justify-content: flex-start;
-      border: none;
-      border-radius: 0;
+  .t-button {
+    width: 100%;
+    justify-content: flex-start;
+    border: none;
+    border-radius: 0;
 
-      .btn-icon {
-        transform: translateY(-1px);
-      }
+    .btn-icon {
+      transform: translateY(-1px);
     }
   }
 }

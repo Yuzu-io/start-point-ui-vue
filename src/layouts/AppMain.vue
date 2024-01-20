@@ -10,7 +10,6 @@
       <t-content class="content">
         <LayoutContent />
       </t-content>
-      <!-- <t-footer>Footer</t-footer> -->
     </t-layout>
   </t-layout>
 </template>
@@ -50,54 +49,6 @@ const data = [
   {
     id: 1,
     name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
   }
 ]
 
@@ -131,13 +82,13 @@ provide<ProvideTag>('provideTag', {
 
   .aside {
     width: auto;
-    padding: 15px 0 15px 15px;
+    padding: 10px 0 10px 10px;
   }
   .header {
-    padding: 15px 15px 0;
+    padding: 10px 10px 0;
   }
   .content {
-    padding: 15px;
+    padding: 10px;
   }
 }
 </style>
