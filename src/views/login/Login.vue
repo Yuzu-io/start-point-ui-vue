@@ -110,13 +110,10 @@ const onSubmit = async ({ validateResult, firstError }: SubmitContext) => {
       ...formData,
       password: md5(formData.password).toLocaleUpperCase()
     }
-    // userStore.login(params).then(() => {
-    //   MessagePlugin.success('登录成功')
-    //   userStore.getUserInfo()
-    // })
     await userStore.login(params)
     await userStore.getUserInfo()
-    // router.push('/main')
+    MessagePlugin.success('登录成功')
+    router.push('/layout')
   } else {
     console.log('Validate Errors: ', firstError, validateResult)
     MessagePlugin.warning(firstError!)
