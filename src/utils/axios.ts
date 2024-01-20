@@ -1,11 +1,11 @@
-import { useUserStore } from '@/plugins/stores'
+import { useLoadingStore, useUserStore } from '@/plugins/stores'
 import axios, {
   type AxiosRequestConfig,
   type AxiosResponse,
   type Canceler,
   type InternalAxiosRequestConfig
 } from 'axios'
-import { LoadingPlugin, MessagePlugin, type TdLoadingProps } from 'tdesign-vue-next'
+import { message as AMessage } from 'ant-design-vue'
 
 const pendingMap = new Map<string, Canceler>()
 const loadingInstance: LoadingInstance = {
@@ -26,18 +26,15 @@ export const getUrl = (): string => {
  */
 export default function createAxios<T>(
   axiosConfig: AxiosRequestConfig,
-  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat?: true },
-  loading?: boolean | TdLoadingProps
+  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat?: true }
 ): IPromise<T>
 export default function createAxios<T>(
   axiosConfig: AxiosRequestConfig,
-  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat?: false },
-  loading?: boolean | TdLoadingProps
+  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat?: false }
 ): APromise<T>
 export default function createAxios<T>(
   axiosConfig: AxiosRequestConfig,
-  options: Options = {},
-  loading: boolean | TdLoadingProps = {}
+  options: Options = {}
 ): IPromise<T> | APromise<T> {
   const userStore = useUserStore()
 
@@ -67,7 +64,8 @@ export default function createAxios<T>(
       if (options.loading) {
         loadingInstance.count++
         if (loadingInstance.count === 1) {
-          loadingInstance.target = LoadingPlugin(loading)
+          loadingInstance.target = useLoadingStore()
+          loadingInstance.target.isLoading(true)
         }
       }
       // 携带token
@@ -88,7 +86,7 @@ export default function createAxios<T>(
       options.loading && closeLoading(options)
 
       if (options.showCodeMessage && response.data && response.data.code !== 200) {
-        MessagePlugin.error(response.data.message)
+        AMessage.error(response.data.message)
         return Promise.reject(response.data) // code不等于200, 页面具体逻辑就不执行了
       }
       return options.reductDataFormat ? response.data : response
@@ -162,7 +160,7 @@ function httpErrorStatusHandle(error: any) {
   if (error.message.includes('Network'))
     message = window.navigator.onLine ? '服务端异常！' : '您断网了！'
 
-  MessagePlugin.error(message)
+  AMessage.error(message)
 }
 
 /**
@@ -218,7 +216,7 @@ function getPendingKey(config: InternalAxiosRequestConfig) {
 function closeLoading(options: Options) {
   if (options.loading && loadingInstance.count > 0) loadingInstance.count--
   if (loadingInstance.count === 0) {
-    loadingInstance.target.hide()
+    loadingInstance.target.isLoading(false)
     loadingInstance.target = null
   }
 }
