@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SPTable: typeof import('./src/components/SPTable/index.vue')['default']
     TAside: typeof import('tdesign-vue-next')['Aside']
     TAvatar: typeof import('tdesign-vue-next')['Avatar']
     TButton: typeof import('tdesign-vue-next')['Button']
@@ -17,6 +18,7 @@ declare module 'vue' {
     TConfigProvider: typeof import('tdesign-vue-next')['ConfigProvider']
     TContent: typeof import('tdesign-vue-next')['Content']
     TDropdown: typeof import('tdesign-vue-next')['Dropdown']
+    TEnhancedTable: typeof import('tdesign-vue-next')['EnhancedTable']
     TFooter: typeof import('tdesign-vue-next')['Footer']
     TForm: typeof import('tdesign-vue-next')['Form']
     TFormItem: typeof import('tdesign-vue-next')['FormItem']
@@ -31,5 +33,6 @@ declare module 'vue' {
     TPagination: typeof import('tdesign-vue-next')['Pagination']
     TPopup: typeof import('tdesign-vue-next')['Popup']
     TSubmenu: typeof import('tdesign-vue-next')['Submenu']
+    TTable: typeof import('tdesign-vue-next')['Table']
   }
 }
