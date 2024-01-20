@@ -32,7 +32,9 @@ export const useUserStore = defineStore('userStore', {
       return Promise.resolve()
     }
   },
-  persist: true
+  persist: {
+    paths: ['accessToken']
+  }
 })
 
 interface State {
