@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
+    "@types/nprogress": "^0.2.3",
     "axios": "^1.6.5",
     "js-md5": "^0.8.3",
     "mdi-vue": "^3.0.13",
+    "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "sass": "^1.69.7",
