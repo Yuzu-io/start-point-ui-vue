@@ -40,6 +40,22 @@
               </t-input>
             </t-form-item>
 
+            <t-form-item name="captcha">
+              <t-input
+                v-model="formData.captcha"
+                clearable
+                size="large"
+                placeholder="请输入密码"
+                style="width: 207px"
+              >
+                <template #prefix-icon>
+                  <mdicon name="lock-outline" size="16"></mdicon>
+                </template>
+              </t-input>
+              <!-- 验证码 -->
+              <img class="img-code" :src="imgCode" @click="getValidateCode" />
+            </t-form-item>
+
             <div class="check-container">
               <t-checkbox v-model="rbPassword">记住密码</t-checkbox>
             </div>
@@ -57,31 +73,59 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { MessagePlugin, type SubmitContext } from 'tdesign-vue-next'
-import type { LoginParams } from '@/types/user'
+import type { LoginParams } from '@/types/auth'
 import { useRouter } from 'vue-router'
+import { getValidateCodeApi } from '@/api/auth'
+import { onMounted } from 'vue'
+import { useUserStore } from '@/plugins/stores'
+import { md5 } from 'js-md5'
 
 const formData = reactive<LoginParams>({
-  account: '',
-  password: ''
+  account: 'yuzu',
+  password: '123',
+  captcha: '',
+  codeKey: ''
 })
-
+const imgCode = ref<string>('')
 const rbPassword = ref<boolean>(false)
 
 const FORM_RULES = {
   account: [{ required: true, message: '请输入账号' }],
-  password: [{ required: true, message: '请输入密码' }]
+  password: [{ required: true, message: '请输入密码' }],
+  captcha: [{ required: true, message: '请输入验证码' }]
 }
 
+const getValidateCode = () => {
+  getValidateCodeApi().then((res) => {
+    formData.codeKey = res.data.codeKey
+    imgCode.value = res.data.codeValue
+  })
+}
+
+const userStore = useUserStore()
 const router = useRouter()
-const onSubmit = ({ validateResult, firstError }: SubmitContext) => {
+const onSubmit = async ({ validateResult, firstError }: SubmitContext) => {
   if (validateResult === true) {
-    MessagePlugin.success('提交成功')
-    router.push('/main')
+    let params = {
+      ...formData,
+      password: md5(formData.password).toLocaleUpperCase()
+    }
+    // userStore.login(params).then(() => {
+    //   MessagePlugin.success('登录成功')
+    //   userStore.getUserInfo()
+    // })
+    await userStore.login(params)
+    await userStore.getUserInfo()
+    // router.push('/main')
   } else {
     console.log('Validate Errors: ', firstError, validateResult)
     MessagePlugin.warning(firstError!)
   }
 }
+
+onMounted(() => {
+  getValidateCode()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -173,6 +217,15 @@ const onSubmit = ({ validateResult, firstError }: SubmitContext) => {
       margin: var(--td-comp-margin-xxxxl) 0 var(--td-comp-margin-xxl);
       .mdi {
         color: var(--td-text-color-placeholder);
+      }
+
+      // 图片验证码
+      .img-code {
+        height: 40px;
+        // border: 1px solid #000;
+        // box-sizing: border-box;
+        margin-left: 20px;
+        cursor: pointer;
       }
 
       .t-button {
