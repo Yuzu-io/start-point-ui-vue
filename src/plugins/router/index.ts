@@ -6,9 +6,40 @@ const routes: RouteRecordRaw[] = [
     redirect: '/login'
   },
   {
-    path: '/main',
-    name: 'main',
-    component: () => import('@/layouts/AppMain.vue')
+    path: '/layout',
+    name: 'layout',
+    component: () => import('@/layouts/AppMain.vue'),
+    redirect: 'dashboard',
+    children: [
+      {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: () => import('@/views/dashboard/index.vue'),
+        meta: {
+          title: '仪表盘',
+          keepAlive: true
+        }
+      },
+      {
+        path: '/system',
+        name: 'system',
+        meta: {
+          title: '系统管理',
+          keepAlive: true
+        },
+        children: [
+          {
+            path: '/menu',
+            name: 'menu',
+            component: () => import('@/views/system/menu/index.vue'),
+            meta: {
+              title: '菜单管理',
+              keepAlive: true
+            }
+          }
+        ]
+      }
+    ]
   },
   {
     path: '/login',
