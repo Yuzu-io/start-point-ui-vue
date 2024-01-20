@@ -26,12 +26,12 @@ export const getUrl = (): string => {
  */
 export default function createAxios<T>(
   axiosConfig: AxiosRequestConfig,
-  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat: true },
+  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat?: true },
   loading?: boolean | TdLoadingProps
 ): IPromise<T>
 export default function createAxios<T>(
   axiosConfig: AxiosRequestConfig,
-  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat: false },
+  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat?: false },
   loading?: boolean | TdLoadingProps
 ): APromise<T>
 export default function createAxios<T>(
@@ -53,8 +53,7 @@ export default function createAxios<T>(
       loading: false, // 是否开启loading层效果, 默认为false
       reductDataFormat: true, // 是否开启简洁的数据结构响应, 默认为true
       showErrorMessage: true, // 是否开启接口错误信息展示,默认为true
-      showCodeMessage: false, // 是否开启code不为200时的信息提示, 默认为false
-      showSuccessMessage: false // 是否开启code为200时的信息提示, 默认为false
+      showCodeMessage: false // 是否开启code不为200时的信息提示, 默认为false
     },
     options
   )
@@ -235,8 +234,6 @@ interface Options {
   showErrorMessage?: boolean
   // 是否开启code不为200时的信息提示, 默认为false
   showCodeMessage?: boolean
-  // 是否开启code为200时的信息提示, 默认为false
-  showSuccessMessage?: boolean
 }
 
 interface LoadingInstance {
