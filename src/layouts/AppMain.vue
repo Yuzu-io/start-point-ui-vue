@@ -1,17 +1,17 @@
 <template>
-  <t-layout>
-    <t-aside class="aside">
+  <a-layout class="layout">
+    <a-layout-sider class="aside" v-model:collapsed="collapsed" :width="210">
       <LayoutAside />
-    </t-aside>
-    <t-layout>
-      <t-header class="header">
+    </a-layout-sider>
+    <a-layout>
+      <a-layout-header class="header">
         <LayoutHeader />
-      </t-header>
-      <t-content class="content">
+      </a-layout-header>
+      <a-layout-content class="content">
         <LayoutContent />
-      </t-content>
-    </t-layout>
-  </t-layout>
+      </a-layout-content>
+    </a-layout>
+  </a-layout>
 </template>
 
 <script setup lang="ts">
@@ -20,7 +20,7 @@ import LayoutHeader from './components/LayoutHeader.vue'
 import LayoutContent from './components/LayoutContent.vue'
 import { provide, ref } from 'vue'
 import type { ProvideTag } from '@/types/layouts/tag'
-import { MessagePlugin } from 'tdesign-vue-next'
+import { message } from 'ant-design-vue'
 import { useTagStore } from '@/plugins/stores'
 
 const tagStore = useTagStore()
@@ -54,11 +54,11 @@ const data = [
 
 tagStore.addTag(data)
 
+const collapsed = ref<boolean>(false)
 const demo = ref(0)
 const refresh = () => {
-  MessagePlugin.success({
+  message.success({
     content: '刷新成功!',
-    placement: 'top-right',
     duration: 1000
   })
   demo.value++
@@ -71,17 +71,17 @@ provide<ProvideTag>('provideTag', {
 </script>
 
 <style lang="scss" scoped>
-.t-layout {
+.layout {
   height: 100vh;
 
   .aside,
   .header,
   .content {
     background: transparent;
+    line-height: 1;
   }
 
   .aside {
-    width: auto;
     padding: 10px 0 10px 10px;
   }
   .header {

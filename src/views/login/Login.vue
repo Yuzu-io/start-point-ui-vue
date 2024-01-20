@@ -7,79 +7,75 @@
     </div>
     <div class="context">
       <div class="login">
-        <t-card :bordered="false" hover-shadow :style="{ width: '400px' }">
+        <a-card hoverable style="width: 400px">
           <div class="title title-top">登录到</div>
           <div class="title">Start Point</div>
-          <t-form
-            ref="form"
-            :data="formData"
-            :rules="FORM_RULES"
-            :colon="true"
-            :label-width="0"
-            @submit="onSubmit"
-          >
-            <t-form-item name="account">
-              <t-input v-model="formData.account" clearable size="large" placeholder="请输入账户名">
-                <template #prefix-icon>
+          <a-form ref="formRef" :model="formData" :rules="rules" :label-width="0">
+            <a-form-item name="account">
+              <a-input v-model:value="formData.account" size="large" placeholder="请输入账户名">
+                <template #prefix>
                   <mdicon name="monitor" size="16"></mdicon>
                 </template>
-              </t-input>
-            </t-form-item>
+              </a-input>
+            </a-form-item>
 
-            <t-form-item name="password">
-              <t-input
-                v-model="formData.password"
+            <a-form-item name="password">
+              <a-input
+                v-model:value="formData.password"
                 type="password"
-                clearable
                 size="large"
                 placeholder="请输入密码"
               >
-                <template #prefix-icon>
+                <template #prefix>
                   <mdicon name="lock-outline" size="16"></mdicon>
                 </template>
-              </t-input>
-            </t-form-item>
+              </a-input>
+            </a-form-item>
 
-            <t-form-item name="captcha">
-              <t-input
-                v-model="formData.captcha"
-                clearable
+            <a-form-item name="captcha">
+              <a-input
+                v-model:value="formData.captcha"
                 size="large"
-                placeholder="请输入密码"
-                style="width: 207px"
+                placeholder="验证码"
+                style="width: 205px"
               >
-                <template #prefix-icon>
+                <template #prefix>
                   <mdicon name="lock-outline" size="16"></mdicon>
                 </template>
-              </t-input>
+              </a-input>
               <!-- 验证码 -->
               <img class="img-code" :src="imgCode" @click="getValidateCode" />
-            </t-form-item>
+            </a-form-item>
 
             <div class="check-container">
-              <t-checkbox v-model="rbPassword">记住密码</t-checkbox>
+              <a-checkbox v-model:checked="rbPassword">记住密码</a-checkbox>
             </div>
 
-            <t-form-item>
-              <t-button theme="primary" type="submit" size="large" block>登录</t-button>
-            </t-form-item>
-          </t-form>
-        </t-card>
+            <a-form-item>
+              <a-button type="primary" size="large" block html-type="submit" @click="onSubmit"
+                >登录</a-button
+              >
+            </a-form-item>
+          </a-form>
+        </a-card>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { MessagePlugin, type SubmitContext } from 'tdesign-vue-next'
-import type { LoginParams } from '@/types/auth'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import type { Rule } from 'ant-design-vue/es/form'
+import type { ValidateErrorEntity } from 'ant-design-vue/es/form/interface'
+import { message } from 'ant-design-vue'
+import type { LoginParams } from '@/types/auth'
 import { getValidateCodeApi } from '@/api/auth'
-import { onMounted } from 'vue'
 import { useUserStore } from '@/plugins/stores'
 import { md5 } from 'js-md5'
+import { MESSAGE_KEY } from '@/constant'
 
+const formRef = ref()
 const formData = reactive<LoginParams>({
   account: 'yuzu',
   password: '123',
@@ -89,10 +85,10 @@ const formData = reactive<LoginParams>({
 const imgCode = ref<string>('')
 const rbPassword = ref<boolean>(false)
 
-const FORM_RULES = {
-  account: [{ required: true, message: '请输入账号' }],
-  password: [{ required: true, message: '请输入密码' }],
-  captcha: [{ required: true, message: '请输入验证码' }]
+const rules: Record<string, Rule[]> = {
+  account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  captcha: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
 }
 
 const getValidateCode = () => {
@@ -104,20 +100,28 @@ const getValidateCode = () => {
 
 const userStore = useUserStore()
 const router = useRouter()
-const onSubmit = async ({ validateResult, firstError }: SubmitContext) => {
-  if (validateResult === true) {
-    let params = {
-      ...formData,
-      password: md5(formData.password).toLocaleUpperCase()
-    }
-    await userStore.login(params)
-    await userStore.getUserInfo()
-    MessagePlugin.success('登录成功')
-    router.push('/layout')
-  } else {
-    console.log('Validate Errors: ', firstError, validateResult)
-    MessagePlugin.warning(firstError!)
-  }
+const onSubmit = () => {
+  formRef.value
+    .validate()
+    .then(async () => {
+      let params = {
+        ...formData,
+        password: md5(formData.password).toLocaleUpperCase()
+      }
+      await userStore.login(params)
+      await userStore.getUserInfo()
+      message.success({
+        content: '登录成功',
+        key: MESSAGE_KEY
+      })
+      router.push('/layout')
+    })
+    .catch((error: ValidateErrorEntity) => {
+      message.warning({
+        content: error.errorFields[0].errors[0],
+        key: MESSAGE_KEY
+      })
+    })
 }
 
 onMounted(() => {
@@ -201,32 +205,35 @@ onMounted(() => {
     transform: translate(-50%, -50%);
 
     .title {
-      font: var(--td-font-headline-large);
-      font-weight: 400;
-      color: var(--td-text-color-primary);
-      margin-top: var(--td-comp-margin-xs);
+      // font: var(--td-font-headline-large);
+      font-size: 30px;
+      font-weight: 500;
+      margin-top: 7px;
 
       &-top {
         margin: 0;
       }
     }
-    .t-form {
-      margin: var(--td-comp-margin-xxxxl) 0 var(--td-comp-margin-xxl);
+    .ant-form {
+      margin: 25px 0 20px;
       .mdi {
-        color: var(--td-text-color-placeholder);
+        color: rgba(0, 0, 0, 0.4);
       }
 
+      .ant-form-item {
+        :deep(.ant-form-item-control-input-content) {
+          display: flex;
+        }
+      }
       // 图片验证码
       .img-code {
         height: 40px;
-        // border: 1px solid #000;
-        // box-sizing: border-box;
         margin-left: 20px;
         cursor: pointer;
       }
 
-      .t-button {
-        margin-top: var(--td-comp-margin-xxxl);
+      .ant-btn {
+        margin-top: 25px;
       }
     }
   }

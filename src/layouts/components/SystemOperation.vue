@@ -3,18 +3,30 @@
     <div class="system-operation__item lang">
       <mdicon name="translate" />
     </div>
-    <t-popup trigger="click" destroy-on-close>
+    <a-popover placement="bottomRight" trigger="click">
+      <template #content>
+        <a-button type="text" @click="logout"> 退出登录 </a-button>
+      </template>
       <div class="system-operation__item user">
-        <t-avatar>W</t-avatar>
+        <a-avatar>U</a-avatar>
         Admin
       </div>
-      <template #content> 123 </template>
-    </t-popup>
+    </a-popover>
   </div>
 </template>
 
 <script setup lang="ts">
-import { MessagePlugin } from 'tdesign-vue-next'
+import { useUserStore } from '@/plugins/stores'
+import { message } from 'ant-design-vue'
+import { useRouter } from 'vue-router'
+
+const userStore = useUserStore()
+const router = useRouter()
+const logout = async () => {
+  await userStore.logout()
+  message.success('已登出')
+  router.push('/login')
+}
 </script>
 
 <style lang="scss" scoped>

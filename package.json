@@ -14,15 +14,17 @@
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
+    "@types/lodash": "^4.14.202",
     "@types/nprogress": "^0.2.3",
+    "ant-design-vue": "^4.1.1",
     "axios": "^1.6.5",
     "js-md5": "^0.8.3",
+    "lodash": "^4.17.21",
     "mdi-vue": "^3.0.13",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "sass": "^1.69.7",
-    "tdesign-vue-next": "^1.8.0",
     "vue": "^3.3.11",
     "vue-i18n": "^9.9.0",
     "vue-router": "^4.2.5"

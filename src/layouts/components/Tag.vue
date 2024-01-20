@@ -26,43 +26,52 @@
     v-show="showTagMenu"
     :style="{ left: tagMenuPosition.x, top: tagMenuPosition.y }"
   >
-    <t-button
-      block
-      variant="text"
-      @click="tagMenuOperation(TagMenuType.Refresh)"
-      :disabled="!isCurrentTag"
-    >
-      <mdicon class="btn-icon" name="reload" size="18" />
-      重新加载
-    </t-button>
-    <t-button block variant="text" @click="tagMenuOperation(TagMenuType.Close)">
-      <mdicon class="btn-icon" name="close" size="18" />
-      关闭标签
-    </t-button>
-    <t-button
-      block
-      variant="text"
-      @click="tagMenuOperation(TagMenuType.Other)"
-      :disabled="tagStore.tagList.length <= 1"
-    >
-      <mdicon class="btn-icon" name="minus" size="18" />
-      关闭其他标签
-    </t-button>
-    <t-button
-      block
-      variant="text"
-      @click="tagMenuOperation(TagMenuType.All)"
-      :disabled="tagStore.tagList.length <= 1"
-    >
-      <mdicon class="btn-icon" name="square" size="18" />
-      关闭全部标签
-    </t-button>
+    <a-space>
+      <a-space-compact direction="vertical">
+        <a-button
+          type="text"
+          @click="tagMenuOperation(TagMenuType.Refresh)"
+          :disabled="!isCurrentTag"
+        >
+          <template #icon>
+            <mdicon class="btn-icon" name="reload" size="18" />
+          </template>
+          重新加载
+        </a-button>
+        <a-button type="text" @click="tagMenuOperation(TagMenuType.Close)">
+          <template #icon>
+            <mdicon class="btn-icon" name="close" size="18" />
+          </template>
+          关闭标签
+        </a-button>
+        <a-button
+          type="text"
+          @click="tagMenuOperation(TagMenuType.Other)"
+          :disabled="tagStore.tagList.length <= 1"
+        >
+          <template #icon>
+            <mdicon class="btn-icon" name="minus" size="18" />
+          </template>
+          关闭其他标签
+        </a-button>
+        <a-button
+          type="text"
+          @click="tagMenuOperation(TagMenuType.All)"
+          :disabled="tagStore.tagList.length <= 1"
+        >
+          <template #icon>
+            <mdicon class="btn-icon" name="square" size="18" />
+          </template>
+          关闭全部标签
+        </a-button>
+      </a-space-compact>
+    </a-space>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ProvideTag } from '@/types/layouts/tag'
-import { MessagePlugin } from 'tdesign-vue-next'
+import { message } from 'ant-design-vue'
 import { ref, onMounted, reactive, inject, watch, nextTick } from 'vue'
 import { useTagStore } from '@/plugins/stores/index'
 
@@ -158,9 +167,8 @@ const tagMenuOperation = (type: TagMenuType) => {
 
 const { refresh } = inject<ProvideTag>('provideTag', {
   refresh: () => {
-    MessagePlugin.warning({
+    message.warning({
       content: '加载失败!',
-      placement: 'top-right',
       duration: 1000
     })
   }
@@ -225,17 +233,19 @@ enum TagMenuType {
   margin-right: 15px;
   position: relative;
 
-  &::-webkit-scrollbar {
-    height: 5px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background-color: rgba($color: #c8c9cc, $alpha: 0.5);
+  @include scrollbar();
 
-    &:hover {
-      background-color: rgba($color: #c8c9cc, $alpha: 1);
-    }
-  }
+  // &::-webkit-scrollbar {
+  //   height: 5px;
+  // }
+  // &::-webkit-scrollbar-thumb {
+  //   border-radius: 5px;
+  //   background-color: rgba($color: #c8c9cc, $alpha: 0.5);
+
+  //   &:hover {
+  //     background-color: rgba($color: #c8c9cc, $alpha: 1);
+  //   }
+  // }
 
   &-list {
     position: absolute;
@@ -244,7 +254,7 @@ enum TagMenuType {
 
     &__item {
       flex: none;
-      padding: 6px 16px;
+      padding: 10px 16px;
       position: relative;
       z-index: 3;
       cursor: pointer;
@@ -304,10 +314,7 @@ enum TagMenuType {
   padding: 10px 0;
   @include divInitialization();
 
-  .t-button {
-    width: 100%;
-    justify-content: flex-start;
-    border: none;
+  .ant-btn {
     border-radius: 0;
 
     .btn-icon {
