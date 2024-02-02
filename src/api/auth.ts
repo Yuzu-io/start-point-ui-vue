@@ -4,7 +4,8 @@ import createAxios from '@/utils/axios'
 const Api = {
   login: '/system/sysUser/login',
   validateCode: '/system/sysUser/getValidateCode',
-  userInfo: '/system/sysUser/getUserInfo'
+  userInfo: '/system/sysUser/getUserInfo',
+  logout: '/system/sysUser/logout'
 }
 
 export function loginApi(data: LoginParams) {
@@ -31,6 +32,18 @@ export function getUserInfoApi() {
   return createAxios<GetUserInfoRes>(
     {
       url: Api.userInfo,
+      method: 'get'
+    },
+    {
+      showCodeMessage: true
+    }
+  )
+}
+
+export function logout() {
+  return createAxios<GetUserInfoRes>(
+    {
+      url: Api.logout,
       method: 'get'
     },
     {
