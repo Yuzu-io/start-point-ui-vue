@@ -169,7 +169,7 @@ const { refresh } = inject<ProvideTag>('provideTag', {
   refresh: () => {
     message.warning({
       content: '加载失败!',
-      duration: 1000
+      duration: 1
     })
   }
 })
@@ -262,12 +262,11 @@ enum TagMenuType {
       @include divInitialization($bs: none);
       transition: all 0.3s;
 
-      color: var(--td-text-color-secondary);
       &--active {
-        color: var(--td-text-color-primary);
+        color: #1677ff;
       }
       &:hover {
-        color: var(--td-text-color-primary);
+        color: #1677ff;
       }
 
       .close {
@@ -276,16 +275,11 @@ enum TagMenuType {
         border-radius: 50%;
         overflow: hidden;
         margin-left: 5px;
-        color: var(--td-text-color-secondary);
         @include flexInit($ais: center, $jc: center);
 
         &:hover {
           color: #fff;
-          background-color: var(--td-brand-color-active);
-        }
-
-        &-icon {
-          transform: translateY(-1px);
+          background-color: #1677ff;
         }
       }
     }
