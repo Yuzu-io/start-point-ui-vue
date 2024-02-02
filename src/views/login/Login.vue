@@ -44,7 +44,7 @@
                 </template>
               </a-input>
               <!-- 验证码 -->
-              <img class="img-code" :src="imgCode" @click="getValidateCode" />
+              <img class="img-code" :src="imgCode" @click="getValidateCode" alt="加载失败。" />
             </a-form-item>
 
             <div class="check-container">
@@ -205,7 +205,6 @@ onMounted(() => {
     transform: translate(-50%, -50%);
 
     .title {
-      // font: var(--td-font-headline-large);
       font-size: 30px;
       font-weight: 500;
       margin-top: 7px;
