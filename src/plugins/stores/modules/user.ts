@@ -1,4 +1,4 @@
-import { getUserInfoApi, loginApi } from '@/api/auth'
+import { getUserInfoApi, loginApi, logout } from '@/api/auth'
 import type { GetUserInfoRes, LoginParams } from '@/types/auth'
 import { defineStore } from 'pinia'
 
@@ -29,6 +29,12 @@ export const useUserStore = defineStore('userStore', {
       const res = await getUserInfoApi().catch((e) => console.log(e))
       if (!res) return Promise.reject()
       this.userInfo = res.data
+      return Promise.resolve()
+    },
+    async logout() {
+      const res = await logout().catch((e) => console.log(e))
+      if (!res) return Promise.reject()
+      useUserStore().$reset()
       return Promise.resolve()
     }
   },
