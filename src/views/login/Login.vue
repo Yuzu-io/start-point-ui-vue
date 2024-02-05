@@ -40,7 +40,7 @@
                 style="width: 205px"
               >
                 <template #prefix>
-                  <mdicon name="lock-outline" size="16"></mdicon>
+                  <mdicon name="key-outline" size="16"></mdicon>
                 </template>
               </a-input>
               <!-- 验证码 -->
