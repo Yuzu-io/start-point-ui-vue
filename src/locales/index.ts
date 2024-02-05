@@ -58,6 +58,6 @@ export const langList = computed(() => {
   return list
 })
 
-// export const { t } = i18n.global
+export const { t } = i18n.global
 
 export default i18n
