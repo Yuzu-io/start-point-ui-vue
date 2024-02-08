@@ -1,8 +1,17 @@
 <template>
   <div class="system-operation">
-    <div class="system-operation__item lang">
-      <mdicon name="translate" />
-    </div>
+    <a-dropdown placement="bottomRight" trigger="click">
+      <div class="system-operation__item lang">
+        <mdicon name="translate" />
+      </div>
+      <template #overlay>
+        <a-menu>
+          <a-menu-item v-for="(item, index) in langList" :key="index" @click="switchLanguage(item)">
+            {{ item.content }}
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </a-dropdown>
     <a-popover placement="bottomRight" trigger="click">
       <template #content>
         <a-button type="text" @click="logout"> 退出登录 </a-button>
@@ -16,12 +25,21 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/plugins/stores'
+import { langList, useLocale } from '@/locales/useLocale'
+import { useLoadingStore, useUserStore } from '@/plugins/stores'
+import type { LangList } from '@/types/lang'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 
-const userStore = useUserStore()
 const router = useRouter()
+
+const loadingStore = useLoadingStore()
+const { cutoverLang } = useLocale()
+const switchLanguage = (item: LangList) => {
+  cutoverLang(item.value)
+}
+
+const userStore = useUserStore()
 const logout = async () => {
   await userStore.logout()
   message.success('已登出')
@@ -42,7 +60,7 @@ const logout = async () => {
     @include flexInit($ais: center);
 
     &:hover {
-      background-color: var(--td-bg-color-container-hover);
+      background-color: rgba(0, 0, 0, 0.06);
     }
   }
 }

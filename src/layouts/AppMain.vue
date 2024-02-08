@@ -1,7 +1,7 @@
 <template>
   <a-layout class="layout">
-    <a-layout-sider class="aside" v-model:collapsed="collapsed" :width="210">
-      <LayoutAside />
+    <a-layout-sider class="aside" v-model:collapsed="collapsed" :width="220">
+      <LayoutAside v-model:collapsed="collapsed" />
     </a-layout-sider>
     <a-layout>
       <a-layout-header class="header">
@@ -23,46 +23,13 @@ import type { ProvideTag } from '@/types/layouts/tag'
 import { message } from 'ant-design-vue'
 import { useTagStore } from '@/plugins/stores'
 
-const tagStore = useTagStore()
-
-const data = [
-  {
-    id: 1,
-    name: '首页'
-  },
-  {
-    id: 1,
-    name: '仪表盘'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  }
-]
-
-tagStore.addTag(data)
-
 const collapsed = ref<boolean>(false)
-const demo = ref(0)
+
 const refresh = () => {
   message.success({
     content: '刷新成功!',
-    duration: 1000
+    duration: 1
   })
-  demo.value++
-  console.log(demo)
 }
 
 provide<ProvideTag>('provideTag', {
@@ -89,6 +56,7 @@ provide<ProvideTag>('provideTag', {
   }
   .content {
     padding: 10px;
+    overflow: hidden;
   }
 }
 </style>
