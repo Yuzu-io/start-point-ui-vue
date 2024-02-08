@@ -1,39 +1,70 @@
 <template>
   <div class="layout-aside">
-    <a-menu
-      v-model:openKeys="state.openKeys"
-      v-model:selectedKeys="state.selectedKeys"
-      :mode="state.mode"
-      :items="items"
-      :theme="state.theme"
-    ></a-menu>
+    <!-- 头部 -->
+    <div class="layout-aside__head">
+      <div class="logo" v-show="!state.collapsed">start point</div>
+      <mdicon
+        class="menu-expanded-btn"
+        :name="state.collapsed ? 'menu-open' : 'menu-close'"
+        size="28"
+        @click="menuExpanded"
+      />
+    </div>
+    <!-- 菜单 -->
+    <div class="layout-aside__menu">
+      <a-menu
+        v-model:openKeys="state.openKeys"
+        v-model:selectedKeys="state.selectedKeys"
+        :mode="state.mode"
+        :items="items"
+        :theme="state.theme"
+        @click="menuClick"
+      >
+      </a-menu>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { h, reactive, ref } from 'vue'
-import {
-  MailOutlined,
-  CalendarOutlined,
-  AppstoreOutlined,
-  SettingOutlined
-} from '@ant-design/icons-vue'
+import { h, reactive } from 'vue'
 import type { MenuMode, MenuTheme } from 'ant-design-vue'
 import { type ItemType } from 'ant-design-vue'
-import { useRoute } from 'vue-router'
-
-const collapsed = ref(false)
+import { useRoute, useRouter, type RouteLocationMatched } from 'vue-router'
+import MDIcon from '@/components/MDIcon/index.vue'
+import type { MenuInfo } from 'ant-design-vue/es/menu/src/interface'
 
 const route = useRoute()
 
-//
+const selectedKeys: string = route.path
+const openKeys: string[] = getParentPaths(route.matched)
+
+function getParentPaths(data: RouteLocationMatched[]) {
+  return data.reduce((pre: string[], cur: RouteLocationMatched) => {
+    const parentPath = cur.meta.parentPath as string
+    if (parentPath) {
+      return pre.concat(parentPath)
+    }
+    return pre
+  }, [])
+}
+
+const emit = defineEmits(['update:collapsed'])
+const props = withDefaults(defineProps<Props>(), {
+  collapsed: true
+})
 
 const state = reactive({
   mode: 'inline' as MenuMode,
   theme: 'light' as MenuTheme,
-  selectedKeys: ['1'],
-  openKeys: ['sub1']
+  selectedKeys: [selectedKeys],
+  openKeys: openKeys,
+  collapsed: props.collapsed
 })
+
+const menuExpanded = () => {
+  state.collapsed = !state.collapsed
+  emit('update:collapsed', state.collapsed)
+}
 
 function getItem(
   label: string,
@@ -52,43 +83,62 @@ function getItem(
 }
 
 const items: ItemType[] = reactive([
-  getItem('Navigation One', '1', h(MailOutlined)),
-  getItem('Navigation Two', '2', h(CalendarOutlined)),
-  getItem('Navigation Two', 'sub1', h(AppstoreOutlined), [
-    getItem('Option 3', '3'),
-    getItem('Option 4', '4'),
-    getItem('Submenu', 'sub1-2', null, [getItem('Option 5', '5'), getItem('Option 6', '6')])
-  ]),
-  getItem('Navigation Three', 'sub2', h(SettingOutlined), [
-    getItem('Option 7', '7'),
-    getItem('Option 8', '8'),
-    getItem('Option 9', '9'),
-    getItem('Option 10', '10')
-  ]),
-  getItem('Navigation Three', 'sub20', h(SettingOutlined), [
-    getItem('Option 7', '7'),
-    getItem('Option 8', '8'),
-    getItem('Option 9', '9'),
-    getItem('Option 10', '10')
-  ]),
-  getItem('Navigation Three', 'sub211', h(SettingOutlined), [
-    getItem('Option 7', '7'),
-    getItem('Option 8', '8'),
-    getItem('Option 9', '9'),
-    getItem('Option 10', '10')
+  getItem('仪表盘', '/dashboard', h(MDIcon, { name: 'chart-donut', size: 18 })),
+  getItem('系统管理', '/system', h(MDIcon, { name: 'cog-outline', size: 18 }), [
+    getItem('菜单管理', '/menu')
   ])
 ])
+
+const router = useRouter()
+const menuClick = (info: MenuInfo) => {
+  router.push({
+    path: info.key as string
+  })
+}
+</script>
+<script lang="ts">
+interface Props {
+  collapsed: boolean
+}
 </script>
 
 <style lang="scss" scoped>
+$head-height: 54px;
 .layout-aside {
   height: 100%;
+  background-color: #fff;
   @include divInitialization();
 
-  .ant-menu {
-    height: 100%;
+  &__head {
+    height: $head-height;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1677ff;
+    background-color: #fcfcfc;
+
+    .logo {
+      flex: 1;
+      text-align: center;
+      font-size: 30px;
+      white-space: nowrap;
+    }
+
+    .menu-expanded-btn {
+      margin: 5px 10px 0;
+      cursor: pointer;
+    }
+  }
+
+  &__menu {
+    height: calc(100% - $head-height);
     overflow-y: scroll;
     @include scrollbar();
+
+    .ant-menu {
+      padding-left: 5px;
+      border-inline-end: none;
+    }
   }
 }
 </style>
