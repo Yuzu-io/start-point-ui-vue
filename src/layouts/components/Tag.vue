@@ -11,7 +11,7 @@
         @contextmenu="openTagMenu(index, $event)"
       >
         <span>
-          {{ item.name }}
+          {{ item.title }}
         </span>
         <div class="close" v-if="tagStore.tagList.length > 1" @click.stop @click="closeTag(index)">
           <mdicon class="close-icon" name="close" size="14" />
@@ -108,6 +108,8 @@ const chooseTag = (item: any, index: number) => {
   if (index === currentTagIndex.value) return
   currentTagIndex.value = index
   getTagWidth()
+  // 跳转路由
+  console.log(item)
 }
 
 // 关闭标签
