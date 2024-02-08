@@ -1,11 +1,42 @@
+import type { RoutesInfo } from '@/types/routes'
 import { defineStore } from 'pinia'
 
 export const useTagStore = defineStore('tagStore', {
   state: (): State => ({
     tagList: [
       {
-        id: 1,
-        name: '首页'
+        id: 'string',
+        title: 'string',
+        icon: 'string',
+        fullPath: 'string',
+        componentPath: 'string',
+        parentId: 'string',
+        showStatus: 'string',
+        isExternalLink: 'string',
+        keepAlive: 'string',
+        redirect: 'string',
+        type: 'string',
+        authMark: 'string',
+        orderIndex: 1,
+        createTime: 'string',
+        updateTime: 'string'
+      },
+      {
+        id: 'string',
+        title: 'string',
+        icon: 'string',
+        fullPath: 'string',
+        componentPath: 'string',
+        parentId: 'string',
+        showStatus: 'string',
+        isExternalLink: 'string',
+        keepAlive: 'string',
+        redirect: 'string',
+        type: 'string',
+        authMark: 'string',
+        orderIndex: 1,
+        createTime: 'string',
+        updateTime: 'string'
       }
     ]
   }),
@@ -30,5 +61,5 @@ export const useTagStore = defineStore('tagStore', {
 })
 
 interface State {
-  tagList: any[]
+  tagList: RoutesInfo[]
 }
