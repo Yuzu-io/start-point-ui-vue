@@ -15,7 +15,7 @@ import MDIcon, { config as MDIconConfig } from './plugins/md-icon/index' // @mdi
  * 样式
  */
 import './styles/reset.css' // 初始化
-import './styles/global.scss'
+import './styles/global.scss' // 全局样式
 
 const app = createApp(App)
 
