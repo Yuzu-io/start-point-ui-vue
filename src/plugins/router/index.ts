@@ -17,7 +17,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/dashboard/index.vue'),
         meta: {
           title: '仪表盘',
-          keepAlive: true
+          keepAlive: true,
+          parentPath: ''
         }
       },
       {
@@ -25,7 +26,8 @@ const routes: RouteRecordRaw[] = [
         name: 'system',
         meta: {
           title: '系统管理',
-          keepAlive: true
+          keepAlive: true,
+          parentPath: ''
         },
         children: [
           {
@@ -34,7 +36,8 @@ const routes: RouteRecordRaw[] = [
             component: () => import('@/views/system/menu/index.vue'),
             meta: {
               title: '菜单管理',
-              keepAlive: true
+              keepAlive: true,
+              parentPath: '/system'
             }
           }
         ]
