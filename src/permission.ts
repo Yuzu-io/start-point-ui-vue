@@ -2,7 +2,7 @@ import NProgress from 'nprogress'
 import router from './plugins/router'
 import getPageTitle from './utils/getPageTitle'
 import { usePermissionStore, useUserStore } from './plugins/stores'
-import { MessagePlugin } from 'tdesign-vue-next'
+import { message } from 'ant-design-vue'
 
 NProgress.configure({ showSpinner: false })
 
@@ -31,7 +31,7 @@ router.beforeEach(async (to, from, next) => {
         const routeList = []
       }
     } catch (error: any) {
-      MessagePlugin.error(error.message)
+      message.error(error.message)
       next({
         path: '/login',
         query: {
