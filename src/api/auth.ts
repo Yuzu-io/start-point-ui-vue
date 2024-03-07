@@ -2,10 +2,10 @@ import type { GetUserInfoRes, GetValidateCodeRes, LoginParams, LoginRes } from '
 import createAxios from '@/utils/axios'
 
 const Api = {
-  login: '/system/sysUser/login',
-  validateCode: '/system/sysUser/getValidateCode',
-  userInfo: '/system/sysUser/getUserInfo',
-  logout: '/system/sysUser/logout'
+  login: '/auth/login',
+  validateCode: '/auth/getValidateCode',
+  userInfo: '/auth/getUserInfo',
+  logout: '/auth/logout'
 }
 
 export function loginApi(data: LoginParams) {
