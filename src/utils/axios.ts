@@ -69,8 +69,8 @@ export default function createAxios<T>(
         }
       }
       // 携带token
-      if (userStore.accessToken && config.headers) {
-        config.headers.token = userStore.accessToken
+      if (userStore.token && config.headers) {
+        config.headers.token = userStore.token
       }
       return config
     },

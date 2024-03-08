@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('userStore', {
   state: (): State => ({
-    accessToken: '',
+    token: '',
     userInfo: {
       id: '',
       username: '',
@@ -26,7 +26,7 @@ export const useUserStore = defineStore('userStore', {
     async login(params: LoginParams) {
       const res = await loginApi(params).catch((e) => console.warn(e))
       if (!res) return Promise.reject()
-      this.accessToken = res.data.token
+      this.token = res.data.token
       return Promise.resolve()
     },
     async getUserInfo() {
@@ -43,11 +43,11 @@ export const useUserStore = defineStore('userStore', {
     }
   },
   persist: {
-    paths: ['accessToken']
+    paths: ['token']
   }
 })
 
 interface State {
-  accessToken: string
+  token: string
   userInfo: UserInfoRes
 }
