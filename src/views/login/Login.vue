@@ -65,13 +65,13 @@
 
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type { Rule } from 'ant-design-vue/es/form'
 import type { ValidateErrorEntity } from 'ant-design-vue/es/form/interface'
 import { message } from 'ant-design-vue'
 import type { LoginParams } from '@/types/auth'
 import { getValidateCodeApi } from '@/api/auth'
-import { useUserStore } from '@/plugins/stores'
+import { usePermissionStore, useUserStore } from '@/plugins/stores'
 import { md5 } from 'js-md5'
 import { MESSAGE_KEY } from '@/constant'
 
@@ -99,7 +99,9 @@ const getValidateCode = () => {
 }
 
 const userStore = useUserStore()
+const permissionStore = usePermissionStore()
 const router = useRouter()
+const route = useRoute()
 const onSubmit = () => {
   formRef.value
     .validate()
@@ -110,11 +112,18 @@ const onSubmit = () => {
       }
       await userStore.login(params)
       await userStore.getUserInfo()
+      await permissionStore.getRoutes()
       message.success({
         content: '登录成功',
         key: MESSAGE_KEY
       })
-      router.push('/layout')
+      const redirect = route.query.redirect as string
+      if (redirect) {
+        const redirectUrl = decodeURIComponent(redirect)
+        router.push(redirectUrl)
+      } else {
+        router.push('/layout')
+      }
     })
     .catch((error: ValidateErrorEntity) => {
       message.warning({
