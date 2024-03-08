@@ -3,7 +3,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/layout'
   },
   {
     path: '/layout',
@@ -47,6 +47,9 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
+    meta: {
+      title: '登录'
+    },
     component: () => import('@/views/login/Login.vue')
   }
 ]
