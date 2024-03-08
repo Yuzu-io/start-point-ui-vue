@@ -1,5 +1,6 @@
 import { getUserInfoApi, loginApi, logout } from '@/api/auth'
-import type { GetUserInfoRes, LoginParams } from '@/types/auth'
+import type { LoginParams } from '@/types/auth'
+import type { UserInfoRes } from '@/types/user'
 import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('userStore', {
@@ -14,8 +15,11 @@ export const useUserStore = defineStore('userStore', {
       age: 0,
       email: '',
       phone: '',
+      status: '',
+      isDelete: '',
       createTime: '',
-      updateTime: ''
+      updateTime: '',
+      roleList: []
     }
   }),
   actions: {
@@ -45,5 +49,5 @@ export const useUserStore = defineStore('userStore', {
 
 interface State {
   accessToken: string
-  userInfo: GetUserInfoRes
+  userInfo: UserInfoRes
 }
