@@ -126,10 +126,12 @@ const onSubmit = () => {
       }
     })
     .catch((error: ValidateErrorEntity) => {
-      message.warning({
-        content: error.errorFields[0].errors[0],
-        key: MESSAGE_KEY
-      })
+      if (error) {
+        message.warning({
+          content: error.errorFields[0].errors[0],
+          key: MESSAGE_KEY
+        })
+      }
     })
 }
 
