@@ -2,6 +2,7 @@ import { getUserInfoApi, loginApi, logout } from '@/api/auth'
 import type { LoginParams } from '@/types/auth'
 import type { UserInfoRes } from '@/types/user'
 import { defineStore } from 'pinia'
+import router from '@/plugins/router/index'
 
 export const useUserStore = defineStore('userStore', {
   state: (): State => ({
@@ -35,10 +36,16 @@ export const useUserStore = defineStore('userStore', {
       this.userInfo = res.data
       return Promise.resolve()
     },
-    async logout() {
-      const res = await logout().catch((e) => console.log(e))
-      if (!res) return Promise.reject()
+    /**
+     * 退出登录
+     * @param flag 是否需要登出请求
+     * @returns Promise
+     */
+    async logout(flag: boolean = true) {
+      const res = flag ? await logout().catch((e) => console.log(e)) : null
       useUserStore().$reset()
+      router.replace('/login') // 返回登录页
+      if (!res) return Promise.reject()
       return Promise.resolve()
     }
   },

@@ -29,9 +29,6 @@ import { langList, useLocale } from '@/locales/useLocale'
 import { useLoadingStore, useUserStore } from '@/plugins/stores'
 import type { LangList } from '@/types/lang'
 import { message } from 'ant-design-vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
 
 const loadingStore = useLoadingStore()
 const { cutoverLang } = useLocale()
@@ -43,7 +40,6 @@ const userStore = useUserStore()
 const logout = async () => {
   await userStore.logout()
   message.success('已登出')
-  router.push('/login')
 }
 </script>
 
