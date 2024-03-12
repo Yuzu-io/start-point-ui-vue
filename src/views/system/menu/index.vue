@@ -70,8 +70,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import type { FormInstance } from 'ant-design-vue'
+import { getRoutesListApi } from '@/api/routes'
 
 const formRef = ref<FormInstance>()
 const searchParams = reactive({
@@ -215,6 +216,14 @@ const total = ref<number>(100)
 const onChange = (page: number, pageSize: number) => {
   console.log('page: ', page)
   console.log('pageSize: ', pageSize)
+}
+
+onMounted(() => {
+  getData()
+})
+const getData = async () => {
+  const result = await getRoutesListApi().catch((e) => console.warn(e))
+  console.log(result)
 }
 </script>
 

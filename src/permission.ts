@@ -2,9 +2,10 @@ import NProgress from 'nprogress'
 import router from './plugins/router'
 import getPageTitle from './utils/getPageTitle'
 import { usePermissionStore, useUserStore } from './plugins/stores'
-import { message } from 'ant-design-vue'
 
-NProgress.configure({ showSpinner: false })
+NProgress.configure({
+  showSpinner: false
+})
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start()
@@ -13,36 +14,33 @@ router.beforeEach(async (to, from, next) => {
   const permissionStore = usePermissionStore()
 
   // 页面标题
-  document.title = getPageTitle(to.meta)
+  document.title = getPageTitle(to.meta.title as string)
 
-  if (userStore.accessToken) {
+  if (userStore.token) {
     if (to.path === '/login') {
       next({ path: '/' })
-      NProgress.done()
-      return
-    }
-    try {
-      // 获取用户个人信息
-      await userStore.getUserInfo()
-      // 获取菜单路由
-      const { menuRouters } = permissionStore
+    } else {
       // 判断是否存在
-      if (menuRouters && !menuRouters.length) {
-        const routeList = []
+      if (!router.hasRoute(to.name || '')) {
+        // 获取菜单路由
+        const { menuRouters } = permissionStore
+        //
       }
-    } catch (error: any) {
-      message.error(error.message)
+      next()
+    }
+    NProgress.done()
+  } else {
+    // 判断是否是白名单
+    if (permissionStore.whiteList.includes(to.path)) {
+      next()
+    } else {
       next({
         path: '/login',
         query: {
           redirect: encodeURIComponent(to.fullPath)
         }
       })
-      NProgress.done()
     }
-  } else {
-    // 判断是否是白名单
-
     NProgress.done()
   }
 })

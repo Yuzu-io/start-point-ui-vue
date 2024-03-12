@@ -107,6 +107,7 @@ export default function createAxios<T>(
  * @param {*} error
  */
 function httpErrorStatusHandle(error: any) {
+  const userStore = useUserStore()
   // 处理被取消的请求
   if (axios.isCancel(error)) return console.error('请求的重复请求：' + error.message)
   let message = ''
@@ -120,6 +121,7 @@ function httpErrorStatusHandle(error: any) {
         break
       case 401:
         message = '您未登录，或者登录已经超时，请先登录！'
+        userStore.$reset()
         break
       case 403:
         message = '您没有权限操作！'
