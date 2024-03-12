@@ -32,5 +32,6 @@ declare module 'vue' {
     MDIcon: typeof import('./src/components/MDIcon/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TableHeader: typeof import('./src/components/TableHeader/index.vue')['default']
   }
 }
