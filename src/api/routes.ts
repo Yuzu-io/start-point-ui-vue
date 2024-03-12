@@ -8,7 +8,7 @@ const Api = {
 }
 
 export function getRoutesListApi() {
-  return createAxios<PageInfo<RoutesInfo>>({
+  return createAxios<PageInfo<RoutesInfo[]>>({
     url: Api.list,
     method: 'get'
   })
