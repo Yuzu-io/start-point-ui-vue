@@ -56,7 +56,8 @@ provide<ProvideTag>('provideTag', {
   }
   .content {
     padding: 10px;
-    overflow: hidden;
+    overflow-y: scroll;
+    @include scrollbar();
   }
 }
 </style>
