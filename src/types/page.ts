@@ -1,3 +1,14 @@
+// 分页参数
+export interface PageParams {
+  /* */
+  pageNum?: number
+  /* */
+  pageSize?: number
+
+  /* */
+  orderBy?: string
+}
+
 // 响应接口
 export interface PageInfo<T> {
   /* */
