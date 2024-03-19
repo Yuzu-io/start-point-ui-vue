@@ -103,3 +103,9 @@ export interface AddRoutesParams {
   /*排序 */
   orderIndex: number
 }
+
+// 修改路由
+export interface EditRoutesParams extends AddRoutesParams {
+  /**路由编号 */
+  id: string
+}

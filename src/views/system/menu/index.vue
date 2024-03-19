@@ -30,14 +30,42 @@
 
     <TableHeader @refresh-click="refresh" @add-click="add"></TableHeader>
 
-    <a-table
-      :columns="columns"
-      :data-source="data"
-      rowKey="id"
-      :row-selection="rowSelection"
-      :pagination="false"
-      bordered
-    />
+    <a-spin :spinning="spinning" :delay="delayTime">
+      <a-table
+        :columns="columns"
+        :data-source="data"
+        rowKey="id"
+        :row-selection="rowSelection"
+        :pagination="false"
+        bordered
+      >
+        <template #bodyCell="{ record, column }">
+          <template v-if="column.key === 'operation'">
+            <a-tooltip placement="top">
+              <template #title>
+                <span>编辑</span>
+              </template>
+              <a-button type="primary" size="small" style="margin: 0 5px" @click="edit(record)">
+                <template #icon>
+                  <mdicon name="pencil" size="18" />
+                </template>
+              </a-button>
+            </a-tooltip>
+
+            <a-tooltip placement="top">
+              <template #title>
+                <span>删除</span>
+              </template>
+              <a-button type="primary" danger size="small" style="margin: 0 5px">
+                <template #icon>
+                  <mdicon name="delete" size="18" />
+                </template>
+              </a-button>
+            </a-tooltip>
+          </template>
+        </template>
+      </a-table>
+    </a-spin>
     <a-pagination
       class="pagination"
       v-model:current="queryParams.pageNum"
@@ -48,6 +76,7 @@
     />
   </div>
   <MenuAdd ref="menuAddRef"></MenuAdd>
+  <MenuEdit ref="menuEditRef"></MenuEdit>
 </template>
 
 <script setup lang="ts">
@@ -57,9 +86,11 @@ import { getRoutesListApi } from '@/api/routes'
 import TableHeader from '@/components/TableHeader/index.vue'
 import type { RoutesInfo } from '@/types/routes'
 import MenuAdd from './add/index.vue'
+import MenuEdit from './edit/index.vue'
 
 const formRef = ref<FormInstance>()
-
+const spinning = ref<boolean>(false)
+const delayTime = 500
 // 表格
 const columns = [
   {
@@ -72,37 +103,48 @@ const columns = [
     title: '路由地址',
     dataIndex: 'fullPath',
     key: 'fullPath',
-    width: '120px'
+    width: '120px',
+    align: 'center'
   },
   {
     title: '图标',
     dataIndex: 'icon',
     key: 'icon',
-    width: '50px'
+    width: '80px',
+    align: 'center'
   },
   {
     title: '类型',
     dataIndex: 'type',
     key: 'type',
-    width: '50px'
+    width: '80px',
+    align: 'center'
   },
   {
     title: '缓存',
     dataIndex: 'keepAlive',
     key: 'keepAlive',
-    width: '50px'
+    width: '80px',
+    align: 'center'
   },
   {
     title: '状态',
     dataIndex: 'status',
     key: 'status',
-    width: '50px'
+    width: '80px',
+    align: 'center'
   },
   {
     title: '修改时间',
     dataIndex: 'updateTime',
     key: 'updateTime',
-    width: '100px'
+    width: '160px',
+    align: 'center'
+  },
+  {
+    title: '操作',
+    key: 'operation',
+    align: 'center'
   }
 ]
 
@@ -135,11 +177,13 @@ onMounted(() => {
   getData()
 })
 const getData = async () => {
+  spinning.value = true
   const result = await getRoutesListApi(queryParams)
   if (result.code === 200) {
     data.value = result.data.list
     total.value = result.data.total
   }
+  spinning.value = false
 }
 
 const refresh = () => {
@@ -149,6 +193,10 @@ const refresh = () => {
 const menuAddRef = ref()
 const add = () => {
   menuAddRef.value.showModal()
+}
+const menuEditRef = ref()
+const edit = (item: RoutesInfo) => {
+  menuEditRef.value.showModal(item)
 }
 </script>
 
