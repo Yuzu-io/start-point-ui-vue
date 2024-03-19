@@ -5,24 +5,20 @@
       name="advanced_search"
       class="search-form"
       layout="inline"
-      :model="searchParams"
-      @finish="onFinish"
+      :model="queryParams"
+      @finish="getData"
     >
       <a-row :gutter="[0, 24]">
-        <a-form-item name="title" label="标题">
-          <a-input v-model:value="searchParams.title" placeholder="请输入标题"></a-input>
+        <a-form-item name="title" label="页面标题">
+          <a-input v-model:value="queryParams.title" placeholder="请输入标题"></a-input>
         </a-form-item>
 
-        <a-form-item name="title" label="标题">
-          <a-input v-model:value="searchParams.title" placeholder="请输入标题"></a-input>
+        <a-form-item name="title" label="路由地址">
+          <a-input v-model:value="queryParams.fullPath" placeholder="请输入标题"></a-input>
         </a-form-item>
 
-        <a-form-item name="title" label="标题">
-          <a-input v-model:value="searchParams.title" placeholder="请输入标题"></a-input>
-        </a-form-item>
-
-        <a-form-item name="title" label="标题">
-          <a-input v-model:value="searchParams.title" placeholder="请输入标题"></a-input>
+        <a-form-item name="title" label="状态">
+          <a-input v-model:value="queryParams.status" placeholder="请输入标题"></a-input>
         </a-form-item>
 
         <a-form-item>
@@ -37,19 +33,21 @@
     <a-table
       :columns="columns"
       :data-source="data"
+      rowKey="id"
       :row-selection="rowSelection"
       :pagination="false"
       bordered
     />
     <a-pagination
       class="pagination"
-      v-model:current="current"
-      v-model:pageSize="pageSize"
+      v-model:current="queryParams.pageNum"
+      v-model:pageSize="queryParams.pageSize"
       show-quick-jumper
       :total="total"
-      @change="onChange"
+      @change="getData"
     />
   </div>
+  <MenuAdd ref="menuAddRef"></MenuAdd>
 </template>
 
 <script setup lang="ts">
@@ -58,39 +56,57 @@ import type { FormInstance } from 'ant-design-vue'
 import { getRoutesListApi } from '@/api/routes'
 import TableHeader from '@/components/TableHeader/index.vue'
 import type { RoutesInfo } from '@/types/routes'
+import MenuAdd from './add/index.vue'
 
 const formRef = ref<FormInstance>()
-const searchParams = reactive({
-  title: ''
-})
-const onFinish = (values: any) => {
-  console.log('Received values of form: ', values)
-  console.log('formState: ', searchParams)
-}
 
 // 表格
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name'
+    title: '页面标题',
+    dataIndex: 'title',
+    key: 'title',
+    width: '120px'
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-    width: '12%'
+    title: '路由地址',
+    dataIndex: 'fullPath',
+    key: 'fullPath',
+    width: '120px'
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    width: '30%',
-    key: 'address'
+    title: '图标',
+    dataIndex: 'icon',
+    key: 'icon',
+    width: '50px'
+  },
+  {
+    title: '类型',
+    dataIndex: 'type',
+    key: 'type',
+    width: '50px'
+  },
+  {
+    title: '缓存',
+    dataIndex: 'keepAlive',
+    key: 'keepAlive',
+    width: '50px'
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    key: 'status',
+    width: '50px'
+  },
+  {
+    title: '修改时间',
+    dataIndex: 'updateTime',
+    key: 'updateTime',
+    width: '100px'
   }
 ]
 
 const data = ref<RoutesInfo[]>([])
-
 const rowSelection = ref({
   checkStrictly: false,
   onChange: (selectedRowKeys: (string | number)[], selectedRows: RoutesInfo[]) => {
@@ -105,27 +121,35 @@ const rowSelection = ref({
 })
 
 // 分页
-const current = ref<number>(1)
-const pageSize = ref<number>(10)
-const total = ref<number>(100)
-
-const onChange = (page: number, pageSize: number) => {
-  console.log('page: ', page)
-  console.log('pageSize: ', pageSize)
-}
+const total = ref<number>(0)
+const queryParams = reactive({
+  pageNum: 1,
+  pageSize: 10,
+  orderBy: '',
+  title: '',
+  fullPath: '',
+  status: ''
+})
 
 onMounted(() => {
   getData()
 })
 const getData = async () => {
-  const result = await getRoutesListApi().catch((e) => console.warn(e))
-  console.log(result)
+  const result = await getRoutesListApi(queryParams)
+  if (result.code === 200) {
+    data.value = result.data.list
+    total.value = result.data.total
+  }
 }
 
 const refresh = () => {
   getData()
 }
-const add = () => {}
+
+const menuAddRef = ref()
+const add = () => {
+  menuAddRef.value.showModal()
+}
 </script>
 
 <style lang="scss" scoped>

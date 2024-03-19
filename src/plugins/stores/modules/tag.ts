@@ -7,6 +7,7 @@ export const useTagStore = defineStore('tagStore', {
       {
         id: 'string',
         title: 'string',
+        routesName: 'string',
         icon: 'string',
         fullPath: 'string',
         componentPath: 'string',
@@ -14,9 +15,8 @@ export const useTagStore = defineStore('tagStore', {
         showStatus: 'string',
         isExternalLink: 'string',
         keepAlive: 'string',
-        redirect: 'string',
         type: 'string',
-        authMark: 'string',
+        status: '0',
         orderIndex: 1,
         createTime: 'string',
         updateTime: 'string'
@@ -24,6 +24,7 @@ export const useTagStore = defineStore('tagStore', {
       {
         id: 'string',
         title: 'string',
+        routesName: 'string',
         icon: 'string',
         fullPath: 'string',
         componentPath: 'string',
@@ -31,9 +32,8 @@ export const useTagStore = defineStore('tagStore', {
         showStatus: 'string',
         isExternalLink: 'string',
         keepAlive: 'string',
-        redirect: 'string',
         type: 'string',
-        authMark: 'string',
+        status: '0',
         orderIndex: 1,
         createTime: 'string',
         updateTime: 'string'
