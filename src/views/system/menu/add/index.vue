@@ -171,6 +171,10 @@ const onSubmit = () => {
   formRef.value
     .validate()
     .then(async () => {
+      // 菜单类型不为目录时，默认关闭缓存
+      if (formState.value.type !== MenuType.Menu) {
+        formState.value.keepAlive = '1'
+      }
       const result = await addRoutesApi(formState.value)
       if (result.code === 200) {
         message.success(result.message)

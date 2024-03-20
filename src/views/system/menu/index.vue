@@ -37,6 +37,7 @@
         rowKey="id"
         :row-selection="rowSelection"
         :pagination="false"
+        :scroll="{ x: 100 }"
         bordered
       >
         <template #bodyCell="{ record, column }">
@@ -75,8 +76,8 @@
       @change="getData"
     />
   </div>
-  <MenuAdd ref="menuAddRef"></MenuAdd>
-  <MenuEdit ref="menuEditRef"></MenuEdit>
+  <MenuAdd ref="menuAddRef" @success="getData"></MenuAdd>
+  <MenuEdit ref="menuEditRef" @success="getData"></MenuEdit>
 </template>
 
 <script setup lang="ts">
@@ -97,14 +98,16 @@ const columns = [
     title: '页面标题',
     dataIndex: 'title',
     key: 'title',
-    width: '120px'
+    width: '180px',
+    ellipsis: true
   },
   {
     title: '路由地址',
     dataIndex: 'fullPath',
     key: 'fullPath',
-    width: '120px',
-    align: 'center'
+    width: '200px',
+    align: 'center',
+    ellipsis: true
   },
   {
     title: '图标',
@@ -144,7 +147,9 @@ const columns = [
   {
     title: '操作',
     key: 'operation',
-    align: 'center'
+    align: 'center',
+    fixed: 'right',
+    width: '160px'
   }
 ]
 
