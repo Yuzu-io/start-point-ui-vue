@@ -1,6 +1,6 @@
-import langConfig from 'ant-design-vue/es/locale/en_US'
+import { enUS } from 'naive-ui'
 
 export default {
   lang: 'English',
-  langConfig
+  langConfig: enUS
 }

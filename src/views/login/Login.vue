@@ -7,57 +7,68 @@
     </div>
     <div class="context">
       <div class="login">
-        <a-card hoverable style="width: 400px">
+        <n-card hoverable style="width: 400px">
           <div class="title title-top">登录到</div>
           <div class="title">Start Point</div>
-          <a-form ref="formRef" :model="formData" :rules="rules" :label-width="0">
-            <a-form-item name="account">
-              <a-input v-model:value="formData.account" size="large" placeholder="请输入账户名">
-                <template #prefix>
-                  <mdicon name="monitor" size="16"></mdicon>
-                </template>
-              </a-input>
-            </a-form-item>
 
-            <a-form-item name="password">
-              <a-input
+          <n-form
+            ref="formRef"
+            :model="formData"
+            :rules="rules"
+            :show-label="false"
+            @keyup.enter="onSubmit"
+          >
+            <n-form-item path="account">
+              <n-input v-model:value="formData.account" size="large" placeholder="请输入账户名">
+                <template #prefix>
+                  <n-icon size="16">
+                    <MonitorRound />
+                  </n-icon>
+                </template>
+              </n-input>
+            </n-form-item>
+
+            <n-form-item path="password">
+              <n-input
                 v-model:value="formData.password"
                 type="password"
                 size="large"
                 placeholder="请输入密码"
               >
                 <template #prefix>
-                  <mdicon name="lock-outline" size="16"></mdicon>
+                  <n-icon size="16">
+                    <LockOutlined />
+                  </n-icon>
                 </template>
-              </a-input>
-            </a-form-item>
+              </n-input>
+            </n-form-item>
 
-            <a-form-item name="captcha">
-              <a-input
+            <n-form-item path="captcha">
+              <n-input
                 v-model:value="formData.captcha"
                 size="large"
-                placeholder="验证码"
+                placeholder="请输入密码"
                 style="width: 205px"
               >
                 <template #prefix>
-                  <mdicon name="key-outline" size="16"></mdicon>
+                  <n-icon size="16">
+                    <KeyOutlined />
+                  </n-icon>
                 </template>
-              </a-input>
+              </n-input>
               <!-- 验证码 -->
               <img class="img-code" :src="imgCode" @click="getValidateCode" alt="加载失败。" />
-            </a-form-item>
+            </n-form-item>
 
             <div class="check-container">
-              <a-checkbox v-model:checked="rbPassword">记住密码</a-checkbox>
+              <n-checkbox v-model:checked="rbPassword"> 记住密码 </n-checkbox>
             </div>
 
-            <a-form-item>
-              <a-button type="primary" size="large" block html-type="submit" @click="onSubmit"
-                >登录</a-button
-              >
-            </a-form-item>
-          </a-form>
-        </a-card>
+            <n-form-item>
+              <n-button type="primary" size="large" block @click="onSubmit"> 登录 </n-button>
+            </n-form-item>
+          </n-form>
+        </n-card>
       </div>
     </div>
   </div>
@@ -66,16 +77,15 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { Rule } from 'ant-design-vue/es/form'
-import type { ValidateErrorEntity } from 'ant-design-vue/es/form/interface'
-import { message } from 'ant-design-vue'
+import { type FormInst, type FormRules, useMessage } from 'naive-ui'
 import type { LoginParams } from '@/types/auth'
 import { getValidateCodeApi } from '@/api/auth'
 import { usePermissionStore, useUserStore } from '@/plugins/stores'
 import { md5 } from 'js-md5'
-import { MESSAGE_KEY } from '@/constant'
+import { MonitorRound, LockOutlined, KeyOutlined } from '@vicons/material'
 
-const formRef = ref()
+const message = useMessage()
+const formRef = ref<FormInst | null>(null)
 const formData = reactive<LoginParams>({
   account: 'yuzu',
   password: '123',
@@ -85,7 +95,7 @@ const formData = reactive<LoginParams>({
 const imgCode = ref<string>('')
 const rbPassword = ref<boolean>(false)
 
-const rules: Record<string, Rule[]> = {
+const rules: FormRules = {
   account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
   captcha: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
@@ -103,9 +113,8 @@ const permissionStore = usePermissionStore()
 const router = useRouter()
 const route = useRoute()
 const onSubmit = () => {
-  formRef.value
-    .validate()
-    .then(async () => {
+  formRef.value?.validate(async (error) => {
+    if (!error) {
       let params = {
         ...formData,
         password: md5(formData.password).toLocaleUpperCase()
@@ -113,10 +122,7 @@ const onSubmit = () => {
       await userStore.login(params)
       await userStore.getUserInfo()
       await permissionStore.getRoutes()
-      message.success({
-        content: '登录成功',
-        key: MESSAGE_KEY
-      })
+      message.success('登录成功')
       const redirect = route.query.redirect as string
       if (redirect) {
         const redirectUrl = decodeURIComponent(redirect)
@@ -124,15 +130,12 @@ const onSubmit = () => {
       } else {
         router.push('/layout')
       }
-    })
-    .catch((error: ValidateErrorEntity) => {
+    } else {
       if (error) {
-        message.warning({
-          content: error.errorFields[0].errors[0],
-          key: MESSAGE_KEY
-        })
+        message.warning(error[0][0].message as string)
       }
-    })
+    }
+  })
 }
 
 onMounted(() => {
@@ -224,17 +227,13 @@ onMounted(() => {
         margin: 0;
       }
     }
-    .ant-form {
+    .n-form {
       margin: 25px 0 20px;
-      .mdi {
+
+      .n-icon {
         color: rgba(0, 0, 0, 0.4);
       }
 
-      .ant-form-item {
-        :deep(.ant-form-item-control-input-content) {
-          display: flex;
-        }
-      }
       // 图片验证码
       .img-code {
         height: 40px;
@@ -242,7 +241,7 @@ onMounted(() => {
         cursor: pointer;
       }
 
-      .ant-btn {
+      .n-button {
         margin-top: 25px;
       }
     }

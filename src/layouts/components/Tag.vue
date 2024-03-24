@@ -1,5 +1,5 @@
 <template>
-  <div class="tag" ref="tagRef" @wheel="wheelTag">
+  <div class="tag" ref="tagRef" @wheel.passive="wheelTag">
     <div class="tag-list">
       <div
         class="tag-list__item"
@@ -14,7 +14,9 @@
           {{ item.title }}
         </span>
         <div class="close" v-if="tagStore.tagList.length > 1" @click.stop @click="closeTag(index)">
-          <mdicon class="close-icon" name="close" size="14" />
+          <n-icon class="close-icon" size="14">
+            <CloseFilled />
+          </n-icon>
         </div>
       </div>
       <div class="tag-active-box" :style="{ width: tagWidth, left: tagLeftPosition }"></div>
@@ -26,56 +28,68 @@
     v-show="showTagMenu"
     :style="{ left: tagMenuPosition.x, top: tagMenuPosition.y }"
   >
-    <a-space>
-      <a-space-compact direction="vertical">
-        <a-button
-          type="text"
-          @click="tagMenuOperation(TagMenuType.Refresh)"
-          :disabled="!isCurrentTag"
-        >
-          <template #icon>
-            <mdicon class="btn-icon" name="reload" size="18" />
-          </template>
-          重新加载
-        </a-button>
-        <a-button type="text" @click="tagMenuOperation(TagMenuType.Close)">
-          <template #icon>
-            <mdicon class="btn-icon" name="close" size="18" />
-          </template>
-          关闭标签
-        </a-button>
-        <a-button
-          type="text"
-          @click="tagMenuOperation(TagMenuType.Other)"
-          :disabled="tagStore.tagList.length <= 1"
-        >
-          <template #icon>
-            <mdicon class="btn-icon" name="minus" size="18" />
-          </template>
-          关闭其他标签
-        </a-button>
-        <a-button
-          type="text"
-          @click="tagMenuOperation(TagMenuType.All)"
-          :disabled="tagStore.tagList.length <= 1"
-        >
-          <template #icon>
-            <mdicon class="btn-icon" name="square" size="18" />
-          </template>
-          关闭全部标签
-        </a-button>
-      </a-space-compact>
-    </a-space>
+    <n-space vertical>
+      <n-button
+        quaternary
+        block
+        :disabled="!isCurrentTag"
+        @click="tagMenuOperation(TagMenuType.Refresh)"
+      >
+        <template #icon>
+          <n-icon class="btn-icon" size="18">
+            <RefreshFilled />
+          </n-icon>
+        </template>
+        重新加载
+      </n-button>
+      <n-button quaternary block @click="tagMenuOperation(TagMenuType.Close)">
+        <template #icon>
+          <n-icon class="btn-icon" size="18">
+            <CloseFilled />
+          </n-icon>
+        </template>
+        关闭标签
+      </n-button>
+      <n-button
+        quaternary
+        block
+        :disabled="tagStore.tagList.length <= 1"
+        @click="tagMenuOperation(TagMenuType.Other)"
+      >
+        <template #icon>
+          <n-icon class="btn-icon" size="18">
+            <MinusFilled />
+          </n-icon>
+        </template>
+        关闭其他标签
+      </n-button>
+      <n-button
+        quaternary
+        block
+        :disabled="tagStore.tagList.length <= 1"
+        @click="tagMenuOperation(TagMenuType.All)"
+      >
+        <template #icon>
+          <n-icon class="btn-icon" size="18">
+            <CropSquareFilled />
+          </n-icon>
+        </template>
+        关闭全部标签
+      </n-button>
+    </n-space>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ProvideTag } from '@/types/layouts/tag'
-import { message } from 'ant-design-vue'
 import { ref, onMounted, reactive, inject, watch, nextTick } from 'vue'
 import { useTagStore } from '@/plugins/stores/index'
+import { CloseFilled, RefreshFilled, MinusFilled, CropSquareFilled } from '@vicons/material'
+import { useMessage } from 'naive-ui'
 
 const tagStore = useTagStore()
+
+const message = useMessage()
 
 const tagItemRef = ref<HTMLDivElement[]>([])
 const tagWidth = ref<string>('0px')
@@ -85,7 +99,6 @@ const currentTagIndex = ref<number>(0)
 const tagRef = ref<HTMLDivElement>()
 // 滑动鼠标
 const wheelTag = (event: WheelEvent) => {
-  event.preventDefault()
   tagRef.value!.scrollLeft += event.deltaY
 }
 
@@ -143,6 +156,8 @@ const openTagMenu = (index: number, event: MouseEvent) => {
   showTagMenu.value = true
   const x = event!.clientX
   const y = event!.clientY
+  console.log(x, y)
+
   tagMenuPosition.x = `${x}px`
   tagMenuPosition.y = `${y}px`
 }
@@ -169,9 +184,8 @@ const tagMenuOperation = (type: TagMenuType) => {
 
 const { refresh } = inject<ProvideTag>('provideTag', {
   refresh: () => {
-    message.warning({
-      content: '加载失败!',
-      duration: 1
+    message.warning('加载失败!', {
+      duration: 1000
     })
   }
 })
@@ -237,18 +251,6 @@ enum TagMenuType {
 
   @include scrollbar();
 
-  // &::-webkit-scrollbar {
-  //   height: 5px;
-  // }
-  // &::-webkit-scrollbar-thumb {
-  //   border-radius: 5px;
-  //   background-color: rgba($color: #c8c9cc, $alpha: 0.5);
-
-  //   &:hover {
-  //     background-color: rgba($color: #c8c9cc, $alpha: 1);
-  //   }
-  // }
-
   &-list {
     position: absolute;
     @include flexInit($ais: center);
@@ -265,10 +267,10 @@ enum TagMenuType {
       transition: all 0.3s;
 
       &--active {
-        color: #1677ff;
+        color: #18a058;
       }
       &:hover {
-        color: #1677ff;
+        color: #18a058;
       }
 
       .close {
@@ -281,7 +283,7 @@ enum TagMenuType {
 
         &:hover {
           color: #fff;
-          background-color: #1677ff;
+          background-color: #18a058;
         }
       }
     }
@@ -296,7 +298,6 @@ enum TagMenuType {
     top: 0;
     z-index: 1;
     transition: all 0.3s;
-
     @include divInitialization();
   }
 }
@@ -310,12 +311,8 @@ enum TagMenuType {
   padding: 10px 0;
   @include divInitialization();
 
-  .ant-btn {
+  .n-button {
     border-radius: 0;
-
-    .btn-icon {
-      transform: translateY(-1px);
-    }
   }
 }
 </style>

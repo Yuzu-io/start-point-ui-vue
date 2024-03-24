@@ -5,13 +5,14 @@ import axios, {
   type Canceler,
   type InternalAxiosRequestConfig
 } from 'axios'
-import { message as AMessage } from 'ant-design-vue'
+import { createDiscreteApi } from 'naive-ui'
 
 const pendingMap = new Map<string, Canceler>()
 const loadingInstance: LoadingInstance = {
   target: null,
   count: 0
 }
+const { message: NMessage } = createDiscreteApi(['message'])
 
 /**
  * 根据运行环境获取请求url
@@ -86,7 +87,7 @@ export default function createAxios<T>(
       options.loading && closeLoading(options)
 
       if (options.showCodeMessage && response.data && response.data.code !== 200) {
-        AMessage.error(response.data.message)
+        NMessage.error(response.data.message)
         return Promise.reject(response.data) // code不等于200, 页面具体逻辑就不执行了
       }
       return options.reductDataFormat ? response.data : response
@@ -162,7 +163,7 @@ function httpErrorStatusHandle(error: any) {
   if (error.message.includes('Network'))
     message = window.navigator.onLine ? '服务端异常！' : '您断网了！'
 
-  AMessage.error(message)
+  NMessage.error(message)
 }
 
 /**

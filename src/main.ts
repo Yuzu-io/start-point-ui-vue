@@ -9,8 +9,6 @@ import i18n from './locales/index'
  * 工具
  */
 
-import MDIcon, { config as MDIconConfig } from './plugins/md-icon/index' // @mdi/font mdi-vue/v3 @mdi/js
-
 /**
  * 样式
  */
@@ -24,8 +22,6 @@ import 'nprogress/nprogress.css' // 进度条
 import './permission'
 
 const app = createApp(App)
-
-app.use(MDIcon, { icons: MDIconConfig })
 
 app.use(pinia)
 app.use(i18n)

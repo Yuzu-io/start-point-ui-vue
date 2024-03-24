@@ -1,26 +1,31 @@
 <template>
   <div class="system-operation">
-    <a-dropdown placement="bottomRight" trigger="click">
+    <n-dropdown
+      trigger="click"
+      :options="langList"
+      key-field="value"
+      label-field="content"
+      @select="switchLanguage"
+    >
       <div class="system-operation__item lang">
-        <mdicon name="translate" />
+        <n-icon size="16">
+          <GTranslateFilled />
+        </n-icon>
       </div>
-      <template #overlay>
-        <a-menu>
-          <a-menu-item v-for="(item, index) in langList" :key="index" @click="switchLanguage(item)">
-            {{ item.content }}
-          </a-menu-item>
-        </a-menu>
-      </template>
-    </a-dropdown>
-    <a-popover placement="bottomRight" trigger="click">
-      <template #content>
-        <a-button type="text" @click="logout"> 退出登录 </a-button>
-      </template>
+    </n-dropdown>
+
+    <n-dropdown
+      trigger="click"
+      :options="systemOptions"
+      key-field="value"
+      label-field="content"
+      @select="systemOptionsFun"
+    >
       <div class="system-operation__item user">
-        <a-avatar>U</a-avatar>
+        <n-avatar round>U</n-avatar>
         Admin
       </div>
-    </a-popover>
+    </n-dropdown>
   </div>
 </template>
 
@@ -28,18 +33,39 @@
 import { langList, useLocale } from '@/locales/useLocale'
 import { useLoadingStore, useUserStore } from '@/plugins/stores'
 import type { LangList } from '@/types/lang'
-import { message } from 'ant-design-vue'
+import { useMessage, type DropdownOption } from 'naive-ui'
+import { GTranslateFilled } from '@vicons/material'
 
+const message = useMessage()
 const loadingStore = useLoadingStore()
 const { cutoverLang } = useLocale()
-const switchLanguage = (item: LangList) => {
-  cutoverLang(item.value)
+const switchLanguage = (key: string | number, option: LangList) => {
+  cutoverLang(option.value)
+}
+
+const systemOptions = [
+  {
+    content: '退出登录',
+    value: 'logout'
+  }
+]
+const systemOptionsFun = (key: string | number, option: DropdownOption) => {
+  switch (key) {
+    case SystemOptions.Logout:
+      logout()
+      break
+  }
 }
 
 const userStore = useUserStore()
 const logout = async () => {
   await userStore.logout()
   message.success('已登出')
+}
+</script>
+<script lang="ts">
+enum SystemOptions {
+  Logout = 'logout'
 }
 </script>
 

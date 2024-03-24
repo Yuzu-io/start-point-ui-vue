@@ -1,6 +1,6 @@
-import langConfig from 'ant-design-vue/es/locale/zh_CN'
+import { zhCN } from 'naive-ui'
 
 export default {
   lang: '简体中文',
-  langConfig
+  langConfig: zhCN
 }

@@ -1,70 +1,80 @@
 <template>
   <div class="table-header">
-    <a-tooltip placement="top">
-      <template #title>
-        <span>刷新</span>
+    <n-tooltip placement="top" trigger="hover">
+      <template #trigger>
+        <n-button type="primary" @click="refreshClick">
+          <template #icon>
+            <n-icon size="20">
+              <CachedFilled />
+            </n-icon>
+          </template>
+        </n-button>
       </template>
-      <a-button type="primary" @click="refreshClick">
-        <template #icon>
-          <mdicon name="cached" size="20" />
-        </template>
-      </a-button>
-    </a-tooltip>
+      <span>刷新</span>
+    </n-tooltip>
 
-    <a-tooltip placement="top">
-      <template #title>
-        <span>添加</span>
+    <n-tooltip placement="top" trigger="hover">
+      <template #trigger>
+        <n-button type="primary" style="margin: 0 0 0 8px" @click="addClick">
+          <template #icon>
+            <n-icon size="20">
+              <PlusFilled />
+            </n-icon>
+          </template>
+          <span> 添加 </span>
+        </n-button>
       </template>
-      <a-button type="primary" style="margin: 0 0 0 8px" @click="addClick">
-        <template #icon>
-          <mdicon name="plus" size="20" />
-        </template>
-        <span> 添加 </span>
-      </a-button>
-    </a-tooltip>
+      <span>添加</span>
+    </n-tooltip>
 
-    <a-tooltip placement="top">
-      <template #title>
-        <span>编辑选中行</span>
+    <n-tooltip placement="top" trigger="hover">
+      <template #trigger>
+        <n-button
+          type="info"
+          :disabled="props.isNoSelection"
+          style="margin: 0 0 0 8px"
+          @click="editClick"
+        >
+          <template #icon>
+            <n-icon size="20">
+              <EditFilled />
+            </n-icon>
+          </template>
+          <span> 编辑 </span>
+        </n-button>
       </template>
-      <a-button
-        type="primary"
-        :disabled="props.isNoSelection"
-        style="margin: 0 0 0 8px"
-        @click="editClick"
-      >
-        <template #icon>
-          <mdicon name="pencil" size="20" />
-        </template>
-        <span> 编辑 </span>
-      </a-button>
-    </a-tooltip>
+      <span>编辑选中行</span>
+    </n-tooltip>
 
-    <a-tooltip placement="top">
-      <template #title>
-        <span>删除选中行</span>
+    <n-tooltip placement="top" trigger="hover">
+      <template #trigger>
+        <n-button
+          type="error"
+          danger
+          :disabled="props.isNoSelection"
+          style="margin: 0 0 0 8px"
+          @click="deleteClick"
+        >
+          <template #icon>
+            <n-icon size="20">
+              <DeleteFilled />
+            </n-icon>
+          </template>
+          <span> 删除 </span>
+        </n-button>
       </template>
-      <a-button
-        type="primary"
-        danger
-        :disabled="props.isNoSelection"
-        style="margin: 0 0 0 8px"
-        @click="addClick"
-      >
-        <template #icon>
-          <mdicon name="delete" size="20" />
-        </template>
-        <span> 删除 </span>
-      </a-button>
-    </a-tooltip>
+      <span>删除选中行</span>
+    </n-tooltip>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { CachedFilled, PlusFilled, EditFilled, DeleteFilled } from '@vicons/material'
+
 const props = withDefaults(defineProps<Props>(), {
   isNoSelection: true
 })
-const emit = defineEmits(['refreshClick', 'addClick', 'editClick'])
+const emit = defineEmits(['refreshClick', 'addClick', 'editClick', 'deleteClick'])
 
 const refreshClick = () => {
   emit('refreshClick')
@@ -75,6 +85,9 @@ const addClick = () => {
 
 const editClick = () => {
   emit('editClick')
+}
+const deleteClick = () => {
+  emit('deleteClick')
 }
 </script>
 <script lang="ts">

@@ -1,9 +1,15 @@
 <template>
-  <a-config-provider :locale="getLocale">
-    <a-spin :spinning="loadingStore.loading" :delay="loadingStore.delay" :tip="loadingStore.tip">
-      <RouterView :key="locale" />
-    </a-spin>
-  </a-config-provider>
+  <n-config-provider :locale="getLocale">
+    <n-spin
+      :show="loadingStore.loading"
+      :delay="loadingStore.delay"
+      :description="loadingStore.tip"
+    >
+      <n-message-provider :max="1">
+        <RouterView :key="locale" />
+      </n-message-provider>
+    </n-spin>
+  </n-config-provider>
 </template>
 
 <script lang="ts" setup>

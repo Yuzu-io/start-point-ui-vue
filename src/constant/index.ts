@@ -1,1 +1,1 @@
-export const MESSAGE_KEY = 'start-point'
+export const MESSAGE_MAX = 1

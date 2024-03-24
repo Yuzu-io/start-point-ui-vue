@@ -5,7 +5,7 @@ $div-base-border-radius: 5px;
 @mixin divInitialization($bs: $div-base-box-shadow, $br: $div-base-border-radius) {
   box-shadow: $bs;
   border-radius: $br;
-  overflow: hidden;
+  overflow: hidden !important;
 }
 
 // flex布局

@@ -1,17 +1,25 @@
 <template>
-  <a-layout class="layout">
-    <a-layout-sider class="aside" v-model:collapsed="collapsed" :width="220">
-      <LayoutAside v-model:collapsed="collapsed" />
-    </a-layout-sider>
-    <a-layout>
-      <a-layout-header class="header">
-        <LayoutHeader />
-      </a-layout-header>
-      <a-layout-content class="content">
+  <n-layout has-sider class="layout">
+    <n-layout-sider
+      class="aside"
+      bordered
+      collapse-mode="width"
+      :collapsed-width="64"
+      :width="240"
+      :collapsed="collapsed"
+      show-trigger
+      @collapse="collapsed = true"
+      @expand="collapsed = false"
+    >
+      <LayoutAside :collapsed="collapsed" />
+    </n-layout-sider>
+    <n-layout>
+      <n-layout-header class="header"> <LayoutHeader /> </n-layout-header>
+      <n-layout-content class="content">
         <LayoutContent />
-      </a-layout-content>
-    </a-layout>
-  </a-layout>
+      </n-layout-content>
+    </n-layout>
+  </n-layout>
 </template>
 
 <script setup lang="ts">
@@ -20,15 +28,13 @@ import LayoutHeader from './components/LayoutHeader.vue'
 import LayoutContent from './components/LayoutContent.vue'
 import { provide, ref } from 'vue'
 import type { ProvideTag } from '@/types/layouts/tag'
-import { message } from 'ant-design-vue'
-import { useTagStore } from '@/plugins/stores'
+import { useMessage } from 'naive-ui'
 
 const collapsed = ref<boolean>(false)
-
+const message = useMessage()
 const refresh = () => {
-  message.success({
-    content: '刷新成功!',
-    duration: 1
+  message.success('刷新成功!', {
+    duration: 1000
   })
 }
 
@@ -44,17 +50,23 @@ provide<ProvideTag>('provideTag', {
   .aside,
   .header,
   .content {
-    background: transparent;
-    line-height: 1;
+    background-color: #f5f5f5;
   }
 
   .aside {
     padding: 10px 0 10px 10px;
+    box-sizing: content-box;
+    :deep(.n-layout-sider-scroll-container) {
+      @include divInitialization();
+    }
   }
+
   .header {
     padding: 10px 10px 0;
   }
+
   .content {
+    height: calc(100% - 56px);
     padding: 10px;
     overflow-y: scroll;
     @include scrollbar();

@@ -2,97 +2,138 @@
   <div class="layout-aside">
     <!-- 头部 -->
     <div class="layout-aside__head">
-      <div class="logo" v-show="!state.collapsed">start point</div>
-      <mdicon
-        class="menu-expanded-btn"
-        :name="state.collapsed ? 'menu-open' : 'menu-close'"
-        size="28"
-        @click="menuExpanded"
-      />
+      <div class="logo" v-show="!props.collapsed">start point</div>
+      <div v-show="props.collapsed">
+        <img width="30" src="https://www.naiveui.com/assets/naivelogo-XQ1U1Js8.svg" alt="" />
+      </div>
     </div>
     <!-- 菜单 -->
     <div class="layout-aside__menu">
-      <a-menu
-        v-model:openKeys="state.openKeys"
-        v-model:selectedKeys="state.selectedKeys"
-        :mode="state.mode"
-        :items="items"
-        :theme="state.theme"
-        @click="menuClick"
-      >
-      </a-menu>
+      <ScrollBar>
+        <n-menu
+          v-model:value="currentRoutes"
+          :collapsed="props.collapsed"
+          :collapsed-width="64"
+          :collapsed-icon-size="22"
+          :options="items"
+          key-field="fullPath"
+          label-field="title"
+          children-field="children"
+          @update:value="menuClick"
+        />
+      </ScrollBar>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { h, reactive } from 'vue'
-import type { MenuMode, MenuTheme } from 'ant-design-vue'
-import { type ItemType } from 'ant-design-vue'
-import { useRoute, useRouter, type RouteLocationMatched } from 'vue-router'
-import MDIcon from '@/components/MDIcon/index.vue'
-import type { MenuInfo } from 'ant-design-vue/es/menu/src/interface'
+import { h, reactive, ref, type VNode } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { type MenuOption } from 'naive-ui'
+import type { RoutesInfoRes } from '@/types/routes'
+import NIcons from '@/components/NIcons/index.vue'
+import ScrollBar from '@/components/ScrollBar/index.vue'
 
 const route = useRoute()
+const currentRoutes = ref<string>(route.fullPath)
 
-const selectedKeys: string = route.path
-const openKeys: string[] = getParentPaths(route.matched)
-
-function getParentPaths(data: RouteLocationMatched[]) {
-  return data.reduce((pre: string[], cur: RouteLocationMatched) => {
-    const parentPath = cur.meta.parentPath as string
-    if (parentPath) {
-      return pre.concat(parentPath)
-    }
-    return pre
-  }, [])
-}
-
-const emit = defineEmits(['update:collapsed'])
 const props = withDefaults(defineProps<Props>(), {
   collapsed: true
 })
-
-const state = reactive({
-  mode: 'inline' as MenuMode,
-  theme: 'light' as MenuTheme,
-  selectedKeys: [selectedKeys],
-  openKeys: openKeys,
-  collapsed: props.collapsed
-})
-
-const menuExpanded = () => {
-  state.collapsed = !state.collapsed
-  emit('update:collapsed', state.collapsed)
-}
-
-function getItem(
-  label: string,
-  key: string,
-  icon?: any,
-  children?: ItemType[],
-  type?: 'group'
-): ItemType {
+// 处理菜单数据
+const menuList: RoutesInfoRes[] = [
+  {
+    id: '111',
+    title: '仪表盘',
+    routesName: 'string',
+    icon: 'InsertChartFilled',
+    fullPath: '/dashboard',
+    componentPath: 'string',
+    parentId: 'string',
+    showStatus: 'string',
+    isExternalLink: 'string',
+    keepAlive: 'string',
+    type: 'string',
+    status: '0',
+    orderIndex: 1,
+    createTime: 'string',
+    updateTime: 'string'
+  },
+  {
+    id: '222',
+    title: '系统管理',
+    routesName: 'string',
+    icon: 'SettingsFilled',
+    fullPath: '/system',
+    componentPath: 'string',
+    parentId: 'string',
+    showStatus: 'string',
+    isExternalLink: 'string',
+    keepAlive: 'string',
+    type: 'string',
+    status: '0',
+    orderIndex: 1,
+    createTime: 'string',
+    updateTime: 'string',
+    children: [
+      {
+        id: '333',
+        title: '菜单管理',
+        routesName: 'string',
+        icon: 'MenuFilled',
+        fullPath: '/menu',
+        componentPath: 'string',
+        parentId: 'string',
+        showStatus: 'string',
+        isExternalLink: 'string',
+        keepAlive: 'string',
+        type: 'string',
+        status: '0',
+        orderIndex: 1,
+        createTime: 'string',
+        updateTime: 'string'
+      }
+    ]
+  }
+]
+const getItem = (
+  title: string,
+  fullPath: string,
+  icon?: () => VNode,
+  children?: MenuOption[] | null,
+  type?: string
+): MenuOption => {
   return {
-    key,
+    fullPath,
     icon,
     children,
-    label,
+    title,
     type
-  } as ItemType
+  } as MenuOption
 }
-
-const items: ItemType[] = reactive([
-  getItem('仪表盘', '/dashboard', h(MDIcon, { name: 'chart-donut', size: 18 })),
-  getItem('系统管理', '/system', h(MDIcon, { name: 'cog-outline', size: 18 }), [
-    getItem('菜单管理', '/menu')
-  ])
-])
+const renderIcon = (icon: string) => {
+  return () => h(NIcons, { component: icon, size: '18' })
+}
+const generateMenu = (item: RoutesInfoRes[]) => {
+  const data: MenuOption[] = []
+  item.forEach((item) => {
+    const { icon, fullPath, children, title } = item
+    const menuItem = getItem(
+      title,
+      fullPath,
+      icon ? renderIcon(icon) : undefined,
+      children ? generateMenu(children) : undefined
+    )
+    data.push(menuItem)
+  })
+  return data
+}
+const items = reactive<MenuOption[]>(generateMenu(menuList))
 
 const router = useRouter()
-const menuClick = (info: MenuInfo) => {
+const menuClick = (key: string, item: MenuOption) => {
   router.push({
-    path: info.key as string
+    path: key
   })
 }
 </script>
@@ -107,14 +148,13 @@ $head-height: 54px;
 .layout-aside {
   height: 100%;
   background-color: #fff;
-  @include divInitialization();
 
   &__head {
     height: $head-height;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #1677ff;
+    color: #18a058;
     background-color: #fcfcfc;
 
     .logo {
@@ -123,22 +163,10 @@ $head-height: 54px;
       font-size: 30px;
       white-space: nowrap;
     }
-
-    .menu-expanded-btn {
-      margin: 5px 10px 0;
-      cursor: pointer;
-    }
   }
 
   &__menu {
     height: calc(100% - $head-height);
-    overflow-y: scroll;
-    @include scrollbar();
-
-    .ant-menu {
-      padding-left: 5px;
-      border-inline-end: none;
-    }
   }
 }
 </style>

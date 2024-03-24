@@ -13,6 +13,8 @@ const Api = {
   list: prefix + '/list',
   add: prefix + '/add',
   edit: prefix + '/edit',
+  delete: prefix + '/delete',
+  batchDelete: prefix + '/batchDelete',
   parentRoutesList: prefix + '/parentRoutesList'
 }
 
@@ -32,7 +34,7 @@ export function getParentRoutesListApi() {
 }
 
 export function addRoutesApi(data: AddRoutesParams) {
-  return createAxios<any>({
+  return createAxios<void>({
     url: Api.add,
     method: 'post',
     data
@@ -40,9 +42,27 @@ export function addRoutesApi(data: AddRoutesParams) {
 }
 
 export function editRoutesApi(data: EditRoutesParams) {
-  return createAxios<any>({
+  return createAxios<void>({
     url: Api.edit,
     method: 'put',
+    data
+  })
+}
+
+export function deleteRoutesApi(id: string) {
+  return createAxios<void>({
+    url: Api.delete,
+    method: 'delete',
+    params: {
+      id
+    }
+  })
+}
+
+export function batchDeleteRoutesApi(data: string[]) {
+  return createAxios<void>({
+    url: Api.batchDelete,
+    method: 'delete',
     data
   })
 }
