@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, h } from 'vue'
 import type { RoutesInfo } from '@/types/routes'
-import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm } from 'naive-ui'
+import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
 import { getRoutesListApi, deleteRoutesApi, batchDeleteRoutesApi } from '@/api/routes'
 import TableHeader from '@/components/TableHeader/index.vue'
@@ -126,7 +126,14 @@ const columns = [
     title: '状态',
     key: 'status',
     width: 80,
-    align: 'center'
+    align: 'center',
+    render: (row: IRowData) => {
+      return h(
+        NTag,
+        { type: row.status == '0' ? 'success' : 'error' },
+        { default: () => (row.status == '0' ? '启用' : '停用') }
+      )
+    }
   },
   {
     title: '修改时间',
@@ -142,12 +149,10 @@ const columns = [
     width: 160,
     render(row: IRowData) {
       return h('div', null, [
+        // 编辑
         h(
           NTooltip,
-          {
-            placement: 'top',
-            trigger: 'hover'
-          },
+          { placement: 'top', trigger: 'hover' },
           {
             trigger: () =>
               h(
@@ -165,28 +170,20 @@ const columns = [
             default: () => '编辑'
           }
         ),
+        // 删除
         h(
           NTooltip,
-          {
-            placement: 'top',
-            trigger: 'hover'
-          },
+          { placement: 'top', trigger: 'hover' },
           {
             trigger: () =>
               h(
                 NPopconfirm,
-                {
-                  onPositiveClick: () => deleteRow(row)
-                },
+                { onPositiveClick: () => deleteRow(row) },
                 {
                   trigger: () =>
                     h(
                       NButton,
-                      {
-                        type: 'error',
-                        size: 'tiny',
-                        style: 'margin:0 8px;vertical-align:sub;'
-                      },
+                      { type: 'error', size: 'tiny', style: 'margin:0 8px;vertical-align:sub;' },
                       {
                         icon: () => h(NIcons, { component: 'DeleteFilled', size: 18 })
                       }
