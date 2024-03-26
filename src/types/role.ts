@@ -1,3 +1,5 @@
+import type { PageParams } from './page'
+
 export interface RoleInfo {
   id: string
 
@@ -21,4 +23,17 @@ export interface RoleInfo {
 
   /*权限菜单列表 */
   routesIdList: string[]
+}
+
+export interface RoleInfoRes extends RoleInfo {}
+
+export interface GetRoleParams extends PageParams {
+  /*角色名称  */
+  roleName?: string
+
+  /*权限字符 */
+  roleKey?: string
+
+  /*状态 */
+  status?: string
 }

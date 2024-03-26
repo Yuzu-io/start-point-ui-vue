@@ -33,6 +33,7 @@ import { type MenuOption } from 'naive-ui'
 import type { RoutesInfoRes } from '@/types/routes'
 import NIcons from '@/components/NIcons/index.vue'
 import ScrollBar from '@/components/ScrollBar/index.vue'
+import { usePermissionStore } from '@/plugins/stores'
 
 const route = useRoute()
 const currentRoutes = ref<string>(route.fullPath)
@@ -41,61 +42,8 @@ const props = withDefaults(defineProps<Props>(), {
   collapsed: true
 })
 // 处理菜单数据
-const menuList: RoutesInfoRes[] = [
-  {
-    id: '111',
-    title: '仪表盘',
-    routesName: 'string',
-    icon: 'InsertChartFilled',
-    fullPath: '/dashboard',
-    componentPath: 'string',
-    parentId: 'string',
-    showStatus: 'string',
-    isExternalLink: 'string',
-    keepAlive: 'string',
-    type: 'string',
-    status: '0',
-    orderIndex: 1,
-    createTime: 'string',
-    updateTime: 'string'
-  },
-  {
-    id: '222',
-    title: '系统管理',
-    routesName: 'string',
-    icon: 'SettingsFilled',
-    fullPath: '/system',
-    componentPath: 'string',
-    parentId: 'string',
-    showStatus: 'string',
-    isExternalLink: 'string',
-    keepAlive: 'string',
-    type: 'string',
-    status: '0',
-    orderIndex: 1,
-    createTime: 'string',
-    updateTime: 'string',
-    children: [
-      {
-        id: '333',
-        title: '菜单管理',
-        routesName: 'string',
-        icon: 'MenuFilled',
-        fullPath: '/menu',
-        componentPath: 'string',
-        parentId: 'string',
-        showStatus: 'string',
-        isExternalLink: 'string',
-        keepAlive: 'string',
-        type: 'string',
-        status: '0',
-        orderIndex: 1,
-        createTime: 'string',
-        updateTime: 'string'
-      }
-    ]
-  }
-]
+const permissionStore = usePermissionStore()
+const menuList = permissionStore.menuRouters
 const getItem = (
   title: string,
   fullPath: string,

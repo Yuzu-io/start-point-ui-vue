@@ -39,6 +39,16 @@ const routes: RouteRecordRaw[] = [
               keepAlive: true,
               parentPath: '/system'
             }
+          },
+          {
+            path: '/role',
+            name: 'role',
+            component: () => import('@/views/system/role/index.vue'),
+            meta: {
+              title: '角色管理',
+              keepAlive: true,
+              parentPath: '/system'
+            }
           }
         ]
       }

@@ -8,12 +8,12 @@
       class="search-form"
     >
       <n-flex>
-        <n-form-item path="title" label="页面标题">
-          <n-input v-model:value="queryParams.title" placeholder="请输入标题"></n-input>
+        <n-form-item path="roleName" label="角色名称">
+          <n-input v-model:value="queryParams.roleName" placeholder="请输入标题"></n-input>
         </n-form-item>
 
-        <n-form-item path="fullPath" label="路由地址">
-          <n-input v-model:value="queryParams.fullPath" placeholder="请输入标题"></n-input>
+        <n-form-item path="roleKey" label="	权限字符">
+          <n-input v-model:value="queryParams.roleKey" placeholder="请输入标题"></n-input>
         </n-form-item>
 
         <n-form-item path="status" label="状态">
@@ -62,8 +62,8 @@
       <template #prefix="{ itemCount }"> 共 {{ itemCount }} 条 </template>
     </n-pagination>
   </div>
-  <MenuAdd ref="menuAddRef" @success="getData"></MenuAdd>
-  <MenuEdit ref="menuEditRef" @success="getData"></MenuEdit>
+  <!-- <MenuAdd ref="menuAddRef" @success="getData"></MenuAdd>
+  <MenuEdit ref="menuEditRef" @success="getData"></MenuEdit> -->
 </template>
 
 <script setup lang="ts">
@@ -72,10 +72,12 @@ import type { RoutesInfo } from '@/types/routes'
 import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
 import { getRoutesListApi, deleteRoutesApi, batchDeleteRoutesApi } from '@/api/routes'
+import { getRoleListApi } from '@/api/role'
 import TableHeader from '@/components/TableHeader/index.vue'
-import MenuAdd from './add/index.vue'
-import MenuEdit from './edit/index.vue'
+// import MenuAdd from './add/index.vue'
+// import MenuEdit from './edit/index.vue'
 import NIcons from '@/components/NIcons/index.vue'
+import type { RoleInfo } from '@/types/role'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -215,15 +217,15 @@ const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
   orderBy: '',
-  title: '',
-  fullPath: '',
+  roleName: '',
+  roleKey: '',
   status: ''
 })
 
 onMounted(() => {
   getData()
 })
-const data = ref<RoutesInfo[]>([])
+const data = ref<RoleInfo[]>([])
 const checkData = ref<string[]>([])
 const handleCheck = (rowKeys: string[]) => {
   console.log(rowKeys)
@@ -231,7 +233,7 @@ const handleCheck = (rowKeys: string[]) => {
 }
 const getData = async () => {
   show.value = true
-  const result = await getRoutesListApi(queryParams)
+  const result = await getRoleListApi(queryParams)
   if (result.code === 200) {
     data.value = result.data.list
     total.value = result.data.total
@@ -239,8 +241,8 @@ const getData = async () => {
   show.value = false
 }
 const resetForm = () => {
-  queryParams.title = ''
-  queryParams.fullPath = ''
+  queryParams.roleName = ''
+  queryParams.roleKey = ''
   queryParams.status = ''
 }
 
@@ -250,11 +252,11 @@ const refresh = () => {
 
 const menuAddRef = ref()
 const addRow = () => {
-  menuAddRef.value.showModal()
+  // menuAddRef.value.showModal()
 }
 const menuEditRef = ref()
 const editRow = (item: IRowData) => {
-  menuEditRef.value.showModal(item)
+  // menuEditRef.value.showModal(item)
 }
 
 const message = useMessage()
