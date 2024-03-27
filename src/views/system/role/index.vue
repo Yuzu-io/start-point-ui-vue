@@ -68,10 +68,9 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, h } from 'vue'
-import type { RoutesInfo } from '@/types/routes'
 import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
-import { getRoutesListApi, deleteRoutesApi, batchDeleteRoutesApi } from '@/api/routes'
+import { deleteRoutesApi, batchDeleteRoutesApi } from '@/api/routes'
 import { getRoleListApi } from '@/api/role'
 import TableHeader from '@/components/TableHeader/index.vue'
 // import MenuAdd from './add/index.vue'
@@ -90,41 +89,17 @@ const columns = [
     width: 50
   },
   {
-    title: '页面标题',
-    key: 'title',
+    title: '角色名称',
+    key: 'roleName',
     width: 180,
     ellipsis: true
   },
   {
-    title: '路由地址',
-    key: 'fullPath',
+    title: '权限字符',
+    key: 'roleKey',
     width: 200,
     align: 'center',
     ellipsis: true
-  },
-  {
-    title: '图标',
-    key: 'icon',
-    width: 80,
-    align: 'center',
-    render: (row: IRowData) => {
-      if (row.icon) {
-        return h(NIcons, { component: row.icon, size: 18, style: 'vertical-align:sub;' })
-      }
-      return row.icon
-    }
-  },
-  {
-    title: '类型',
-    key: 'type',
-    width: 80,
-    align: 'center'
-  },
-  {
-    title: '缓存',
-    key: 'keepAlive',
-    width: 80,
-    align: 'center'
   },
   {
     title: '状态',
@@ -138,6 +113,12 @@ const columns = [
         { default: () => (row.status == '0' ? '启用' : '停用') }
       )
     }
+  },
+  {
+    title: '排序',
+    key: 'orderIndex',
+    width: 180,
+    align: 'center'
   },
   {
     title: '修改时间',
@@ -276,7 +257,7 @@ const batchDeleteRow = async () => {
 }
 </script>
 <script lang="ts">
-interface IRowData extends RoutesInfo, RowData {}
+interface IRowData extends RoleInfo, RowData {}
 </script>
 
 <style lang="scss" scoped>
