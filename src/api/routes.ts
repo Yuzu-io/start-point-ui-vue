@@ -15,7 +15,8 @@ const Api = {
   edit: prefix + '/edit',
   delete: prefix + '/delete',
   batchDelete: prefix + '/batchDelete',
-  parentRoutesList: prefix + '/parentRoutesList'
+  parentRoutesList: prefix + '/parentRoutesList',
+  findById: prefix + '/findById'
 }
 
 export function getRoutesListApi(params: GetRoutesParams) {
@@ -64,5 +65,15 @@ export function batchDeleteRoutesApi(data: string[]) {
     url: Api.batchDelete,
     method: 'delete',
     data
+  })
+}
+
+export function findByIdApi(id: string) {
+  return createAxios<RoutesInfo>({
+    url: Api.findById,
+    method: 'get',
+    params: {
+      id
+    }
   })
 }

@@ -127,7 +127,7 @@
 <script setup lang="ts">
 import type { EditRoutesParams, RoutesInfoRes } from '@/types/routes'
 import { ref } from 'vue'
-import { getParentRoutesListApi, editRoutesApi } from '@/api/routes'
+import { getParentRoutesListApi, findByIdApi, editRoutesApi } from '@/api/routes'
 import { recursiveTree } from '@/utils/recursiveTree'
 import { useMessage, type FormRules } from 'naive-ui'
 import { SearchFilled } from '@vicons/material'
@@ -164,6 +164,10 @@ const getData = async () => {
   if (result.code === 200) {
     treeData.value = recursiveTree<RoutesInfoRes>(result.data, '')
   }
+  const routesInfo = await findByIdApi(formState.value.id)
+  if (routesInfo.code === 200) {
+    formState.value = routesInfo.data
+  }
 }
 
 const iconUrl = 'https://xicons.org/#/'
@@ -195,9 +199,9 @@ const onSubmit = () => {
     })
 }
 
-const showModal = (data: EditRoutesParams) => {
+const showModal = (id: string) => {
   show.value = true
-  formState.value = data
+  formState.value.id = id
   getData()
 }
 

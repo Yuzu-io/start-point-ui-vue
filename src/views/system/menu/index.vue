@@ -31,7 +31,7 @@
       :isNoSelection="!checkData.length"
       @refresh-click="refresh"
       @add-click="addRow"
-      @edit-click="editRow"
+      @edit-click="batchEditRow"
       @delete-click="batchDeleteRow"
     ></TableHeader>
 
@@ -254,8 +254,10 @@ const addRow = () => {
 }
 const menuEditRef = ref()
 const editRow = (item: IRowData) => {
-  menuEditRef.value.showModal(item)
+  menuEditRef.value.showModal(item.id)
 }
+
+const batchEditRow = () => {}
 
 const message = useMessage()
 const deleteRow = async (item: IRowData) => {
