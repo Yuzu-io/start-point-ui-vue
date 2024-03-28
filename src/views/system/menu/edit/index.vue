@@ -1,5 +1,5 @@
 <template>
-  <n-modal v-model:show="show" title="添加菜单" preset="card" style="width: 500px" @ok="onSubmit">
+  <n-modal v-model:show="show" title="编辑菜单" preset="card" style="width: 500px" @ok="onSubmit">
     <n-form
       ref="formRef"
       :model="formState"
@@ -117,7 +117,7 @@
       <div>
         <n-flex justify="end">
           <n-button @click="show = false">取消</n-button>
-          <n-button type="primary" @click="onSubmit"> 确定 </n-button>
+          <n-button type="primary" @click="onSubmit"> 保存 </n-button>
         </n-flex>
       </div>
     </n-form>
@@ -199,8 +199,26 @@ const onSubmit = () => {
     })
 }
 
+const formInit = () => {
+  formState.value = {
+    id: '',
+    title: '',
+    routesName: '',
+    icon: '',
+    fullPath: '',
+    componentPath: '',
+    parentId: '',
+    showStatus: '0',
+    isExternalLink: '1',
+    keepAlive: '0',
+    status: '0',
+    type: '0',
+    orderIndex: 1
+  }
+}
 const showModal = (id: string) => {
   show.value = true
+  formInit()
   formState.value.id = id
   getData()
 }

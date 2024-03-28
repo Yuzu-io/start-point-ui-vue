@@ -1,5 +1,5 @@
 <template>
-  <n-modal v-model:show="show" title="添加菜单" preset="card" style="width: 500px" @ok="onSubmit">
+  <n-modal v-model:show="show" title="编辑菜单" preset="card" style="width: 500px" @ok="onSubmit">
     <n-form
       ref="formRef"
       :model="formState"
@@ -117,7 +117,7 @@
       <div>
         <n-flex justify="end">
           <n-button @click="show = false">取消</n-button>
-          <n-button type="primary" @click="onSubmit"> 确定 </n-button>
+          <n-button type="primary" @click="onSubmit"> {{ submitText }} </n-button>
         </n-flex>
       </div>
     </n-form>
@@ -127,13 +127,25 @@
 <script setup lang="ts">
 import type { EditRoutesParams, RoutesInfoRes } from '@/types/routes'
 import { ref } from 'vue'
-import { getParentRoutesListApi, editRoutesApi } from '@/api/routes'
+import { getParentRoutesListApi, findByIdApi, editRoutesApi } from '@/api/routes'
 import { recursiveTree } from '@/utils/recursiveTree'
 import { useMessage, type FormRules } from 'naive-ui'
 import { SearchFilled } from '@vicons/material'
+import { watch } from 'vue'
 
 const show = ref(false)
+const isMultiple = ref(false)
 const currentIndex = ref(0)
+const idsList = ref<string[]>([])
+const submitText = ref('保存')
+
+watch(
+  () => currentIndex.value,
+  () => {
+    isMultiple.value = idsList.value.length - 1 === currentIndex.value
+    submitText.value = isMultiple.value ? '保存' : '保存并编辑下一页'
+  }
+)
 
 const formRef = ref()
 const formState = ref<EditRoutesParams>({
@@ -165,6 +177,10 @@ const getData = async () => {
   if (result.code === 200) {
     treeData.value = recursiveTree<RoutesInfoRes>(result.data, '')
   }
+  const routesInfo = await findByIdApi(idsList.value[currentIndex.value])
+  if (routesInfo.code === 200) {
+    formState.value = routesInfo.data
+  }
 }
 
 const iconUrl = 'https://xicons.org/#/'
@@ -186,7 +202,12 @@ const onSubmit = () => {
       if (result.code === 200) {
         message.success(result.message)
         emit('success')
-        show.value = false
+        if (isMultiple.value) {
+          show.value = false
+        } else {
+          currentIndex.value++
+          getData()
+        }
       } else {
         message.success(result.message)
       }
@@ -196,9 +217,30 @@ const onSubmit = () => {
     })
 }
 
-const showModal = (data: EditRoutesParams) => {
+const formInit = () => {
+  formState.value = {
+    id: '',
+    title: '',
+    routesName: '',
+    icon: '',
+    fullPath: '',
+    componentPath: '',
+    parentId: '',
+    showStatus: '0',
+    isExternalLink: '1',
+    keepAlive: '0',
+    status: '0',
+    type: '0',
+    orderIndex: 1
+  }
+}
+const showModal = (ids: string[]) => {
   show.value = true
-  formState.value = data
+  formInit()
+  currentIndex.value = 0
+  idsList.value = ids
+  isMultiple.value = idsList.value.length - 1 === currentIndex.value
+  submitText.value = isMultiple.value ? '保存' : '保存并编辑下一页'
   getData()
 }
 

@@ -64,6 +64,7 @@
   </div>
   <MenuAdd ref="menuAddRef" @success="getData"></MenuAdd>
   <MenuEdit ref="menuEditRef" @success="getData"></MenuEdit>
+  <MenuBatchEdit ref="menuBatchEditRef" @success="getData"></MenuBatchEdit>
 </template>
 
 <script setup lang="ts">
@@ -75,6 +76,7 @@ import { getRoutesListApi, deleteRoutesApi, batchDeleteRoutesApi } from '@/api/r
 import TableHeader from '@/components/TableHeader/index.vue'
 import MenuAdd from './add/index.vue'
 import MenuEdit from './edit/index.vue'
+import MenuBatchEdit from './batchEdit/index.vue'
 import NIcons from '@/components/NIcons/index.vue'
 
 const formRef = ref<FormInst>()
@@ -226,7 +228,6 @@ onMounted(() => {
 const data = ref<RoutesInfo[]>([])
 const checkData = ref<string[]>([])
 const handleCheck = (rowKeys: string[]) => {
-  console.log(rowKeys)
   checkData.value = rowKeys
 }
 const getData = async () => {
@@ -252,12 +253,16 @@ const menuAddRef = ref()
 const addRow = () => {
   menuAddRef.value.showModal()
 }
+
 const menuEditRef = ref()
 const editRow = (item: IRowData) => {
   menuEditRef.value.showModal(item.id)
 }
 
-const batchEditRow = () => {}
+const menuBatchEditRef = ref()
+const batchEditRow = () => {
+  menuBatchEditRef.value.showModal(checkData.value)
+}
 
 const message = useMessage()
 const deleteRow = async (item: IRowData) => {

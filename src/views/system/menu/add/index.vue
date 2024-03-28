@@ -117,7 +117,7 @@
       <div>
         <n-flex justify="end">
           <n-button @click="show = false">取消</n-button>
-          <n-button type="primary" @click="onSubmit"> 确定 </n-button>
+          <n-button type="primary" @click="onSubmit"> 保存 </n-button>
         </n-flex>
       </div>
     </n-form>
@@ -194,8 +194,7 @@ const onSubmit = () => {
     })
 }
 
-const showModal = () => {
-  show.value = true
+const formInit = () => {
   formState.value = {
     title: '',
     routesName: '',
@@ -210,6 +209,10 @@ const showModal = () => {
     type: '0',
     orderIndex: 1
   }
+}
+const showModal = () => {
+  show.value = true
+  formInit()
   getData()
 }
 
