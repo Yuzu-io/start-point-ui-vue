@@ -167,7 +167,7 @@ const validateParentIdSame = (rule: FormItemRule, value: string): boolean => {
   return value !== formState.value.id
 }
 const rules: FormRules = {
-  title: [{ required: true, message: '页面标题不能为空', trigger: 'change' }],
+  title: [{ required: true, message: '页面标题不能为空', trigger: 'blur' }],
   fullPath: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }],
   parentId: [
     { validator: validateParentIdSame, message: '上级菜单不能是菜单本身', trigger: 'change' }

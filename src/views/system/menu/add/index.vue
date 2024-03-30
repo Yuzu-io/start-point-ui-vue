@@ -150,7 +150,7 @@ const formState = ref<AddRoutesParams>({
   orderIndex: 1
 })
 const rules: FormRules = {
-  title: [{ required: true, message: '页面标题不能为空', trigger: 'change' }],
+  title: [{ required: true, message: '页面标题不能为空', trigger: 'blur' }],
   fullPath: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }],
   orderIndex: [{ type: 'number', required: true, message: '菜单排序不能为空', trigger: 'blur' }]
 }
