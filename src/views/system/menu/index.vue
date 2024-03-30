@@ -276,6 +276,7 @@ const deleteRow = async (item: IRowData) => {
   const result = await deleteRoutesApi(item.id)
   if (result.code === 200) {
     message.success(result.message)
+    checkData.value = []
     getData()
   }
 }
@@ -283,6 +284,7 @@ const batchDeleteRow = async () => {
   const result = await batchDeleteRoutesApi(checkData.value)
   if (result.code === 200) {
     message.success(result.message)
+    checkData.value = []
     getData()
   }
 }
