@@ -48,20 +48,24 @@
 
     <n-tooltip placement="top" trigger="hover">
       <template #trigger>
-        <n-button
-          type="error"
-          danger
-          :disabled="props.isNoSelection"
-          style="margin: 0 0 0 8px"
-          @click="deleteClick"
+        <n-popconfirm
+          :positiveButtonProps="{
+            type: 'error'
+          }"
+          @positive-click="deleteClick"
         >
-          <template #icon>
-            <n-icon size="20">
-              <DeleteFilled />
-            </n-icon>
+          <template #trigger>
+            <n-button type="error" danger :disabled="props.isNoSelection" style="margin: 0 0 0 8px">
+              <template #icon>
+                <n-icon size="20">
+                  <DeleteFilled />
+                </n-icon>
+              </template>
+              <span> 删除 </span>
+            </n-button>
           </template>
-          <span> 删除 </span>
-        </n-button>
+          确定删除选中记录？
+        </n-popconfirm>
       </template>
       <span>删除选中行</span>
     </n-tooltip>
