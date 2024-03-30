@@ -63,6 +63,9 @@ export interface GetRoutesParams extends PageParams {
 
   /*状态 */
   status?: string
+
+  /*是否查询所有 */
+  all?: boolean
 }
 
 // 添加路由
