@@ -188,7 +188,12 @@ const columns = [
             trigger: () =>
               h(
                 NPopconfirm,
-                { onPositiveClick: () => deleteRow(row) },
+                {
+                  positiveButtonProps: {
+                    type: 'error'
+                  },
+                  onPositiveClick: () => deleteRow(row)
+                },
                 {
                   trigger: () =>
                     h(
