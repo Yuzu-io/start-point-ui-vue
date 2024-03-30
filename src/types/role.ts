@@ -13,7 +13,7 @@ export interface RoleInfo {
   status: string
 
   /*排序 */
-  orderIndex: string
+  orderIndex: number
 
   /*创建时间 */
   createTime: string
@@ -36,4 +36,22 @@ export interface GetRoleParams extends PageParams {
 
   /*状态 */
   status?: string
+}
+
+export interface AddRoleParams {
+  /*角色名称 */
+  roleName: string
+  /*权限字符 */
+  roleKey: string
+  /*状态 */
+  status: string
+  /*排序 */
+  orderIndex: number
+  /*路由id列表 */
+  routesIdList: string[]
+}
+
+export interface EditRoleParams extends AddRoleParams {
+  /**路由编号 */
+  id: string
 }

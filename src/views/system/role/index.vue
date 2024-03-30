@@ -31,7 +31,7 @@
       :isNoSelection="!checkData.length"
       @refresh-click="refresh"
       @add-click="addRow"
-      @edit-click="editRow"
+      @edit-click="batchEditRow"
       @delete-click="batchDeleteRow"
     ></TableHeader>
 
@@ -62,21 +62,22 @@
       <template #prefix="{ itemCount }"> 共 {{ itemCount }} 条 </template>
     </n-pagination>
   </div>
-  <!-- <MenuAdd ref="menuAddRef" @success="getData"></MenuAdd>
-  <MenuEdit ref="menuEditRef" @success="getData"></MenuEdit> -->
+  <RoleAdd ref="roleAddRef" @success="getData"></RoleAdd>
+  <RoleEdit ref="roleEditRef" @success="getData"></RoleEdit>
+  <RoleBatchEdit ref="roleBatchEditRef" @success="getData"></RoleBatchEdit>
 </template>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, h } from 'vue'
 import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
-import { deleteRoutesApi, batchDeleteRoutesApi } from '@/api/routes'
-import { getRoleListApi } from '@/api/role'
-import TableHeader from '@/components/TableHeader/index.vue'
-// import MenuAdd from './add/index.vue'
-// import MenuEdit from './edit/index.vue'
-import NIcons from '@/components/NIcons/index.vue'
+import { batchDeleteRoleApi, deleteRoleApi, getRoleListApi } from '@/api/role'
 import type { RoleInfo } from '@/types/role'
+import TableHeader from '@/components/TableHeader/index.vue'
+import RoleAdd from './add/index.vue'
+import RoleEdit from './edit/index.vue'
+import RoleBatchEdit from './batchEdit/index.vue'
+import NIcons from '@/components/NIcons/index.vue'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -117,7 +118,7 @@ const columns = [
   {
     title: '排序',
     key: 'orderIndex',
-    width: 180,
+    width: 100,
     align: 'center'
   },
   {
@@ -163,7 +164,12 @@ const columns = [
             trigger: () =>
               h(
                 NPopconfirm,
-                { onPositiveClick: () => deleteRow(row) },
+                {
+                  positiveButtonProps: {
+                    type: 'error'
+                  },
+                  onPositiveClick: () => deleteRow(row)
+                },
                 {
                   trigger: () =>
                     h(
@@ -209,7 +215,6 @@ onMounted(() => {
 const data = ref<RoleInfo[]>([])
 const checkData = ref<string[]>([])
 const handleCheck = (rowKeys: string[]) => {
-  console.log(rowKeys)
   checkData.value = rowKeys
 }
 const getData = async () => {
@@ -225,33 +230,40 @@ const resetForm = () => {
   queryParams.roleName = ''
   queryParams.roleKey = ''
   queryParams.status = ''
+  getData()
 }
 
 const refresh = () => {
   getData()
 }
 
-const menuAddRef = ref()
+const roleAddRef = ref()
 const addRow = () => {
-  // menuAddRef.value.showModal()
+  roleAddRef.value.showModal()
 }
-const menuEditRef = ref()
+const roleEditRef = ref()
 const editRow = (item: IRowData) => {
-  // menuEditRef.value.showModal(item)
+  roleEditRef.value.showModal(item.id)
+}
+const roleBatchEditRef = ref()
+const batchEditRow = () => {
+  roleBatchEditRef.value.showModal(checkData.value)
 }
 
 const message = useMessage()
 const deleteRow = async (item: IRowData) => {
-  const result = await deleteRoutesApi(item.id)
+  const result = await deleteRoleApi(item.id)
   if (result.code === 200) {
     message.success(result.message)
+    checkData.value = []
     getData()
   }
 }
 const batchDeleteRow = async () => {
-  const result = await batchDeleteRoutesApi(checkData.value)
+  const result = await batchDeleteRoleApi(checkData.value)
   if (result.code === 200) {
     message.success(result.message)
+    checkData.value = []
     getData()
   }
 }
