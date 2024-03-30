@@ -140,6 +140,12 @@ const columns = [
     }
   },
   {
+    title: '排序',
+    key: 'orderIndex',
+    width: 100,
+    align: 'center'
+  },
+  {
     title: '修改时间',
     key: 'updateTime',
     width: 180,
@@ -243,6 +249,7 @@ const resetForm = () => {
   queryParams.title = ''
   queryParams.fullPath = ''
   queryParams.status = ''
+  getData()
 }
 
 const refresh = () => {
