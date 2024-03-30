@@ -129,7 +129,7 @@ import type { EditRoutesParams, RoutesInfoRes } from '@/types/routes'
 import { ref } from 'vue'
 import { getParentRoutesListApi, findByIdApi, editRoutesApi } from '@/api/routes'
 import { recursiveTree } from '@/utils/recursiveTree'
-import { useMessage, type FormRules } from 'naive-ui'
+import { useMessage, type FormRules, type FormItemRule } from 'naive-ui'
 import { SearchFilled } from '@vicons/material'
 import { watch } from 'vue'
 
@@ -163,9 +163,15 @@ const formState = ref<EditRoutesParams>({
   type: '0',
   orderIndex: 1
 })
+const validateParentIdSame = (rule: FormItemRule, value: string): boolean => {
+  return value !== formState.value.id
+}
 const rules: FormRules = {
   title: [{ required: true, message: '页面标题不能为空', trigger: 'change' }],
   fullPath: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }],
+  parentId: [
+    { validator: validateParentIdSame, message: '上级菜单不能是菜单本身', trigger: 'change' }
+  ],
   orderIndex: [{ type: 'number', required: true, message: '菜单排序不能为空', trigger: 'blur' }]
 }
 
