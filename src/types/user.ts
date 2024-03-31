@@ -1,3 +1,4 @@
+import type { PageParams } from './page'
 import type { RoleInfo } from './role'
 
 export interface UserInfo {
@@ -25,8 +26,11 @@ export interface UserInfo {
   /*手机号 */
   phone: string
 
-  /*状态 */
+  /*状态 0正常 1禁用 */
   status: string
+
+  /*排序 */
+  orderIndex: number
 
   /*逻辑删除 */
   isDelete: string
@@ -42,4 +46,22 @@ export interface UserInfo {
 export interface UserInfoRes extends UserInfo {
   /*角色信息 */
   roleList: RoleInfo[]
+}
+
+export interface GetUserParams extends PageParams {
+  /*用户名 */
+  username: string
+  /*状态 0正常 1禁用 */
+  status: string
+}
+
+type omitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime'
+export interface AddUserParams extends Omit<UserInfoRes, omitAddIrrelevantFields> {
+  /*密码 */
+  password: string
+}
+
+export interface EditUserParams extends AddUserParams {
+  /*用户编号 */
+  id: string
 }

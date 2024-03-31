@@ -17,6 +17,7 @@ export const useUserStore = defineStore('userStore', {
       email: '',
       phone: '',
       status: '',
+      orderIndex: 0,
       isDelete: '',
       createTime: '',
       updateTime: '',
