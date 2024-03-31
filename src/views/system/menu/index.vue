@@ -72,7 +72,7 @@ import { onMounted, reactive, ref, h } from 'vue'
 import type { RoutesInfo } from '@/types/routes'
 import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
-import { getRoutesListApi, deleteRoutesApi, batchDeleteRoutesApi } from '@/api/routes'
+import { getRoutesListApi, deleteRoutesApi, batchDeleteRoutesApi } from '@/api/system/routes'
 import TableHeader from '@/components/TableHeader/index.vue'
 import MenuAdd from './add/index.vue'
 import MenuEdit from './edit/index.vue'
@@ -312,3 +312,4 @@ interface IRowData extends RoutesInfo, RowData {}
   justify-content: flex-end;
 }
 </style>
+@/api/system/routes

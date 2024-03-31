@@ -71,7 +71,7 @@
 import { onMounted, reactive, ref, h } from 'vue'
 import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
-import { batchDeleteRoleApi, deleteRoleApi, getRoleListApi } from '@/api/role'
+import { batchDeleteRoleApi, deleteRoleApi, getRoleListApi } from '@/api/system/role'
 import type { RoleInfo } from '@/types/role'
 import TableHeader from '@/components/TableHeader/index.vue'
 import RoleAdd from './add/index.vue'
@@ -286,3 +286,4 @@ interface IRowData extends RoleInfo, RowData {}
   justify-content: flex-end;
 }
 </style>
+@/api/system/role

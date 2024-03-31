@@ -60,8 +60,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useMessage, type FormRules } from 'naive-ui'
-import { getRoutesListApi } from '@/api/routes'
-import { addRoleApi } from '@/api/role'
+import { getRoutesListApi } from '@/api/system/routes'
+import { addRoleApi } from '@/api/system/role'
 import type { AddRoleParams } from '@/types/role'
 import type { RoutesInfo } from '@/types/routes'
 
@@ -144,3 +144,4 @@ defineExpose({
   font-size: 14px;
 }
 </style>
+@/api/system/role @/api/system/routes

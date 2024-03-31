@@ -127,7 +127,7 @@
 <script setup lang="ts">
 import type { EditRoutesParams, RoutesInfoRes } from '@/types/routes'
 import { ref } from 'vue'
-import { getParentRoutesListApi, findByIdApi, editRoutesApi } from '@/api/routes'
+import { getParentRoutesListApi, findByIdApi, editRoutesApi } from '@/api/system/routes'
 import { recursiveTree } from '@/utils/recursiveTree'
 import { useMessage, type FormRules, type FormItemRule } from 'naive-ui'
 import { SearchFilled } from '@vicons/material'
@@ -268,3 +268,4 @@ enum MenuType {
   font-size: 14px;
 }
 </style>
+@/api/system/routes
