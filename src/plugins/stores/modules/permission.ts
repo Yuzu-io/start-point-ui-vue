@@ -73,6 +73,23 @@ export const usePermissionStore = defineStore('permissionStore', {
             orderIndex: 1,
             createTime: 'string',
             updateTime: 'string'
+          },
+          {
+            id: '555',
+            title: '用户管理',
+            routesName: 'string',
+            icon: 'MenuFilled',
+            fullPath: '/user',
+            componentPath: 'string',
+            parentId: 'string',
+            showStatus: 'string',
+            isExternalLink: 'string',
+            keepAlive: 'string',
+            type: 'string',
+            status: '0',
+            orderIndex: 1,
+            createTime: 'string',
+            updateTime: 'string'
           }
         ]
       }

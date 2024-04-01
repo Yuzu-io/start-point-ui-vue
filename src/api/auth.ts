@@ -3,12 +3,13 @@ import type { RoutesInfoRes } from '@/types/routes'
 import type { UserInfoRes } from '@/types/user'
 import createAxios from '@/utils/axios'
 
+const prefix = '/auth'
 const Api = {
-  login: '/auth/login',
-  validateCode: '/auth/getValidateCode',
-  userInfo: '/auth/getUserInfo',
-  routes: '/auth/getRoutes',
-  logout: '/auth/logout'
+  login: prefix + '/login',
+  validateCode: prefix + '/getValidateCode',
+  userInfo: prefix + '/getUserInfo',
+  routes: prefix + '/getRoutes',
+  logout: prefix + '/logout'
 }
 
 // 登录接口
