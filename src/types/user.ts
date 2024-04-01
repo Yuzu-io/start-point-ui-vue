@@ -12,19 +12,19 @@ export interface UserInfo {
   account: string
 
   /*性别 */
-  sex: string
+  sex?: string
 
   /*头像 */
   avatar: string
 
   /*年龄 */
-  age: number
+  age?: number
 
   /*邮箱 */
-  email: string
+  email?: string
 
   /*手机号 */
-  phone: string
+  phone?: string
 
   /*状态 0正常 1禁用 */
   status: string
@@ -35,10 +35,10 @@ export interface UserInfo {
   /*逻辑删除 */
   isDelete: string
 
-  /*用户登录请求参数 */
+  /*创建时间 */
   createTime: string
 
-  /*用户登录请求参数 */
+  /*修改时间 */
   updateTime: string
 }
 
@@ -55,7 +55,7 @@ export interface GetUserParams extends PageParams {
   status: string
 }
 
-type omitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime'
+type omitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime' | 'isDelete'
 export interface AddUserParams extends Omit<UserInfoRes, omitAddIrrelevantFields> {
   /*密码 */
   password: string
