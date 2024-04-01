@@ -36,6 +36,9 @@ export interface GetRoleParams extends PageParams {
 
   /*状态 */
   status?: string
+
+  /*是否查询所有 */
+  all?: boolean
 }
 
 export interface AddRoleParams {
