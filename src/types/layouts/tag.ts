@@ -1,3 +1,6 @@
 export interface ProvideTag {
-  refresh: () => void
+  collapsedWidth?: number
+  width?: number
+  collapsed?: boolean
+  refresh?: () => void
 }

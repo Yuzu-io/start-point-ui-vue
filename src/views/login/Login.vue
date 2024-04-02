@@ -21,9 +21,7 @@
             <n-form-item path="account">
               <n-input v-model:value="formData.account" size="large" placeholder="请输入账户名">
                 <template #prefix>
-                  <n-icon size="16">
-                    <MonitorRound />
-                  </n-icon>
+                  <MSIcon name="Monitor" size="16"></MSIcon>
                 </template>
               </n-input>
             </n-form-item>
@@ -36,9 +34,7 @@
                 placeholder="请输入密码"
               >
                 <template #prefix>
-                  <n-icon size="16">
-                    <LockOutlined />
-                  </n-icon>
+                  <MSIcon name="Lock" size="16"></MSIcon>
                 </template>
               </n-input>
             </n-form-item>
@@ -51,9 +47,7 @@
                 style="width: 205px"
               >
                 <template #prefix>
-                  <n-icon size="16">
-                    <KeyOutlined />
-                  </n-icon>
+                  <MSIcon name="Key" size="16"></MSIcon>
                 </template>
               </n-input>
               <!-- 验证码 -->
@@ -82,7 +76,7 @@ import type { LoginParams } from '@/types/auth'
 import { getValidateCodeApi } from '@/api/auth'
 import { usePermissionStore, useUserStore } from '@/plugins/stores'
 import { md5 } from 'js-md5'
-import { MonitorRound, LockOutlined, KeyOutlined } from '@vicons/material'
+import MSIcon from '@/components/MSIcon/index.vue'
 
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)

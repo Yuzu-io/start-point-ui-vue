@@ -31,7 +31,7 @@ import { h, reactive, ref, type VNode } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { type MenuOption } from 'naive-ui'
 import type { RoutesInfoRes } from '@/types/routes'
-import NIcons from '@/components/NIcons/index.vue'
+import MSIcon from '@/components/MSIcon/index.vue'
 import ScrollBar from '@/components/ScrollBar/index.vue'
 import { usePermissionStore } from '@/plugins/stores'
 
@@ -60,7 +60,7 @@ const getItem = (
   } as MenuOption
 }
 const renderIcon = (icon: string) => {
-  return () => h(NIcons, { component: icon, size: '18' })
+  return () => h(MSIcon, { name: icon, size: '18' })
 }
 const generateMenu = (item: RoutesInfoRes[]) => {
   const data: MenuOption[] = []

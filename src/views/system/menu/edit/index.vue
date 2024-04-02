@@ -49,9 +49,7 @@
           />
           <n-button type="primary" style="width: 10%" @click="searchIcon">
             <template #icon>
-              <n-icon size="20">
-                <SearchFilled />
-              </n-icon>
+              <MSIcon name="Search" size="20"></MSIcon>
             </template>
           </n-button>
         </n-input-group>
@@ -130,7 +128,7 @@ import { ref } from 'vue'
 import { getParentRoutesListApi, findByIdApi, editRoutesApi } from '@/api/system/routes'
 import { recursiveTree } from '@/utils/recursiveTree'
 import { useMessage, type FormRules, type FormItemRule } from 'naive-ui'
-import { SearchFilled } from '@vicons/material'
+import MSIcon from '@/components/MSIcon/index.vue'
 
 const show = ref(false)
 
@@ -176,7 +174,8 @@ const getData = async () => {
   }
 }
 
-const iconUrl = 'https://xicons.org/#/'
+const iconUrl =
+  'https://fonts.google.com/icons?icon.set=Material+Symbols&selected=Material+Symbols+Outlined:search:FILL@0;wght@400;GRAD@0;opsz@20&icon.query=Search'
 const searchIcon = () => {
   window.open(iconUrl, '_blank')
 }

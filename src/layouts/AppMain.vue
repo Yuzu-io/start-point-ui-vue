@@ -4,8 +4,8 @@
       class="aside"
       bordered
       collapse-mode="width"
-      :collapsed-width="64"
-      :width="240"
+      :collapsed-width="collapsedWidth"
+      :width="width"
       :collapsed="collapsed"
       show-trigger
       @collapse="collapsed = true"
@@ -31,6 +31,8 @@ import type { ProvideTag } from '@/types/layouts/tag'
 import { useMessage } from 'naive-ui'
 
 const collapsed = ref<boolean>(false)
+const collapsedWidth = ref<number>(64)
+const width = ref<number>(240)
 const message = useMessage()
 const refresh = () => {
   message.success('刷新成功!', {
@@ -39,6 +41,9 @@ const refresh = () => {
 }
 
 provide<ProvideTag>('provideTag', {
+  collapsedWidth: collapsedWidth.value,
+  width: width.value,
+  collapsed: collapsed.value,
   refresh
 })
 </script>

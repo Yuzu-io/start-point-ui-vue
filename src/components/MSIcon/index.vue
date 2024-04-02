@@ -22,7 +22,7 @@ const style = ref<Style>({
 interface Props {
   name: string
   size: number | string
-  color: string
+  color?: string
 }
 
 interface Style {

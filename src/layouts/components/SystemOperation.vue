@@ -8,9 +8,7 @@
       @select="switchLanguage"
     >
       <div class="system-operation__item lang">
-        <n-icon size="16">
-          <GTranslateFilled />
-        </n-icon>
+        <MSIcon name="Translate" size="18"></MSIcon>
       </div>
     </n-dropdown>
 
@@ -34,7 +32,7 @@ import { langList, useLocale } from '@/locales/useLocale'
 import { useLoadingStore, useUserStore } from '@/plugins/stores'
 import type { LangList } from '@/types/lang'
 import { useMessage, type DropdownOption } from 'naive-ui'
-import { GTranslateFilled } from '@vicons/material'
+import MSIcon from '@/components/MSIcon/index.vue'
 
 const message = useMessage()
 const loadingStore = useLoadingStore()

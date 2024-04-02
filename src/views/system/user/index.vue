@@ -72,8 +72,8 @@ import TableHeader from '@/components/TableHeader/index.vue'
 import UserAdd from './add/index.vue'
 import UserEdit from './edit/index.vue'
 // import RoleBatchEdit from './batchEdit/index.vue'
-import NIcons from '@/components/NIcons/index.vue'
 import type { UserInfo } from '@/types/user'
+import MSIcon from '@/components/MSIcon/index.vue'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -175,7 +175,7 @@ const columns = [
                   onClick: () => editRow(row)
                 },
                 {
-                  icon: () => h(NIcons, { component: 'EditFilled', size: 18 })
+                  icon: () => h(MSIcon, { name: 'Edit', size: 18 })
                 }
               ),
             default: () => '编辑'
@@ -201,7 +201,7 @@ const columns = [
                       NButton,
                       { type: 'error', size: 'tiny', style: 'margin:0 8px;vertical-align:sub;' },
                       {
-                        icon: () => h(NIcons, { component: 'DeleteFilled', size: 18 })
+                        icon: () => h(MSIcon, { name: 'Delete', size: 18 })
                       }
                     ),
                   default: () => '确定删除选中记录？'
