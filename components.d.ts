@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    MSIcon: typeof import('./src/components/MSIcon/index.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
@@ -20,7 +21,6 @@ declare module 'vue' {
     NIcon: typeof import('naive-ui')['NIcon']
     NIcons: typeof import('./src/components/NIcons/index.vue')['default']
     NInput: typeof import('naive-ui')['NInput']
-    NInputGroup: typeof import('naive-ui')['NInputGroup']
     NInputNumber: typeof import('naive-ui')['NInputNumber']
     NLayout: typeof import('naive-ui')['NLayout']
     NLayoutContent: typeof import('naive-ui')['NLayoutContent']
@@ -37,8 +37,6 @@ declare module 'vue' {
     NSpace: typeof import('naive-ui')['NSpace']
     NSpin: typeof import('naive-ui')['NSpin']
     NTooltip: typeof import('naive-ui')['NTooltip']
-    NTree: typeof import('naive-ui')['NTree']
-    NTreeSelect: typeof import('naive-ui')['NTreeSelect']
     NUpload: typeof import('naive-ui')['NUpload']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
