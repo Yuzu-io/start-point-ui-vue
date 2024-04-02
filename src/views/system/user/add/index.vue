@@ -8,7 +8,10 @@
       label-width="auto"
     >
       <n-form-item label="用户名" path="username">
-        <n-input v-model:value="formState.username" placeholder="请输入用户名" />
+        <n-flex vertical :size="[0, 0]" style="width: 100%">
+          <n-input v-model:value="formState.username" placeholder="请输入用户名" />
+          <span class="hint">用户名为空则默认为账号</span>
+        </n-flex>
       </n-form-item>
 
       <n-form-item label="账号" path="account">
@@ -48,9 +51,9 @@
         <n-input v-model:value="formState.phone" placeholder="请输入手机号" />
       </n-form-item>
 
-      <n-form-item label="角色组" path="roleList">
+      <n-form-item label="角色组" path="roleIdList">
         <n-select
-          v-model:value="formState.roleList"
+          v-model:value="formState.roleIdList"
           multiple
           :label-field="selectFieldNames.label"
           :value-field="selectFieldNames.value"
@@ -94,6 +97,7 @@ import { addUserApi } from '@/api/system/user'
 import { getRoleListApi } from '@/api/system/role'
 import UploadImg from '@/components/UploadImg/index.vue'
 import type { RoleInfo } from '@/types/role'
+import { md5 } from 'js-md5'
 
 const show = ref(false)
 
@@ -109,13 +113,13 @@ const formState = ref<AddUserParams>({
   phone: undefined,
   status: '0',
   orderIndex: 1,
-  roleList: []
+  roleIdList: []
 })
 const rules: FormRules = {
   account: [{ required: true, message: '账号不能为空', trigger: 'blur' }],
   password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
   orderIndex: [{ type: 'number', required: true, message: '排序不能为空', trigger: 'blur' }],
-  roleList: [{ type: 'array', required: true, message: '角色组不能为空', trigger: 'blur' }]
+  roleIdList: [{ type: 'array', required: true, message: '角色组不能为空', trigger: 'blur' }]
 }
 
 const selectFieldNames = { children: 'children', label: 'roleName', value: 'id' }
@@ -137,7 +141,11 @@ const onSubmit = () => {
   formRef.value
     .validate()
     .then(async () => {
-      const result = await addUserApi(formState.value)
+      let params = {
+        ...formState.value,
+        password: md5(formState.value.password).toLocaleUpperCase()
+      }
+      const result = await addUserApi(params)
       if (result.code === 200) {
         message.success(result.message)
         emit('success')
@@ -163,7 +171,7 @@ const formInit = () => {
     phone: undefined,
     status: '0',
     orderIndex: 1,
-    roleList: []
+    roleIdList: []
   }
 }
 const showModal = () => {
