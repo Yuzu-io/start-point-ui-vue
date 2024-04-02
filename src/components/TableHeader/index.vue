@@ -4,9 +4,7 @@
       <template #trigger>
         <n-button type="primary" @click="refreshClick">
           <template #icon>
-            <n-icon size="20">
-              <CachedFilled />
-            </n-icon>
+            <MSIcon name="Cached" size="20"></MSIcon>
           </template>
         </n-button>
       </template>
@@ -17,9 +15,7 @@
       <template #trigger>
         <n-button type="primary" style="margin: 0 0 0 8px" @click="addClick">
           <template #icon>
-            <n-icon size="20">
-              <PlusFilled />
-            </n-icon>
+            <MSIcon name="Add" size="20"></MSIcon>
           </template>
           <span> 添加 </span>
         </n-button>
@@ -36,9 +32,7 @@
           @click="editClick"
         >
           <template #icon>
-            <n-icon size="20">
-              <EditFilled />
-            </n-icon>
+            <MSIcon name="Edit" size="20"></MSIcon>
           </template>
           <span> 编辑 </span>
         </n-button>
@@ -57,9 +51,7 @@
           <template #trigger>
             <n-button type="error" danger :disabled="props.isNoSelection" style="margin: 0 0 0 8px">
               <template #icon>
-                <n-icon size="20">
-                  <DeleteFilled />
-                </n-icon>
+                <MSIcon name="Delete" size="20"></MSIcon>
               </template>
               <span> 删除 </span>
             </n-button>
@@ -73,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-import { CachedFilled, PlusFilled, EditFilled, DeleteFilled } from '@vicons/material'
+import MSIcon from '@/components/MSIcon/index.vue'
 
 const props = withDefaults(defineProps<Props>(), {
   isNoSelection: true
