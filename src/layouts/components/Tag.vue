@@ -72,7 +72,7 @@
 
 <script setup lang="ts">
 import type { ProvideTag } from '@/types/layouts/tag'
-import { ref, onMounted, reactive, inject, watch, nextTick, type Ref } from 'vue'
+import { ref, onMounted, reactive, inject, watch, nextTick } from 'vue'
 import { useTagStore } from '@/plugins/stores/index'
 import MSIcon from '@/components/MSIcon/index.vue'
 import { useMessage } from 'naive-ui'
