@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { useMessage, type UploadFileInfo } from 'naive-ui'
 import { useUserStore } from '@/plugins/stores'
 import { deleteImgApi } from '@/api/file'
@@ -49,32 +49,36 @@ const uploadConfig = reactive({
   max: props.max
 })
 
-onMounted(() => {
-  initFileList()
-})
-
-const initFileList = () => {
-  if (Array.isArray(fileData.value)) {
-    fileList.value = []
-    fileData.value.forEach((item) => {
-      fileList.value.push({
-        id: item,
-        name: item,
-        status: 'finished',
-        url: uploadConfig.url + '/images/' + item
+watch(
+  () => fileData.value,
+  (val) => {
+    if (!fileData.value) return
+    if (Array.isArray(fileData.value)) {
+      fileList.value = []
+      fileData.value.forEach((item) => {
+        fileList.value.push({
+          id: item,
+          name: item,
+          status: 'finished',
+          url: uploadConfig.url + '/images/' + item
+        })
       })
-    })
-  } else if (fileData.value) {
-    fileList.value = [
-      {
-        id: fileData.value,
-        name: fileData.value,
-        status: 'finished',
-        url: uploadConfig.url + '/images/' + fileData.value
+    } else if (fileData.value) {
+      if (fileList.value.length) {
+        fileList.value[0].id = fileData.value
+        fileList.value[0].name = fileData.value
+        fileList.value[0].url = uploadConfig.url + '/images/' + fileData.value
+      } else {
+        fileList.value.push({
+          id: fileData.value,
+          name: fileData.value,
+          status: 'finished',
+          url: uploadConfig.url + '/images/' + fileData.value
+        })
       }
-    ]
+    }
   }
-}
+)
 
 // 图片上传成功
 const handleFinish = ({ file, event }: OnFinish) => {
@@ -116,8 +120,17 @@ const handleRemove = async (options: OnRemove) => {
 
 // 更新图片列表
 const handeUpdateFileList = (fileList: UploadFileInfo[]) => {
-  if (!fileList.length) return
-  if (Array.isArray(fileData.value)) {
+  let isArray = Array.isArray(fileData.value)
+  if (!fileList.length) {
+    if (isArray) {
+      fileData.value = []
+    } else {
+      fileData.value = ''
+    }
+    return
+  }
+
+  if (isArray) {
     fileData.value = fileList.reduce((pre: string[], cur) => {
       if (cur.status === 'finished') {
         return pre.concat(cur.name)
@@ -131,7 +144,7 @@ const handeUpdateFileList = (fileList: UploadFileInfo[]) => {
 </script>
 <script lang="ts">
 interface Props {
-  max?: 1
+  max?: number
 }
 
 interface OnFinish {
