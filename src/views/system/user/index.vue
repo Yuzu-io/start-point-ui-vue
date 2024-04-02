@@ -59,7 +59,7 @@
     </n-pagination>
   </div>
   <UserAdd ref="userAddRef" @success="getData"></UserAdd>
-  <!-- <RoleEdit ref="roleEditRef" @success="getData"></RoleEdit> -->
+  <UserEdit ref="userEditRef" @success="getData"></UserEdit>
   <!-- <RoleBatchEdit ref="roleBatchEditRef" @success="getData"></RoleBatchEdit> -->
 </template>
 
@@ -70,7 +70,7 @@ import type { RowData } from 'naive-ui/es/data-table/src/interface'
 import { batchDeleteUserApi, deleteUserApi, getUserListApi } from '@/api/system/user'
 import TableHeader from '@/components/TableHeader/index.vue'
 import UserAdd from './add/index.vue'
-// import RoleEdit from './edit/index.vue'
+import UserEdit from './edit/index.vue'
 // import RoleBatchEdit from './batchEdit/index.vue'
 import NIcons from '@/components/NIcons/index.vue'
 import type { UserInfo } from '@/types/user'
@@ -264,10 +264,12 @@ const userAddRef = ref()
 const addRow = () => {
   userAddRef.value.showModal()
 }
-const roleEditRef = ref()
+
+const userEditRef = ref()
 const editRow = (item: IRowData) => {
-  roleEditRef.value.showModal(item.id)
+  userEditRef.value.showModal(item.id)
 }
+
 const roleBatchEditRef = ref()
 const batchEditRow = () => {
   roleBatchEditRef.value.showModal(checkData.value)
