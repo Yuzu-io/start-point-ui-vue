@@ -152,12 +152,13 @@ const openTagMenu = (index: number, event: MouseEvent) => {
   }
   currentTagMenuIndex.value = index
   showTagMenu.value = true
+  console.log(collapsed)
   if (
-    typeof collapsed === 'boolean' &&
+    collapsed instanceof Object &&
     typeof collapsedWidth === 'number' &&
     typeof width === 'number'
   ) {
-    const x = event!.clientX - (collapsed ? collapsedWidth : width) - 10
+    const x = event!.clientX - (collapsed.value ? collapsedWidth : width) - 10
     const y = event!.clientY
     tagMenuPosition.x = `${x}px`
     tagMenuPosition.y = `${y}px`

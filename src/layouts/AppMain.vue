@@ -31,8 +31,8 @@ import type { ProvideTag } from '@/types/layouts/tag'
 import { useMessage } from 'naive-ui'
 
 const collapsed = ref<boolean>(false)
-const collapsedWidth = ref<number>(64)
-const width = ref<number>(240)
+const collapsedWidth = 64
+const width = 240
 const message = useMessage()
 const refresh = () => {
   message.success('刷新成功!', {
@@ -41,9 +41,9 @@ const refresh = () => {
 }
 
 provide<ProvideTag>('provideTag', {
-  collapsedWidth: collapsedWidth.value,
-  width: width.value,
-  collapsed: collapsed.value,
+  collapsedWidth,
+  width,
+  collapsed,
   refresh
 })
 </script>
