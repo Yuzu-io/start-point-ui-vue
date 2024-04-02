@@ -14,9 +14,7 @@
           {{ item.title }}
         </span>
         <div class="close" v-if="tagStore.tagList.length > 1" @click.stop @click="closeTag(index)">
-          <n-icon class="close-icon" size="14">
-            <CloseFilled />
-          </n-icon>
+          <MSIcon name="Close" size="14"></MSIcon>
         </div>
       </div>
       <div class="tag-active-box" :style="{ width: tagWidth, left: tagLeftPosition }"></div>
@@ -36,17 +34,13 @@
         @click="tagMenuOperation(TagMenuType.Refresh)"
       >
         <template #icon>
-          <n-icon class="btn-icon" size="18">
-            <RefreshFilled />
-          </n-icon>
+          <MSIcon name="Refresh" size="18"></MSIcon>
         </template>
         重新加载
       </n-button>
       <n-button quaternary block @click="tagMenuOperation(TagMenuType.Close)">
         <template #icon>
-          <n-icon class="btn-icon" size="18">
-            <CloseFilled />
-          </n-icon>
+          <MSIcon name="Close" size="18"></MSIcon>
         </template>
         关闭标签
       </n-button>
@@ -57,9 +51,7 @@
         @click="tagMenuOperation(TagMenuType.Other)"
       >
         <template #icon>
-          <n-icon class="btn-icon" size="18">
-            <MinusFilled />
-          </n-icon>
+          <MSIcon name="Remove" size="18"></MSIcon>
         </template>
         关闭其他标签
       </n-button>
@@ -70,9 +62,7 @@
         @click="tagMenuOperation(TagMenuType.All)"
       >
         <template #icon>
-          <n-icon class="btn-icon" size="18">
-            <CropSquareFilled />
-          </n-icon>
+          <MSIcon name="Crop_Square" size="18"></MSIcon>
         </template>
         关闭全部标签
       </n-button>
@@ -84,12 +74,20 @@
 import type { ProvideTag } from '@/types/layouts/tag'
 import { ref, onMounted, reactive, inject, watch, nextTick } from 'vue'
 import { useTagStore } from '@/plugins/stores/index'
-import { CloseFilled, RefreshFilled, MinusFilled, CropSquareFilled } from '@vicons/material'
+import MSIcon from '@/components/MSIcon/index.vue'
 import { useMessage } from 'naive-ui'
 
 const tagStore = useTagStore()
 
 const message = useMessage()
+
+const { collapsedWidth, width, collapsed, refresh } = inject<ProvideTag>('provideTag', {
+  refresh: () => {
+    message.warning('加载失败!', {
+      duration: 1000
+    })
+  }
+})
 
 const tagItemRef = ref<HTMLDivElement[]>([])
 const tagWidth = ref<string>('0px')
@@ -154,12 +152,16 @@ const openTagMenu = (index: number, event: MouseEvent) => {
   }
   currentTagMenuIndex.value = index
   showTagMenu.value = true
-  const x = event!.clientX
-  const y = event!.clientY
-  console.log(x, y)
-
-  tagMenuPosition.x = `${x}px`
-  tagMenuPosition.y = `${y}px`
+  if (
+    typeof collapsed === 'boolean' &&
+    typeof collapsedWidth === 'number' &&
+    typeof width === 'number'
+  ) {
+    const x = event!.clientX - (collapsed ? collapsedWidth : width) - 10
+    const y = event!.clientY
+    tagMenuPosition.x = `${x}px`
+    tagMenuPosition.y = `${y}px`
+  }
 }
 
 // tag菜单操作方法
@@ -182,15 +184,10 @@ const tagMenuOperation = (type: TagMenuType) => {
   showTagMenu.value = false
 }
 
-const { refresh } = inject<ProvideTag>('provideTag', {
-  refresh: () => {
-    message.warning('加载失败!', {
-      duration: 1000
-    })
-  }
-})
 const tagMenuRefresh = () => {
-  refresh()
+  if (refresh instanceof Function) {
+    refresh()
+  }
 }
 const tagMenuCloseTag = () => {
   tagStore.closeTag(currentTagMenuIndex.value)
