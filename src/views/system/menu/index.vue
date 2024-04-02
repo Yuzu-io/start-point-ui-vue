@@ -312,4 +312,3 @@ interface IRowData extends RoutesInfo, RowData {}
   justify-content: flex-end;
 }
 </style>
-@/api/system/routes

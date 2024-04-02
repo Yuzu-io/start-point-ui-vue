@@ -234,4 +234,3 @@ enum MenuType {
   font-size: 14px;
 }
 </style>
-@/api/system/routes

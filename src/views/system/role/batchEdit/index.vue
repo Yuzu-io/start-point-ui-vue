@@ -171,4 +171,3 @@ defineExpose({
   font-size: 14px;
 }
 </style>
-@/api/system/role @/api/system/routes

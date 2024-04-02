@@ -286,4 +286,3 @@ interface IRowData extends RoleInfo, RowData {}
   justify-content: flex-end;
 }
 </style>
-@/api/system/role
