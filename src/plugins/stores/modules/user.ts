@@ -1,6 +1,5 @@
 import { getUserInfoApi, loginApi, logout } from '@/api/auth'
-import type { LoginParams } from '@/types/auth'
-import type { UserInfoRes } from '@/types/user'
+import type { LoginParams, LoginUserInfoRes } from '@/types/auth'
 import { defineStore } from 'pinia'
 import router from '@/plugins/router/index'
 
@@ -57,5 +56,5 @@ export const useUserStore = defineStore('userStore', {
 
 interface State {
   token: string
-  userInfo: UserInfoRes
+  userInfo: LoginUserInfoRes
 }

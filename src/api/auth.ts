@@ -1,6 +1,5 @@
-import type { GetValidateCodeRes, LoginParams, LoginRes } from '@/types/auth'
+import type { GetValidateCodeRes, LoginParams, LoginRes, LoginUserInfoRes } from '@/types/auth'
 import type { RoutesInfoRes } from '@/types/routes'
-import type { UserInfoRes } from '@/types/user'
 import createAxios from '@/utils/axios'
 
 const prefix = '/auth'
@@ -36,7 +35,7 @@ export function getValidateCodeApi() {
 
 // 获取用户信息接口
 export function getUserInfoApi() {
-  return createAxios<UserInfoRes>(
+  return createAxios<LoginUserInfoRes>(
     {
       url: Api.userInfo,
       method: 'get'

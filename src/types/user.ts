@@ -33,19 +33,19 @@ export interface UserInfo {
   orderIndex: number
 
   /*逻辑删除 */
-  isDelete: string
+  isDelete?: string
 
   /*创建时间 */
-  createTime: string
+  createTime?: string
 
   /*修改时间 */
-  updateTime: string
+  updateTime?: string
 }
 
 // 响应接口
 export interface UserInfoRes extends UserInfo {
   /*角色信息 */
-  roleList: RoleInfo[]
+  roleIdList: String[]
 }
 
 export interface GetUserParams extends PageParams {
@@ -55,13 +55,15 @@ export interface GetUserParams extends PageParams {
   status: string
 }
 
-type omitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime' | 'isDelete'
-export interface AddUserParams extends Omit<UserInfoRes, omitAddIrrelevantFields> {
+type OmitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime' | 'isDelete'
+export interface AddUserParams extends Omit<UserInfoRes, OmitAddIrrelevantFields> {
   /*密码 */
   password: string
 }
 
-export interface EditUserParams extends AddUserParams {
+export interface EditUserParams extends WithPartial<AddUserParams, 'password'> {
   /*用户编号 */
   id: string
 }
+
+type WithPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>

@@ -1,11 +1,5 @@
 import type { PageInfo } from '@/types/page'
-import type {
-  AddUserParams,
-  EditUserParams,
-  GetUserParams,
-  UserInfo,
-  UserInfoRes
-} from '@/types/user'
+import type { AddUserParams, EditUserParams, GetUserParams, UserInfoRes } from '@/types/user'
 import createAxios from '@/utils/axios'
 
 const prefix = '/system/sysUser'
@@ -59,7 +53,7 @@ export function batchDeleteUserApi(ids: string[]) {
 }
 
 export function findByIdUserApi(id: string) {
-  return createAxios<UserInfo>({
+  return createAxios<UserInfoRes>({
     url: Api.findById,
     method: 'get',
     params: { id }

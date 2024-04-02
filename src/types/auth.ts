@@ -1,3 +1,6 @@
+import type { RoleInfo } from './role'
+import type { UserInfo } from './user'
+
 // 参数接口
 export interface LoginParams {
   /*账号 */
@@ -29,4 +32,10 @@ export interface GetValidateCodeRes {
 
   /*验证码value */
   codeValue: string
+}
+
+// 响应接口
+export interface LoginUserInfoRes extends UserInfo {
+  /*角色信息 */
+  roleList: RoleInfo[]
 }
