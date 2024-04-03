@@ -18,7 +18,6 @@ declare module 'vue' {
     NFlex: typeof import('naive-ui')['NFlex']
     NForm: typeof import('naive-ui')['NForm']
     NFormItem: typeof import('naive-ui')['NFormItem']
-    NIcon: typeof import('naive-ui')['NIcon']
     NIcons: typeof import('./src/components/NIcons/index.vue')['default']
     NInput: typeof import('naive-ui')['NInput']
     NInputGroup: typeof import('naive-ui')['NInputGroup']

@@ -85,7 +85,7 @@
       <div>
         <n-flex justify="end">
           <n-button @click="show = false">取消</n-button>
-          <n-button type="primary" @click="onSubmit"> 保存 </n-button>
+          <n-button type="primary" @click="onSubmit"> {{ submitText }} </n-button>
         </n-flex>
       </div>
     </n-form>
@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useMessage, type FormRules } from 'naive-ui'
 import UploadImg from '@/components/UploadImg/index.vue'
 import type { EditUserParams } from '@/types/user'
@@ -103,6 +103,18 @@ import { getRoleListApi } from '@/api/system/role'
 import { md5 } from 'js-md5'
 
 const show = ref(false)
+const isMultiple = ref(false)
+const currentIndex = ref(0)
+const idsList = ref<string[]>([])
+const submitText = ref('保存')
+
+watch(
+  () => currentIndex.value,
+  () => {
+    isMultiple.value = idsList.value.length - 1 === currentIndex.value
+    submitText.value = isMultiple.value ? '保存' : '保存并编辑下一页'
+  }
+)
 
 const formRef = ref()
 const formState = ref<EditUserParams>({
@@ -136,7 +148,7 @@ const getData = async () => {
   if (roleResult.code === 200) {
     roleOptions.value = roleResult.data.list
   }
-  const userResult = await findByIdUserApi(formState.value.id)
+  const userResult = await findByIdUserApi(idsList.value[currentIndex.value])
   if (userResult.code === 200) {
     formState.value = userResult.data
   }
@@ -159,7 +171,12 @@ const onSubmit = () => {
       if (result.code === 200) {
         message.success(result.message)
         emit('success')
-        show.value = false
+        if (isMultiple.value) {
+          show.value = false
+        } else {
+          currentIndex.value++
+          getData()
+        }
       } else {
         message.success(result.message)
       }
@@ -185,10 +202,13 @@ const formInit = () => {
     roleIdList: []
   }
 }
-const showModal = (id: string) => {
+const showModal = (ids: string[]) => {
   show.value = true
   formInit()
-  formState.value.id = id
+  currentIndex.value = 0
+  idsList.value = ids
+  isMultiple.value = idsList.value.length - 1 === currentIndex.value
+  submitText.value = isMultiple.value ? '保存' : '保存并编辑下一页'
   getData()
 }
 

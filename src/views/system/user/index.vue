@@ -60,7 +60,7 @@
   </div>
   <UserAdd ref="userAddRef" @success="getData"></UserAdd>
   <UserEdit ref="userEditRef" @success="getData"></UserEdit>
-  <!-- <RoleBatchEdit ref="roleBatchEditRef" @success="getData"></RoleBatchEdit> -->
+  <UserBatchEdit ref="userBatchEditRef" @success="getData"></UserBatchEdit>
 </template>
 
 <script setup lang="ts">
@@ -71,7 +71,7 @@ import { batchDeleteUserApi, deleteUserApi, getUserListApi } from '@/api/system/
 import TableHeader from '@/components/TableHeader/index.vue'
 import UserAdd from './add/index.vue'
 import UserEdit from './edit/index.vue'
-// import RoleBatchEdit from './batchEdit/index.vue'
+import UserBatchEdit from './batchEdit/index.vue'
 import type { UserInfo } from '@/types/user'
 import MSIcon from '@/components/MSIcon/index.vue'
 
@@ -270,9 +270,9 @@ const editRow = (item: IRowData) => {
   userEditRef.value.showModal(item.id)
 }
 
-const roleBatchEditRef = ref()
+const userBatchEditRef = ref()
 const batchEditRow = () => {
-  roleBatchEditRef.value.showModal(checkData.value)
+  userBatchEditRef.value.showModal(checkData.value)
 }
 
 const message = useMessage()
