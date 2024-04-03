@@ -34,7 +34,6 @@
       <n-form-item label="权限" path="routesIdList">
         <n-tree
           block-line
-          cascade
           checkable
           :selectable="false"
           default-expand-all
