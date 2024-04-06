@@ -34,7 +34,10 @@
       </n-form-item>
 
       <n-form-item label="头像" path="avatar">
-        <UploadImg v-model:file-data="formState.avatar" />
+        <n-flex vertical :size="[0, 0]" style="width: 100%">
+          <UploadImg v-model:file-data="formState.avatar" />
+          <span class="hint">删除图片时图片存储文件会被删除，请谨慎</span>
+        </n-flex>
       </n-form-item>
 
       <n-form-item label="年龄" path="age">
