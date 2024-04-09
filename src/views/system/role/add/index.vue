@@ -61,8 +61,8 @@ import { ref } from 'vue'
 import { useMessage, type FormRules } from 'naive-ui'
 import { getRoutesListApi } from '@/api/system/routes'
 import { addRoleApi } from '@/api/system/role'
-import type { AddRoleParams } from '@/types/role'
-import type { RoutesInfo } from '@/types/routes'
+import type { AddRoleParams } from '@/types/system/role'
+import type { RoutesInfo } from '@/types/system/routes'
 
 const show = ref(false)
 

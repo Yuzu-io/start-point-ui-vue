@@ -61,8 +61,8 @@ import { ref, watch } from 'vue'
 import { useMessage, type FormRules } from 'naive-ui'
 import { getRoutesListApi } from '@/api/system/routes'
 import { findByIdApi, editRoleApi } from '@/api/system/role'
-import type { EditRoleParams } from '@/types/role'
-import type { RoutesInfo } from '@/types/routes'
+import type { EditRoleParams } from '@/types/system/role'
+import type { RoutesInfo } from '@/types/system/routes'
 
 const show = ref(false)
 const isMultiple = ref(false)

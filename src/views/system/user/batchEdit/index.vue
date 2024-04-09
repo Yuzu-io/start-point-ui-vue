@@ -99,9 +99,9 @@
 import { ref, watch } from 'vue'
 import { useMessage, type FormRules } from 'naive-ui'
 import UploadImg from '@/components/UploadImg/index.vue'
-import type { EditUserParams } from '@/types/user'
+import type { EditUserParams } from '@/types/system/user'
 import { editUserApi, findByIdUserApi } from '@/api/system/user'
-import type { RoleInfo } from '@/types/role'
+import type { RoleInfo } from '@/types/system/role'
 import { getRoleListApi } from '@/api/system/role'
 import { md5 } from 'js-md5'
 

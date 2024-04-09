@@ -5,7 +5,7 @@ import type {
   GetRoleParams,
   RoleInfo,
   RoleInfoRes
-} from '@/types/role'
+} from '@/types/system/role'
 import createAxios from '@/utils/axios'
 
 const prefix = '/system/sysRole'

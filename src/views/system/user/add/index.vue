@@ -92,11 +92,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useMessage, type FormRules } from 'naive-ui'
-import type { AddUserParams } from '@/types/user'
+import type { AddUserParams } from '@/types/system/user'
 import { addUserApi } from '@/api/system/user'
 import { getRoleListApi } from '@/api/system/role'
 import UploadImg from '@/components/UploadImg/index.vue'
-import type { RoleInfo } from '@/types/role'
+import type { RoleInfo } from '@/types/system/role'
 import { md5 } from 'js-md5'
 
 const show = ref(false)

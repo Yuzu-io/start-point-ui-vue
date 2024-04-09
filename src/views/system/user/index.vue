@@ -72,7 +72,7 @@ import TableHeader from '@/components/TableHeader/index.vue'
 import UserAdd from './add/index.vue'
 import UserEdit from './edit/index.vue'
 import UserBatchEdit from './batchEdit/index.vue'
-import type { UserInfo } from '@/types/user'
+import type { UserInfo } from '@/types/system/user'
 import MSIcon from '@/components/MSIcon/index.vue'
 
 const formRef = ref<FormInst>()

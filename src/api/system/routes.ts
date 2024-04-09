@@ -5,7 +5,7 @@ import type {
   GetRoutesParams,
   RoutesInfo,
   RoutesInfoRes
-} from '@/types/routes'
+} from '@/types/system/routes'
 import createAxios from '@/utils/axios'
 
 const prefix = '/system/sysRoutes'

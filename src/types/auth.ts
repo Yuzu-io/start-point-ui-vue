@@ -1,5 +1,5 @@
-import type { RoleInfo } from './role'
-import type { UserInfo } from './user'
+import type { RoleInfo } from './system/role'
+import type { UserInfo } from './system/user'
 
 // 参数接口
 export interface LoginParams {

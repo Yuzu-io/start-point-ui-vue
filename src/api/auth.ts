@@ -1,5 +1,5 @@
 import type { GetValidateCodeRes, LoginParams, LoginRes, LoginUserInfoRes } from '@/types/auth'
-import type { RoutesInfoRes } from '@/types/routes'
+import type { RoutesInfoRes } from '@/types/system/routes'
 import createAxios from '@/utils/axios'
 
 const prefix = '/auth'

@@ -40,7 +40,12 @@
         <n-input v-model:value="formState.routesName" placeholder="请输入路由名称" />
       </n-form-item>
 
-      <n-form-item ref="icon" label="图标" path="icon" v-show="formState.type !== MenuType.Button">
+      <n-form-item
+        ref="icon"
+        label="图标"
+        path="icon"
+        v-show="formState.type !== MenuTypeEnum.Button"
+      >
         <n-input-group>
           <n-input
             v-model:value="formState.icon"
@@ -65,14 +70,22 @@
         </n-flex>
       </n-form-item>
 
-      <n-form-item label="组件路径" path="componentPath" v-show="formState.type === MenuType.Menu">
+      <n-form-item
+        label="组件路径"
+        path="componentPath"
+        v-show="formState.type === MenuTypeEnum.Menu"
+      >
         <n-flex vertical :size="[0, 0]" style="width: 100%">
           <n-input v-model:value="formState.componentPath" placeholder="请输入组件路径" />
           <span class="hint">web端组件路径，请以/src开头，如:/src/views/dashboard/index.vue</span>
         </n-flex>
       </n-form-item>
 
-      <n-form-item label="显示状态" path="showStatus" v-show="formState.type !== MenuType.Button">
+      <n-form-item
+        label="显示状态"
+        path="showStatus"
+        v-show="formState.type !== MenuTypeEnum.Button"
+      >
         <n-radio-group v-model:value="formState.showStatus">
           <n-radio value="0">显示</n-radio>
           <n-radio value="1">隐藏</n-radio>
@@ -82,7 +95,7 @@
       <n-form-item
         label="是否为外链"
         path="isExternalLink"
-        v-show="formState.type !== MenuType.Button"
+        v-show="formState.type !== MenuTypeEnum.Button"
       >
         <n-radio-group v-model:value="formState.isExternalLink">
           <n-radio value="0">是</n-radio>
@@ -90,7 +103,7 @@
         </n-radio-group>
       </n-form-item>
 
-      <n-form-item label="是否缓存" path="keepAlive" v-show="formState.type === MenuType.Menu">
+      <n-form-item label="是否缓存" path="keepAlive" v-show="formState.type === MenuTypeEnum.Menu">
         <n-radio-group v-model:value="formState.keepAlive">
           <n-radio value="0">是</n-radio>
           <n-radio value="1">否</n-radio>
@@ -123,12 +136,13 @@
 </template>
 
 <script setup lang="ts">
-import type { AddRoutesParams, RoutesInfoRes } from '@/types/routes'
+import { type AddRoutesParams, type RoutesInfoRes } from '@/types/system/routes'
 import { ref } from 'vue'
 import { getParentRoutesListApi, addRoutesApi } from '@/api/system/routes'
 import { recursiveTree } from '@/utils/recursiveTree'
 import { useMessage, type FormRules } from 'naive-ui'
 import MSIcon from '@/components/MSIcon/index.vue'
+import { MenuTypeEnum } from '@/constants/routesEnum'
 
 const show = ref(false)
 
@@ -176,7 +190,7 @@ const onSubmit = () => {
     .validate()
     .then(async () => {
       // 菜单类型不为目录时，默认关闭缓存
-      if (formState.value.type !== MenuType.Menu) {
+      if (formState.value.type !== MenuTypeEnum.Menu) {
         formState.value.keepAlive = '1'
       }
       const result = await addRoutesApi(formState.value)
@@ -219,13 +233,7 @@ defineExpose({
   showModal
 })
 </script>
-<script lang="ts">
-enum MenuType {
-  Directory = '0',
-  Menu = '1',
-  Button = '2'
-}
-</script>
+<script lang="ts"></script>
 
 <style lang="scss" scoped>
 .hint {

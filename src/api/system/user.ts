@@ -1,5 +1,5 @@
 import type { PageInfo } from '@/types/page'
-import type { AddUserParams, EditUserParams, GetUserParams, UserInfoRes } from '@/types/user'
+import type { AddUserParams, EditUserParams, GetUserParams, UserInfoRes } from '@/types/system/user'
 import createAxios from '@/utils/axios'
 
 const prefix = '/system/sysUser'

@@ -31,14 +31,14 @@
         quaternary
         block
         :disabled="!isCurrentTag"
-        @click="tagMenuOperation(TagMenuType.Refresh)"
+        @click="tagMenuOperation(TagOptionMenuEnum.Refresh)"
       >
         <template #icon>
           <MSIcon name="Refresh" size="18"></MSIcon>
         </template>
         重新加载
       </n-button>
-      <n-button quaternary block @click="tagMenuOperation(TagMenuType.Close)">
+      <n-button quaternary block @click="tagMenuOperation(TagOptionMenuEnum.Close)">
         <template #icon>
           <MSIcon name="Close" size="18"></MSIcon>
         </template>
@@ -48,7 +48,7 @@
         quaternary
         block
         :disabled="tagStore.tagList.length <= 1"
-        @click="tagMenuOperation(TagMenuType.Other)"
+        @click="tagMenuOperation(TagOptionMenuEnum.Other)"
       >
         <template #icon>
           <MSIcon name="Remove" size="18"></MSIcon>
@@ -59,7 +59,7 @@
         quaternary
         block
         :disabled="tagStore.tagList.length <= 1"
-        @click="tagMenuOperation(TagMenuType.All)"
+        @click="tagMenuOperation(TagOptionMenuEnum.All)"
       >
         <template #icon>
           <MSIcon name="Crop_Square" size="18"></MSIcon>
@@ -76,6 +76,7 @@ import { ref, onMounted, reactive, inject, watch, nextTick } from 'vue'
 import { useTagStore } from '@/plugins/stores/index'
 import MSIcon from '@/components/MSIcon/index.vue'
 import { useMessage } from 'naive-ui'
+import { TagOptionMenuEnum } from '@/constants/tagEnum'
 
 const tagStore = useTagStore()
 
@@ -166,18 +167,18 @@ const openTagMenu = (index: number, event: MouseEvent) => {
 }
 
 // tag菜单操作方法
-const tagMenuOperation = (type: TagMenuType) => {
+const tagMenuOperation = (type: TagOptionMenuEnum) => {
   switch (type) {
-    case TagMenuType.Refresh:
+    case TagOptionMenuEnum.Refresh:
       tagMenuRefresh()
       break
-    case TagMenuType.Close:
+    case TagOptionMenuEnum.Close:
       tagMenuCloseTag()
       break
-    case TagMenuType.Other:
+    case TagOptionMenuEnum.Other:
       tagMenuCloseOtherTags()
       break
-    case TagMenuType.All:
+    case TagOptionMenuEnum.All:
       tagMenuCloseAllTags()
       break
   }
@@ -230,13 +231,6 @@ onMounted(() => {
 interface TagMenuPosition {
   x: string
   y: string
-}
-
-enum TagMenuType {
-  Refresh = 'refresh',
-  Close = 'close',
-  Other = 'other',
-  All = 'all'
 }
 </script>
 

@@ -1,4 +1,4 @@
-import type { PageParams } from './page'
+import type { PageParams } from '../page'
 
 export interface RoleInfo {
   id: string

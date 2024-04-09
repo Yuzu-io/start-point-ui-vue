@@ -1,4 +1,4 @@
-import type { PageParams } from './page'
+import type { PageParams } from '../page'
 
 export interface RoutesInfo {
   /*路由编号 */
@@ -41,10 +41,10 @@ export interface RoutesInfo {
   orderIndex: number
 
   /*创建时间 */
-  createTime: string
+  createTime?: string
 
   /*修改时间 */
-  updateTime: string
+  updateTime?: string
 }
 
 // 响应接口

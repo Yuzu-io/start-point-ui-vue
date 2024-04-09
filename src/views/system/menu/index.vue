@@ -69,7 +69,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, h } from 'vue'
-import type { RoutesInfo } from '@/types/routes'
+import type { RoutesInfo } from '@/types/system/routes'
 import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
 import { getRoutesListApi, deleteRoutesApi, batchDeleteRoutesApi } from '@/api/system/routes'
