@@ -77,6 +77,7 @@ import { useTagStore } from '@/plugins/stores/index'
 import MSIcon from '@/components/MSIcon/index.vue'
 import { useMessage } from 'naive-ui'
 import { TagOptionMenuEnum } from '@/constants/tagEnum'
+import { useRoute } from 'vue-router'
 
 const tagStore = useTagStore()
 
@@ -222,6 +223,16 @@ watch(showTagMenu, (val) => {
     document.removeEventListener('click', focusTagMenu)
   }
 })
+
+const route = useRoute()
+watch(
+  () => route.path,
+  (val) => {
+    const index = tagStore.tagList.findIndex((item) => item.path === val)
+    currentTagIndex.value = index
+    getTagWidth()
+  }
+)
 
 onMounted(() => {
   getTagWidth()

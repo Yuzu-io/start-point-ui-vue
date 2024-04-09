@@ -1,9 +1,10 @@
 import NProgress from 'nprogress'
 import router from './plugins/router'
 import getPageTitle from './utils/getPageTitle'
-import { usePermissionStore, useUserStore } from './plugins/stores'
+import { usePermissionStore, useTagStore, useUserStore } from './plugins/stores'
 import type { RoutesInfoRes } from './types/system/routes'
 import { constantsRoutes } from './plugins/router/constantsRoutes'
+import type { TagList } from './types/tag'
 
 NProgress.configure({
   showSpinner: false
@@ -48,8 +49,16 @@ router.beforeEach(async (to) => {
   }
 })
 
-router.afterEach(() => {
+router.afterEach((to) => {
   NProgress.done()
+  if (to.path === '/login') return
+  const data: TagList = {
+    title: to.meta.title as string,
+    path: to.path,
+    keepAlive: to.meta.keepAlive as string
+  }
+  const tagStore = useTagStore()
+  tagStore.addTag(data)
 })
 
 // 获取路由
