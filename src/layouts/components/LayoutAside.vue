@@ -30,10 +30,11 @@
 import { h, reactive, ref, type VNode } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { type MenuOption } from 'naive-ui'
-import type { RoutesInfoRes } from '@/types/routes'
+import type { RoutesInfoRes } from '@/types/system/routes'
 import MSIcon from '@/components/MSIcon/index.vue'
 import ScrollBar from '@/components/ScrollBar/index.vue'
 import { usePermissionStore } from '@/plugins/stores'
+import { MenuTypeEnum } from '@/constants/routesEnum'
 
 const route = useRoute()
 const currentRoutes = ref<string>(route.fullPath)
@@ -43,6 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 // 处理菜单数据
 const permissionStore = usePermissionStore()
+
 const menuList = permissionStore.menuRouters
 const getItem = (
   title: string,
@@ -65,13 +67,16 @@ const renderIcon = (icon: string) => {
 const generateMenu = (item: RoutesInfoRes[]) => {
   const data: MenuOption[] = []
   item.forEach((item) => {
-    const { icon, fullPath, children, title } = item
-    const menuItem = getItem(
-      title,
-      fullPath,
-      icon ? renderIcon(icon) : undefined,
-      children ? generateMenu(children) : undefined
-    )
+    const { icon, fullPath, children, title, type } = item
+
+    let currentChildren = undefined
+    if (Array.isArray(children)) {
+      currentChildren = generateMenu(children)
+    } else if (type == MenuTypeEnum.Directory) {
+      currentChildren = []
+    }
+
+    const menuItem = getItem(title, fullPath, icon ? renderIcon(icon) : undefined, currentChildren)
     data.push(menuItem)
   })
   return data

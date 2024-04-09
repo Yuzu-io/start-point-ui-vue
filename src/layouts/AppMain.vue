@@ -51,6 +51,7 @@ provide<ProvideTag>('provideTag', {
 <style lang="scss" scoped>
 .layout {
   height: 100vh;
+  background-color: #f5f5f5;
 
   .aside,
   .header,
@@ -59,7 +60,7 @@ provide<ProvideTag>('provideTag', {
   }
 
   .aside {
-    padding: 10px 0 10px 10px;
+    margin: 10px 0 10px 10px;
     box-sizing: content-box;
     :deep(.n-layout-sider-scroll-container) {
       @include divInitialization();

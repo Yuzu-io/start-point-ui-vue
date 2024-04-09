@@ -2,12 +2,29 @@ import NProgress from 'nprogress'
 import router from './plugins/router'
 import getPageTitle from './utils/getPageTitle'
 import { usePermissionStore, useUserStore } from './plugins/stores'
+import type { RoutesInfoRes } from './types/system/routes'
+import { constantsRoutes } from './plugins/router/constantsRoutes'
 
 NProgress.configure({
   showSpinner: false
 })
 
-router.beforeEach(async (to, from, next) => {
+export const mainRouteName = 'AppMain'
+
+// 在路由install之前添加路由
+const handler: ProxyHandler<any> = {
+  apply(t, i, a) {
+    const permissionStore = usePermissionStore()
+    const { menuRouters } = permissionStore
+    if (getRoutes(menuRouters)) {
+      addRoutes(getRoutes(menuRouters), mainRouteName)
+    }
+    t.apply(i, a)
+  }
+}
+router.install = new Proxy(router.install, handler)
+
+router.beforeEach((to, from, next) => {
   NProgress.start()
 
   const userStore = useUserStore()
@@ -20,12 +37,17 @@ router.beforeEach(async (to, from, next) => {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
-      // 判断是否存在
-      if (!router.hasRoute(to.name || '')) {
-        // 获取菜单路由
-        const { menuRouters } = permissionStore
-        //
-      }
+      // if (!router.hasRoute(to.name || '')) {
+      //   const permissionStore = usePermissionStore()
+      //   const { menuRouters } = permissionStore
+      //   addRoutes(getRoutes(menuRouters), mainRouteName).then(({ flat }) => {
+      //     const toMenu = flat.find((item) => item.fullPath === to.fullPath)
+      //     if (toMenu) next({ name: toMenu.routesName || toMenu.fullPath.replace(/\//, '') })
+      //     else next({ name: mainRouteName })
+      //   })
+      // } else {
+      //   next()
+      // }
       next()
     }
     NProgress.done()
@@ -45,14 +67,53 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
+router.afterEach(() => {
+  NProgress.done()
+})
+
+// 获取路由
+export function getRoutes(menu: RoutesInfoRes[]) {
+  return constantsRoutes.concat(menu)
+}
+
 // 添加路由
-export function addRoutes(_routes: any[], _parentName: string = '') {
-  const flatMenuList = []
-  function recursion(routes: any[], parentName: string = '') {
+export function addRoutes(_routes: RoutesInfoRes[], _parentName: string = '') {
+  const flatMenuList: RoutesInfoRes[] = []
+  const modules = import.meta.glob('@/views/**/*.vue')
+
+  function recursion(routes: RoutesInfoRes[], parentName: string = '') {
     routes.forEach((item) => {
-      if (item.path && item.componentPath) {
+      if (item.fullPath && item.componentPath) {
         flatMenuList.push(item)
+        const componentString = item.componentPath.replace(/^\/+/, '') // 过滤字符串前面所有 '/' 字符
+        const componentPath = componentString.replace(/\.\w+$/, '') // 过滤掉后缀名，为了让 import 加入 .vue ，不然会有警告提示...
+        const name = item.routesName || item.fullPath.replace(/\//, '') // routesName为空时，取fullPath去除开头/
+
+        const componentUrl = '/src/' + componentPath + '.vue'
+
+        const route = {
+          path: item.fullPath,
+          name,
+          component: modules[componentUrl],
+          meta: {
+            title: item.title,
+            keepAlive: item.keepAlive,
+            icon: item.icon,
+            parentName
+          }
+        }
+        // 添加路由到vue-router中
+        parentName ? router.addRoute(parentName, route) : router.addRoute(route)
+        if (item.children && item.children.length) {
+          recursion(item.children, name)
+        }
+      } else {
+        if (item.children && item.children.length) {
+          recursion(item.children, parentName)
+        }
       }
     })
   }
+  recursion(_routes, _parentName)
+  return Promise.resolve({ tree: _routes, flat: flatMenuList })
 }

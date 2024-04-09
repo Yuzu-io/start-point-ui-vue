@@ -115,14 +115,14 @@ const onSubmit = () => {
       }
       await userStore.login(params)
       await userStore.getUserInfo()
-      // await permissionStore.getRoutes()
+      await permissionStore.getRoutes()
       message.success('登录成功')
       const redirect = route.query.redirect as string
       if (redirect) {
         const redirectUrl = decodeURIComponent(redirect)
         router.push(redirectUrl)
       } else {
-        router.push('/layout')
+        router.push('/')
       }
     } else {
       if (error) {

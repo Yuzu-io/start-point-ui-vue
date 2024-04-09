@@ -3,66 +3,10 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/layout'
-  },
-  {
-    path: '/layout',
-    name: 'layout',
+    name: 'AppMain',
     component: () => import('@/layouts/AppMain.vue'),
-    redirect: 'dashboard',
-    children: [
-      {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: () => import('@/views/dashboard/index.vue'),
-        meta: {
-          title: '仪表盘',
-          keepAlive: true,
-          parentPath: ''
-        }
-      },
-      {
-        path: '/system',
-        name: 'system',
-        meta: {
-          title: '系统管理',
-          keepAlive: true,
-          parentPath: ''
-        },
-        children: [
-          {
-            path: '/menu',
-            name: 'menu',
-            component: () => import('@/views/system/menu/index.vue'),
-            meta: {
-              title: '菜单管理',
-              keepAlive: true,
-              parentPath: '/system'
-            }
-          },
-          {
-            path: '/role',
-            name: 'role',
-            component: () => import('@/views/system/role/index.vue'),
-            meta: {
-              title: '角色管理',
-              keepAlive: true,
-              parentPath: '/system'
-            }
-          },
-          {
-            path: '/user',
-            name: 'user',
-            component: () => import('@/views/system/user/index.vue'),
-            meta: {
-              title: '用户管理',
-              keepAlive: true,
-              parentPath: '/system'
-            }
-          }
-        ]
-      }
-    ]
+    redirect: '/dashboard',
+    children: []
   },
   {
     path: '/login',
@@ -71,6 +15,15 @@ const routes: RouteRecordRaw[] = [
       title: '登录'
     },
     component: () => import('@/views/login/Login.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/404'
+  },
+  {
+    path: '/404',
+    name: 'notFound',
+    component: () => import('@/views/error/404/index.vue')
   }
 ]
 

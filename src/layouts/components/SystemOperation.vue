@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { langList, useLocale } from '@/locales/useLocale'
-import { useLoadingStore, useUserStore } from '@/plugins/stores'
+import { useLoadingStore, usePermissionStore, useUserStore } from '@/plugins/stores'
 import type { LangList } from '@/types/lang'
 import { useMessage, type DropdownOption } from 'naive-ui'
 import MSIcon from '@/components/MSIcon/index.vue'
@@ -56,8 +56,10 @@ const systemOptionsFun = (key: string | number, option: DropdownOption) => {
 }
 
 const userStore = useUserStore()
+const permissionStore = usePermissionStore()
 const logout = async () => {
   await userStore.logout()
+  await permissionStore.$reset()
   message.success('已登出')
 }
 </script>

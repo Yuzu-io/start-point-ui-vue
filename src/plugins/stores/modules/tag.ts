@@ -1,4 +1,4 @@
-import type { RoutesInfo } from '@/types/routes'
+import type { RoutesInfo } from '@/types/system/routes'
 import { defineStore } from 'pinia'
 
 export const useTagStore = defineStore('tagStore', {
