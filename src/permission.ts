@@ -11,20 +11,7 @@ NProgress.configure({
 
 export const mainRouteName = 'AppMain'
 
-// 在路由install之前添加路由
-const handler: ProxyHandler<any> = {
-  apply(t, i, a) {
-    const permissionStore = usePermissionStore()
-    const { menuRouters } = permissionStore
-    if (getRoutes(menuRouters)) {
-      addRoutes(getRoutes(menuRouters), mainRouteName)
-    }
-    t.apply(i, a)
-  }
-}
-router.install = new Proxy(router.install, handler)
-
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to) => {
   NProgress.start()
 
   const userStore = useUserStore()
@@ -35,35 +22,29 @@ router.beforeEach((to, from, next) => {
 
   if (userStore.token) {
     if (to.path === '/login') {
-      next({ path: '/' })
+      return { path: '/' }
     } else {
-      // if (!router.hasRoute(to.name || '')) {
-      //   const permissionStore = usePermissionStore()
-      //   const { menuRouters } = permissionStore
-      //   addRoutes(getRoutes(menuRouters), mainRouteName).then(({ flat }) => {
-      //     const toMenu = flat.find((item) => item.fullPath === to.fullPath)
-      //     if (toMenu) next({ name: toMenu.routesName || toMenu.fullPath.replace(/\//, '') })
-      //     else next({ name: mainRouteName })
-      //   })
-      // } else {
-      //   next()
-      // }
-      next()
+      if (!permissionStore.isAddRoutes) {
+        permissionStore.isAddRoutes = true
+        await permissionStore.getRoutes()
+        await addRoutes(getRoutes(permissionStore.menuRouters), mainRouteName)
+        return to.fullPath
+      } else {
+        return true
+      }
     }
-    NProgress.done()
   } else {
     // 判断是否是白名单
     if (permissionStore.whiteList.includes(to.path)) {
-      next()
+      return true
     } else {
-      next({
+      return {
         path: '/login',
         query: {
           redirect: encodeURIComponent(to.fullPath)
         }
-      })
+      }
     }
-    NProgress.done()
   }
 })
 
@@ -88,7 +69,6 @@ export function addRoutes(_routes: RoutesInfoRes[], _parentName: string = '') {
         const componentString = item.componentPath.replace(/^\/+/, '') // 过滤字符串前面所有 '/' 字符
         const componentPath = componentString.replace(/\.\w+$/, '') // 过滤掉后缀名，为了让 import 加入 .vue ，不然会有警告提示...
         const name = item.routesName || item.fullPath.replace(/\//, '') // routesName为空时，取fullPath去除开头/
-
         const componentUrl = '/src/' + componentPath + '.vue'
 
         const route = {

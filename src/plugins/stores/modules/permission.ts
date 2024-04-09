@@ -7,7 +7,8 @@ export const usePermissionStore = defineStore('permissionStore', {
   state: (): State => ({
     whiteList: ['/login'],
     menuRouters: [],
-    btnRouters: []
+    btnRouters: [],
+    isAddRoutes: false
   }),
   actions: {
     async getRoutes() {
@@ -27,4 +28,5 @@ interface State {
   whiteList: string[]
   menuRouters: RoutesInfoRes[]
   btnRouters: []
+  isAddRoutes: boolean
 }

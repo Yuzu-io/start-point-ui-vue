@@ -74,7 +74,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { type FormInst, type FormRules, useMessage } from 'naive-ui'
 import type { LoginParams } from '@/types/auth'
 import { getValidateCodeApi } from '@/api/auth'
-import { usePermissionStore, useUserStore } from '@/plugins/stores'
+import { useUserStore } from '@/plugins/stores'
 import { md5 } from 'js-md5'
 import MSIcon from '@/components/MSIcon/index.vue'
 
@@ -103,7 +103,6 @@ const getValidateCode = () => {
 }
 
 const userStore = useUserStore()
-const permissionStore = usePermissionStore()
 const router = useRouter()
 const route = useRoute()
 const onSubmit = () => {
@@ -115,7 +114,6 @@ const onSubmit = () => {
       }
       await userStore.login(params)
       await userStore.getUserInfo()
-      await permissionStore.getRoutes()
       message.success('登录成功')
       const redirect = route.query.redirect as string
       if (redirect) {

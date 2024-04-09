@@ -56,10 +56,8 @@ const systemOptionsFun = (key: string | number, option: DropdownOption) => {
 }
 
 const userStore = useUserStore()
-const permissionStore = usePermissionStore()
 const logout = async () => {
   await userStore.logout()
-  await permissionStore.$reset()
   message.success('已登出')
 }
 </script>
