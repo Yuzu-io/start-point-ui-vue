@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, reactive, ref, type VNode } from 'vue'
+import { h, reactive, ref, watch, type VNode } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { type MenuOption } from 'naive-ui'
 import type { RoutesInfoRes } from '@/types/system/routes'
@@ -89,6 +89,16 @@ const menuClick = (key: string, item: MenuOption) => {
     path: key
   })
 }
+
+watch(
+  route,
+  () => {
+    currentRoutes.value = route.fullPath
+  },
+  {
+    immediate: true
+  }
+)
 </script>
 <script lang="ts">
 interface Props {

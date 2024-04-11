@@ -1,3 +1,4 @@
+import router from '@/plugins/router'
 import type { TagList } from '@/types/tag'
 import { defineStore } from 'pinia'
 
@@ -7,17 +8,34 @@ export const useTagStore = defineStore('tagStore', {
   }),
   actions: {
     addTag(value: TagList) {
-      if (this.tagList.find((item) => item.path === value.path)) return
-      this.tagList.push(value)
+      const isFind = this.tagList.find((item) => item.path === value.path)
+      if (!isFind) {
+        this.tagList.push(value)
+      }
     },
     closeTag(index: number) {
       this.tagList.splice(index, 1)
       if (!this.tagList.length) {
-        useTagStore().$reset()
+        router.push('/')
+        this.init()
       }
     },
     closeOtherTags(index: number) {
       this.tagList = [this.tagList[index]]
+    },
+    closeAllTags() {
+      useTagStore().$reset()
+      if (!this.tagList.length) {
+        router.push('/')
+        this.init()
+      }
+    },
+    init() {
+      this.addTag({
+        path: '/dashboard',
+        title: '仪表盘',
+        keepAlive: '0'
+      })
     }
   }
 })

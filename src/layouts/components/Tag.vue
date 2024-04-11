@@ -77,11 +77,14 @@ import { useTagStore } from '@/plugins/stores/index'
 import MSIcon from '@/components/MSIcon/index.vue'
 import { useMessage } from 'naive-ui'
 import { TagOptionMenuEnum } from '@/constants/tagEnum'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import type { TagList } from '@/types/tag'
 
 const tagStore = useTagStore()
 
 const message = useMessage()
+
+const route = useRoute()
 
 const { collapsedWidth, width, collapsed, refresh } = inject<ProvideTag>('provideTag', {
   refresh: () => {
@@ -117,12 +120,15 @@ const getTagWidth = () => {
 }
 
 // 选择标签
-const chooseTag = (item: any, index: number) => {
+const router = useRouter()
+const chooseTag = (item: TagList | null, index: number) => {
   if (index === currentTagIndex.value) return
   currentTagIndex.value = index
   getTagWidth()
   // 跳转路由
-  console.log(item)
+  if (item) {
+    router.push(item.path)
+  }
 }
 
 // 关闭标签
@@ -134,6 +140,7 @@ const closeTag = (index: number) => {
     currentTagIndex.value--
   }
   getTagWidth()
+  router.push(tagStore.tagList[currentTagIndex.value].path)
 }
 
 const showTagMenu = ref<boolean>(false)
@@ -205,7 +212,7 @@ const tagMenuCloseOtherTags = () => {
   currentTagIndex.value = 0
 }
 const tagMenuCloseAllTags = () => {
-  tagStore.$reset()
+  tagStore.closeAllTags()
 }
 
 // 判断是否点击在非菜单元素中
@@ -216,21 +223,37 @@ const focusTagMenu = (event: MouseEvent) => {
     showTagMenu.value = false
   }
 }
-watch(showTagMenu, (val) => {
-  if (val) {
-    document.addEventListener('click', focusTagMenu)
-  } else {
-    document.removeEventListener('click', focusTagMenu)
-  }
-})
 
-const route = useRoute()
 watch(
-  () => route.path,
+  showTagMenu,
   (val) => {
-    const index = tagStore.tagList.findIndex((item) => item.path === val)
-    currentTagIndex.value = index
-    getTagWidth()
+    if (val) {
+      document.addEventListener('click', focusTagMenu)
+    } else {
+      document.removeEventListener('click', focusTagMenu)
+    }
+  },
+  {
+    immediate: true
+  }
+)
+
+watch(
+  route,
+  () => {
+    const data: TagList = {
+      title: route.meta.title as string,
+      path: route.path,
+      keepAlive: route.meta.keepAlive as string
+    }
+    const tagStore = useTagStore()
+    tagStore.addTag(data)
+    // 获取当前标签索引
+    const index = tagStore.tagList.findIndex((item) => item.path === route.path)
+    chooseTag(null, index)
+  },
+  {
+    immediate: true
   }
 )
 
