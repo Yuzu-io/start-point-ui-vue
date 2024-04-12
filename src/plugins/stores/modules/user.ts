@@ -52,9 +52,7 @@ export const useUserStore = defineStore('userStore', {
       return Promise.resolve()
     }
   },
-  persist: {
-    paths: ['token']
-  }
+  persist: true
 })
 
 interface State {
