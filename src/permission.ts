@@ -3,7 +3,6 @@ import router from './plugins/router'
 import getPageTitle from './utils/getPageTitle'
 import { usePermissionStore, useUserStore } from './plugins/stores'
 import type { RoutesInfoRes } from './types/system/routes'
-import { constantsRoutes } from './plugins/router/constantsRoutes'
 
 NProgress.configure({
   showSpinner: false
@@ -27,7 +26,7 @@ router.beforeEach(async (to) => {
       if (!permissionStore.isAddRoutes) {
         permissionStore.isAddRoutes = true
         await permissionStore.getRoutes()
-        await addRoutes(getRoutes(permissionStore.menuRouters), mainRouteName)
+        await addRoutes(permissionStore.menuRouters, mainRouteName)
         return to.fullPath
       } else {
         return true
@@ -52,11 +51,6 @@ router.afterEach(() => {
   NProgress.done()
 })
 
-// 获取路由
-export function getRoutes(menu: RoutesInfoRes[]) {
-  return constantsRoutes.concat(menu)
-}
-
 // 添加路由
 export function addRoutes(_routes: RoutesInfoRes[], _parentName: string = '') {
   const flatMenuList: RoutesInfoRes[] = []
@@ -79,7 +73,8 @@ export function addRoutes(_routes: RoutesInfoRes[], _parentName: string = '') {
             title: item.title,
             keepAlive: item.keepAlive,
             icon: item.icon,
-            parentName
+            parentName,
+            dynamic: true // 标识动态
           }
         }
         // 添加路由到vue-router中
@@ -96,4 +91,14 @@ export function addRoutes(_routes: RoutesInfoRes[], _parentName: string = '') {
   }
   recursion(_routes, _parentName)
   return Promise.resolve({ tree: _routes, flat: flatMenuList })
+}
+
+// 销毁动态路由
+export function flushDynamicRoutes() {
+  const getRoutes = router.getRoutes()
+  const dynamicRoutes = getRoutes.filter((route) => route.meta && route.meta.dynamic === true)
+
+  dynamicRoutes.forEach((route) => {
+    router.removeRoute(route.name as string)
+  })
 }

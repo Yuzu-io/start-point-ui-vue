@@ -2,7 +2,7 @@ import { getUserInfoApi, loginApi, logout } from '@/api/auth'
 import type { LoginParams, LoginUserInfoRes } from '@/types/auth'
 import { defineStore } from 'pinia'
 import router from '@/plugins/router/index'
-import { usePermissionStore } from '..'
+import { usePermissionStore, useTagStore } from '..'
 
 export const useUserStore = defineStore('userStore', {
   state: (): State => ({
@@ -45,7 +45,8 @@ export const useUserStore = defineStore('userStore', {
     async logout(flag: boolean = true) {
       const res = flag ? await logout().catch((e) => console.log(e)) : null
       useUserStore().$reset()
-      usePermissionStore().$reset()
+      usePermissionStore().destruction()
+      useTagStore().destruction()
       router.replace('/login') // 返回登录页
       if (!res) return Promise.reject()
       return Promise.resolve()

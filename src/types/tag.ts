@@ -1,5 +1,5 @@
 export interface TagList {
-  title: string
   path: string
+  title: string
   keepAlive: string
 }

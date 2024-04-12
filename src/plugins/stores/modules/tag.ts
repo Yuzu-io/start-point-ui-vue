@@ -1,6 +1,7 @@
 import router from '@/plugins/router'
 import type { TagList } from '@/types/tag'
 import { defineStore } from 'pinia'
+import { mainRouteName } from '@/permission'
 
 export const useTagStore = defineStore('tagStore', {
   state: (): State => ({
@@ -31,11 +32,18 @@ export const useTagStore = defineStore('tagStore', {
       }
     },
     init() {
-      this.addTag({
-        path: '/dashboard',
-        title: '仪表盘',
-        keepAlive: '0'
-      })
+      const routesList = router.getRoutes()
+      const firstRoutes = routesList.find((item) => item.meta.parentName === mainRouteName)
+      if (firstRoutes) {
+        this.addTag({
+          path: firstRoutes.path,
+          title: firstRoutes.meta.title as string,
+          keepAlive: firstRoutes.meta.keepAlive as string
+        })
+      }
+    },
+    destruction() {
+      useTagStore().$reset()
     }
   }
 })

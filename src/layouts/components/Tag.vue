@@ -161,7 +161,6 @@ const openTagMenu = (index: number, event: MouseEvent) => {
   }
   currentTagMenuIndex.value = index
   showTagMenu.value = true
-  console.log(collapsed)
   if (
     collapsed instanceof Object &&
     typeof collapsedWidth === 'number' &&
@@ -242,8 +241,8 @@ watch(
   route,
   () => {
     const data: TagList = {
-      title: route.meta.title as string,
       path: route.path,
+      title: route.meta.title as string,
       keepAlive: route.meta.keepAlive as string
     }
     const tagStore = useTagStore()
