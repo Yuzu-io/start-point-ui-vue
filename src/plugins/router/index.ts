@@ -5,7 +5,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'AppMain',
     component: () => import('@/layouts/AppMain.vue'),
-    redirect: '/dashboard',
+    // redirect: '/dashboard',
     children: []
   },
   {
@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/:pathMatch(.*)*',
     name: 'notFound',
-    component: () => import('@/views/error/404/index.vue'),
+    component: () => import('@/views/error/notFound/index.vue'),
     meta: {
       title: '404'
     }
