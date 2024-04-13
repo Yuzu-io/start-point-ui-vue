@@ -61,10 +61,10 @@
     >
       <template #prefix="{ itemCount }"> 共 {{ itemCount }} 条 </template>
     </n-pagination>
+    <MenuAdd ref="menuAddRef" @success="getData"></MenuAdd>
+    <MenuEdit ref="menuEditRef" @success="getData"></MenuEdit>
+    <MenuBatchEdit ref="menuBatchEditRef" @success="getData"></MenuBatchEdit>
   </div>
-  <MenuAdd ref="menuAddRef" @success="getData"></MenuAdd>
-  <MenuEdit ref="menuEditRef" @success="getData"></MenuEdit>
-  <MenuBatchEdit ref="menuBatchEditRef" @success="getData"></MenuBatchEdit>
 </template>
 
 <script setup lang="ts">
@@ -78,6 +78,7 @@ import MenuAdd from './add/index.vue'
 import MenuEdit from './edit/index.vue'
 import MenuBatchEdit from './batchEdit/index.vue'
 import MSIcon from '@/components/MSIcon/index.vue'
+import { mainRouteName } from '@/permission'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -293,6 +294,10 @@ const batchDeleteRow = async () => {
     getData()
   }
 }
+
+defineOptions({
+  name: `${mainRouteName}-menu`
+})
 </script>
 <script lang="ts">
 interface IRowData extends RoutesInfo, RowData {}

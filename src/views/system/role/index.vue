@@ -61,10 +61,10 @@
     >
       <template #prefix="{ itemCount }"> 共 {{ itemCount }} 条 </template>
     </n-pagination>
+    <RoleAdd ref="roleAddRef" @success="getData"></RoleAdd>
+    <RoleEdit ref="roleEditRef" @success="getData"></RoleEdit>
+    <RoleBatchEdit ref="roleBatchEditRef" @success="getData"></RoleBatchEdit>
   </div>
-  <RoleAdd ref="roleAddRef" @success="getData"></RoleAdd>
-  <RoleEdit ref="roleEditRef" @success="getData"></RoleEdit>
-  <RoleBatchEdit ref="roleBatchEditRef" @success="getData"></RoleBatchEdit>
 </template>
 
 <script setup lang="ts">
@@ -78,6 +78,7 @@ import RoleAdd from './add/index.vue'
 import RoleEdit from './edit/index.vue'
 import RoleBatchEdit from './batchEdit/index.vue'
 import MSIcon from '@/components/MSIcon/index.vue'
+import { mainRouteName } from '@/permission'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -267,6 +268,10 @@ const batchDeleteRow = async () => {
     getData()
   }
 }
+
+defineOptions({
+  name: `${mainRouteName}-role`
+})
 </script>
 <script lang="ts">
 interface IRowData extends RoleInfo, RowData {}

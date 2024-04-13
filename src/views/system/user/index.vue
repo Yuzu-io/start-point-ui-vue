@@ -57,10 +57,10 @@
     >
       <template #prefix="{ itemCount }"> 共 {{ itemCount }} 条 </template>
     </n-pagination>
+    <UserAdd ref="userAddRef" @success="getData"></UserAdd>
+    <UserEdit ref="userEditRef" @success="getData"></UserEdit>
+    <UserBatchEdit ref="userBatchEditRef" @success="getData"></UserBatchEdit>
   </div>
-  <UserAdd ref="userAddRef" @success="getData"></UserAdd>
-  <UserEdit ref="userEditRef" @success="getData"></UserEdit>
-  <UserBatchEdit ref="userBatchEditRef" @success="getData"></UserBatchEdit>
 </template>
 
 <script setup lang="ts">
@@ -74,6 +74,7 @@ import UserEdit from './edit/index.vue'
 import UserBatchEdit from './batchEdit/index.vue'
 import type { UserInfo } from '@/types/system/user'
 import MSIcon from '@/components/MSIcon/index.vue'
+import { mainRouteName } from '@/permission'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -292,6 +293,10 @@ const batchDeleteRow = async () => {
     getData()
   }
 }
+
+defineOptions({
+  name: `${mainRouteName}-user`
+})
 </script>
 <script lang="ts">
 interface IRowData extends UserInfo, RowData {}
