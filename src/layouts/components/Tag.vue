@@ -79,6 +79,7 @@ import { useMessage } from 'naive-ui'
 import { TagOptionMenuEnum } from '@/constants/tagEnum'
 import { useRoute, useRouter } from 'vue-router'
 import type { TagList } from '@/types/tag'
+import { mainRouteName } from '@/permission'
 
 const tagStore = useTagStore()
 
@@ -209,9 +210,11 @@ const tagMenuCloseTag = () => {
 const tagMenuCloseOtherTags = () => {
   tagStore.closeOtherTags(currentTagMenuIndex.value)
   currentTagIndex.value = 0
+  router.push(tagStore.tagList[currentTagIndex.value].path)
 }
 const tagMenuCloseAllTags = () => {
   tagStore.closeAllTags()
+  currentTagIndex.value = 0
 }
 
 // 判断是否点击在非菜单元素中
@@ -240,16 +243,19 @@ watch(
 watch(
   route,
   () => {
-    const data: TagList = {
-      path: route.path,
-      title: route.meta.title as string,
-      keepAlive: route.meta.keepAlive as string
+    if (route.meta.dynamic) {
+      const data: TagList = {
+        path: route.path,
+        title: route.meta.title as string,
+        keepAlive: route.meta.keepAlive as string,
+        componentName: `${mainRouteName}-${route.name as string}`
+      }
+      const tagStore = useTagStore()
+      tagStore.addTag(data)
+      // 获取当前标签索引
+      const index = tagStore.tagList.findIndex((item) => item.path === route.path)
+      chooseTag(null, index)
     }
-    const tagStore = useTagStore()
-    tagStore.addTag(data)
-    // 获取当前标签索引
-    const index = tagStore.tagList.findIndex((item) => item.path === route.path)
-    chooseTag(null, index)
   },
   {
     immediate: true

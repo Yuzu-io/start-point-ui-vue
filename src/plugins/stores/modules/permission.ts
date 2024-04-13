@@ -1,6 +1,6 @@
 import { getRoutesApi } from '@/api/auth'
-import { flushDynamicRoutes } from '@/permission'
 import type { RoutesInfoRes } from '@/types/system/routes'
+import { flushDynamicRoutes } from '@/utils/routesUtils'
 import { defineStore } from 'pinia'
 
 export const usePermissionStore = defineStore('permissionStore', {

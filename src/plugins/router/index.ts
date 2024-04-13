@@ -5,7 +5,6 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'AppMain',
     component: () => import('@/layouts/AppMain.vue'),
-    // redirect: '/dashboard',
     children: []
   },
   {

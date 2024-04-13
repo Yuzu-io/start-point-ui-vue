@@ -1,16 +1,33 @@
 <template>
-  <RouterView v-if="route.meta.keepAlive === '0'" v-slot="{ Component }">
-    <KeepAlive>
-      <component :is="Component" />
-    </KeepAlive>
+  <RouterView v-slot="{ Component }">
+    <Transition name="fade" mode="out-in">
+      <KeepAlive :include="tagStore.cacheView">
+        <component :is="Component" />
+      </KeepAlive>
+    </Transition>
   </RouterView>
-  <RouterView v-if="!(route.meta.keepAlive === '0')" />
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { useTagStore } from '@/plugins/stores'
 
-const route = useRoute()
+const tagStore = useTagStore()
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.fade--move,
+.fade-leave-active,
+.fade-enter-active {
+  transition: all 0.5s;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+</style>
