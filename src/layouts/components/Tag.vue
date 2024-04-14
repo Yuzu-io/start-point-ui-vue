@@ -203,6 +203,7 @@ const tagMenuCloseTag = () => {
   tagStore.closeTag(currentTagMenuIndex.value)
   if (currentTagMenuIndex.value === currentTagIndex.value) {
     currentTagIndex.value = tagStore.tagList.length - 1
+    router.push(tagStore.tagList[currentTagIndex.value].path)
   } else if (currentTagMenuIndex.value < currentTagIndex.value) {
     currentTagIndex.value--
   }
