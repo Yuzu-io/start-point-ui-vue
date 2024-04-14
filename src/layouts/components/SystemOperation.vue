@@ -20,8 +20,8 @@
       @select="systemOptionsFun"
     >
       <div class="system-operation__item user">
-        <n-avatar round>U</n-avatar>
-        Admin
+        <n-avatar round :src="avatar"></n-avatar>
+        {{ username }}
       </div>
     </n-dropdown>
   </div>
@@ -29,13 +29,18 @@
 
 <script setup lang="ts">
 import { langList, useLocale } from '@/locales/useLocale'
-import { useLoadingStore, usePermissionStore, useUserStore } from '@/plugins/stores'
+import { useLoadingStore, useUserStore } from '@/plugins/stores'
 import type { LangList } from '@/types/lang'
 import { useMessage, type DropdownOption } from 'naive-ui'
 import MSIcon from '@/components/MSIcon/index.vue'
+import { ref } from 'vue'
 
 const message = useMessage()
 const loadingStore = useLoadingStore()
+const userStore = useUserStore()
+const username = ref(userStore.userInfo.username) // 用户名
+const avatar = ref(import.meta.env.VITE_FILE_PATH_BASE_URL + '/images/' + userStore.userInfo.avatar) // 头像
+
 const { cutoverLang } = useLocale()
 const switchLanguage = (key: string | number, option: LangList) => {
   cutoverLang(option.value)
@@ -55,7 +60,6 @@ const systemOptionsFun = (key: string | number, option: DropdownOption) => {
   }
 }
 
-const userStore = useUserStore()
 const logout = async () => {
   await userStore.logout()
   message.success('已登出')
@@ -72,6 +76,7 @@ enum SystemOptions {
   @include flexInit($ais: center);
   @include divInitialization();
   background-color: #fff;
+  user-select: none;
 
   &__item {
     padding: 0 20px;
@@ -80,7 +85,15 @@ enum SystemOptions {
     @include flexInit($ais: center);
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.06);
+      background-color: #f5f5f5;
+    }
+  }
+  .user {
+    box-sizing: border-box;
+    padding: 0 15px;
+
+    .n-avatar {
+      margin: 0 5px;
     }
   }
 }
