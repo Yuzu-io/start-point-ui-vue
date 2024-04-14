@@ -23,6 +23,7 @@ router.beforeEach(async (to) => {
     const firstRoutes = getFirstDynamicRoutes()
     if (!permissionStore.isAddRoutes) {
       permissionStore.isAddRoutes = true
+      await userStore.getUserInfo()
       await permissionStore.getRoutes()
       await addRoutes(permissionStore.menuRouters, mainRouteName)
       return to.fullPath

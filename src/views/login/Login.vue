@@ -113,7 +113,6 @@ const onSubmit = () => {
         password: md5(formData.password).toLocaleUpperCase()
       }
       await userStore.login(params)
-      await userStore.getUserInfo()
       message.success('登录成功')
       const redirect = route.query.redirect as string
       if (redirect) {
