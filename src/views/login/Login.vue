@@ -136,8 +136,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .container {
+  height: 100%;
   position: relative;
-  height: 100vh;
   overflow: hidden;
   background: linear-gradient(217deg, rgba(113, 255, 113, 0.8), rgba(113, 255, 113, 0) 70.71%),
     linear-gradient(127deg, rgba(77, 174, 255, 0.8), rgba(77, 174, 255, 0) 70.71%),

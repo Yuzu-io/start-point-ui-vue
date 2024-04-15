@@ -50,7 +50,7 @@ provide<ProvideTag>('provideTag', {
 
 <style lang="scss" scoped>
 .layout {
-  height: 100vh;
+  height: 100%;
   background-color: #f5f5f5;
 
   .aside,
