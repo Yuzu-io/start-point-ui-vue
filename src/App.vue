@@ -20,3 +20,19 @@ const loadingStore = useLoadingStore()
 
 const { getLocale, locale } = useLocale()
 </script>
+
+<style lang="scss" scoped>
+.n-config-provider,
+.n-spin-container {
+  height: 100%;
+
+  :deep(.n-spin-content) {
+    height: 100%;
+  }
+}
+</style>
+<style lang="scss">
+#app {
+  height: 100%;
+}
+</style>
