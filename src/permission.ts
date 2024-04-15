@@ -29,7 +29,7 @@ router.beforeEach(async (to) => {
       return to.fullPath
     } else {
       if (to.path === '/login' || to.path === '/') {
-        return { path: firstRoutes ? firstRoutes.path : '/notFound' }
+        return { path: firstRoutes ? firstRoutes.path : '/notAuth' }
       } else {
         return true
       }
