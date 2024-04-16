@@ -4,6 +4,7 @@
       :show="loadingStore.loading"
       :delay="loadingStore.delay"
       :description="loadingStore.tip"
+      :content-style="contentStyle"
     >
       <n-message-provider :max="1">
         <RouterView :key="locale" />
@@ -19,6 +20,10 @@ import { useLoadingStore } from './plugins/stores'
 const loadingStore = useLoadingStore()
 
 const { getLocale, locale } = useLocale()
+
+const contentStyle = {
+  '--n-opacity-spinning': 0
+}
 </script>
 
 <style lang="scss" scoped>
@@ -29,10 +34,5 @@ const { getLocale, locale } = useLocale()
   :deep(.n-spin-content) {
     height: 100%;
   }
-}
-</style>
-<style lang="scss">
-#app {
-  height: 100%;
 }
 </style>
