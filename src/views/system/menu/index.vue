@@ -48,19 +48,14 @@
       >
       </n-data-table>
     </n-spin>
-    <n-pagination
-      class="pagination"
+    <Pagination
       v-model:page="queryParams.pageNum"
-      v-model:page-size="queryParams.pageSize"
-      :page-sizes="pageSizes"
-      :item-count="total"
-      show-quick-jumper
-      show-size-picker
-      @update:page="getData"
-      @update:page-size="getData"
-    >
-      <template #prefix="{ itemCount }"> 共 {{ itemCount }} 条 </template>
-    </n-pagination>
+      v-model:pageSize="queryParams.pageSize"
+      :pageSizes="pageSizes"
+      :total="total"
+      @update-page="getData"
+      @update-page-size="getData"
+    ></Pagination>
     <MenuAdd ref="menuAddRef" @success="getData"></MenuAdd>
     <MenuEdit ref="menuEditRef" @success="getData"></MenuEdit>
     <MenuBatchEdit ref="menuBatchEditRef" @success="getData"></MenuBatchEdit>
@@ -78,6 +73,7 @@ import MenuAdd from './add/index.vue'
 import MenuEdit from './edit/index.vue'
 import MenuBatchEdit from './batchEdit/index.vue'
 import MSIcon from '@/components/MSIcon/index.vue'
+import Pagination from '@/components/Pagination/index.vue'
 import { mainRouteName } from '@/permission'
 
 const formRef = ref<FormInst>()
