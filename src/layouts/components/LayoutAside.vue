@@ -54,14 +54,16 @@ const getItem = (
   fullPath: string,
   icon?: () => VNode,
   children?: MenuOption[] | null,
-  type?: string
+  type?: string,
+  link?: boolean
 ): MenuOption => {
   return {
     fullPath,
     icon,
     children,
     title,
-    type
+    type,
+    link
   } as MenuOption
 }
 const renderIcon = (icon: string) => {
@@ -70,17 +72,23 @@ const renderIcon = (icon: string) => {
 const generateMenu = (item: RoutesInfoRes[]) => {
   const data: MenuOption[] = []
   item.forEach((item) => {
-    const { icon, fullPath, children, title, type } = item
-
-    let currentChildren = undefined
-    if (Array.isArray(children)) {
-      currentChildren = generateMenu(children)
-    } else if (type == MenuTypeEnum.Directory) {
-      currentChildren = []
+    const { icon, fullPath, children, title, type, showStatus, isExternalLink } = item
+    if (showStatus === '0') {
+      let currentChildren = undefined
+      if (Array.isArray(children)) {
+        currentChildren = generateMenu(children)
+      } else if (type == MenuTypeEnum.Directory && isExternalLink === '1') {
+        currentChildren = []
+      }
+      const menuItem = getItem(
+        title,
+        fullPath,
+        icon ? renderIcon(icon) : undefined,
+        currentChildren
+      )
+      menuItem.link = isExternalLink === '0' // 判断是否为外链 是则为true，否则为false
+      data.push(menuItem)
     }
-
-    const menuItem = getItem(title, fullPath, icon ? renderIcon(icon) : undefined, currentChildren)
-    data.push(menuItem)
   })
   return data
 }
@@ -88,9 +96,13 @@ const items = reactive<MenuOption[]>(generateMenu(menuList))
 
 const router = useRouter()
 const menuClick = (key: string, item: MenuOption) => {
-  router.push({
-    path: key
-  })
+  if (item.link) {
+    window.open(item.fullPath as string, '_blank')
+  } else {
+    router.push({
+      path: key
+    })
+  }
 }
 
 watch(

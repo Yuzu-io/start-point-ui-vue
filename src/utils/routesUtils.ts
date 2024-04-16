@@ -39,6 +39,7 @@ export function addRoutes(_routes: RoutesInfoRes[], _parentName: string = '') {
           meta: {
             title: item.title,
             keepAlive: item.keepAlive,
+            isExternalLink: item.isExternalLink,
             icon: item.icon,
             parentName,
             dynamic: true // 标识动态

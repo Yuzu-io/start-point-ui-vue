@@ -1,5 +1,5 @@
 <template>
-  <RouterView v-slot="{ Component }">
+  <RouterView v-slot="{ Component }" v-if="route.meta.isExternalLink === '1'">
     <Transition name="fade" mode="out-in">
       <KeepAlive :include="tagStore.cacheView">
         <component :is="Component" />
@@ -10,8 +10,11 @@
 
 <script setup lang="ts">
 import { useTagStore } from '@/plugins/stores'
+import { useRoute } from 'vue-router'
 
 const tagStore = useTagStore()
+
+const route = useRoute()
 </script>
 
 <style lang="scss" scoped>
