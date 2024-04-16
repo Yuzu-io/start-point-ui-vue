@@ -4,7 +4,7 @@
     <div class="layout-aside__head">
       <div class="logo" v-show="!props.collapsed">start point</div>
       <div v-show="props.collapsed">
-        <img width="30" src="https://www.naiveui.com/assets/naivelogo-XQ1U1Js8.svg" alt="" />
+        <img width="30" :src="logoUrl" alt="" />
       </div>
     </div>
     <!-- 菜单 -->
@@ -35,9 +35,12 @@ import MSIcon from '@/components/MSIcon/index.vue'
 import ScrollBar from '@/components/ScrollBar/index.vue'
 import { usePermissionStore } from '@/plugins/stores'
 import { MenuTypeEnum } from '@/constants/routesEnum'
+import { getAssetsFile } from '@/utils/assetsUtils'
 
 const route = useRoute()
 const currentRoutes = ref<string>(route.fullPath)
+
+const logoUrl = getAssetsFile('images/logo/naivelogo-XQ1U1Js8.svg')
 
 const props = withDefaults(defineProps<Props>(), {
   collapsed: true
