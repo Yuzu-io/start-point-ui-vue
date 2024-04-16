@@ -41,7 +41,8 @@ export function getUserInfoApi() {
       method: 'get'
     },
     {
-      showCodeMessage: true
+      showCodeMessage: true,
+      loading: true
     }
   )
 }
@@ -54,7 +55,8 @@ export function getRoutesApi() {
       method: 'get'
     },
     {
-      showCodeMessage: true
+      showCodeMessage: true,
+      loading: true
     }
   )
 }
