@@ -21,7 +21,7 @@
     >
       <div class="system-operation__item user">
         <n-avatar round :src="avatar"></n-avatar>
-        {{ username }}
+        <span class="username">{{ username }}</span>
       </div>
     </n-dropdown>
   </div>
@@ -33,17 +33,22 @@ import { useLoadingStore, useUserStore } from '@/plugins/stores'
 import type { LangList } from '@/types/lang'
 import { useMessage, type DropdownOption } from 'naive-ui'
 import MSIcon from '@/components/MSIcon/index.vue'
-import { ref } from 'vue'
 
 const message = useMessage()
 const loadingStore = useLoadingStore()
 const userStore = useUserStore()
-const username = ref(userStore.userInfo.username) // 用户名
-const avatar = ref(import.meta.env.VITE_FILE_PATH_BASE_URL + '/images/' + userStore.userInfo.avatar) // 头像
+const username = userStore.userInfo.username // 用户名
+const avatar = import.meta.env.VITE_FILE_PATH_BASE_URL + '/images/' + userStore.userInfo.avatar // 头像
 
 const { cutoverLang } = useLocale()
 const switchLanguage = (key: string | number, option: LangList) => {
-  cutoverLang(option.value)
+  loadingStore.isLoading(true)
+  setTimeout(() => {
+    cutoverLang(option.value)
+  }, 500)
+  setTimeout(() => {
+    loadingStore.isLoading(false)
+  }, 1000)
 }
 
 const systemOptions = [
@@ -75,6 +80,8 @@ enum SystemOptions {
 .system-operation {
   @include flexInit($ais: center);
   @include divInitialization();
+  position: relative;
+  z-index: 1;
   background-color: #fff;
   user-select: none;
 
@@ -88,12 +95,21 @@ enum SystemOptions {
       background-color: #f5f5f5;
     }
   }
+
   .user {
     box-sizing: border-box;
     padding: 0 15px;
 
     .n-avatar {
       margin: 0 5px;
+      width: 25px;
+      height: 25px;
+    }
+
+    .username {
+      max-width: 50px;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 }
