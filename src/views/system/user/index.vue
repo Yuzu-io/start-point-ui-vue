@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, h } from 'vue'
-import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
+import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag, NAvatar } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
 import { batchDeleteUserApi, deleteUserApi, getUserListApi } from '@/api/system/user'
 import TableHeader from '@/components/TableHeader/index.vue'
@@ -75,6 +75,7 @@ import { mainRouteName } from '@/permission'
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
 const delay = 500
+const avatarPrefixUrl = import.meta.env.VITE_FILE_PATH_BASE_URL + '/images/'
 const rowKey = (row: IRowData) => row.id
 // 表格
 const columns = [
@@ -108,7 +109,9 @@ const columns = [
     key: 'avatar',
     width: 100,
     align: 'center',
-    ellipsis: true
+    render: (row: IRowData) => {
+      return h(NAvatar, { src: avatarPrefixUrl + row.avatar }, {})
+    }
   },
   {
     title: '邮箱',
