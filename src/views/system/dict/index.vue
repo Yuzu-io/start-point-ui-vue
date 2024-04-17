@@ -8,8 +8,12 @@
       class="search-form"
     >
       <n-flex>
-        <n-form-item path="username" label="用户名">
-          <n-input v-model:value="queryParams.username" placeholder="请输入用户名"></n-input>
+        <n-form-item path="dictName" label="字典名称">
+          <n-input v-model:value="queryParams.dictName" placeholder="请输入字典名称"></n-input>
+        </n-form-item>
+
+        <n-form-item path="dictType" label="字典类型">
+          <n-input v-model:value="queryParams.dictType" placeholder="请输入字典类型"></n-input>
         </n-form-item>
 
         <n-form-item path="status" label="状态">
@@ -44,19 +48,14 @@
       >
       </n-data-table>
     </n-spin>
-    <n-pagination
-      class="pagination"
+    <Pagination
       v-model:page="queryParams.pageNum"
-      v-model:page-size="queryParams.pageSize"
-      :page-sizes="pageSizes"
-      :item-count="total"
-      show-quick-jumper
-      show-size-picker
-      @update:page="getData"
-      @update:page-size="getData"
-    >
-      <template #prefix="{ itemCount }"> 共 {{ itemCount }} 条 </template>
-    </n-pagination>
+      v-model:pageSize="queryParams.pageSize"
+      :pageSizes="pageSizes"
+      :total="total"
+      @update-page="getData"
+      @update-page-size="getData"
+    ></Pagination>
     <!-- <UserAdd ref="userAddRef" @success="getData"></UserAdd> -->
     <!-- <UserEdit ref="userEditRef" @success="getData"></UserEdit> -->
     <!-- <UserBatchEdit ref="userBatchEditRef" @success="getData"></UserBatchEdit> -->
@@ -65,16 +64,17 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, h } from 'vue'
-import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
+import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag, NAvatar } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
-import { batchDeleteUserApi, deleteUserApi, getUserListApi } from '@/api/system/user'
 import TableHeader from '@/components/TableHeader/index.vue'
 // import UserAdd from './add/index.vue'
 // import UserEdit from './edit/index.vue'
 // import UserBatchEdit from './batchEdit/index.vue'
-import type { UserInfo } from '@/types/system/user'
 import MSIcon from '@/components/MSIcon/index.vue'
+import Pagination from '@/components/Pagination/index.vue'
 import { mainRouteName } from '@/permission'
+import type { DictInfo } from '@/types/system/dict'
+import { getDictListApi } from '@/api/system/dict'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -87,43 +87,15 @@ const columns = [
     width: 50
   },
   {
-    title: '用户名',
-    key: 'username',
+    title: '字典名称',
+    key: 'dictName',
     width: 160,
     align: 'center',
     ellipsis: true
   },
   {
-    title: '账号',
-    key: 'account',
-    width: 160,
-    align: 'center',
-    ellipsis: true
-  },
-  {
-    title: '性别',
-    key: 'sex',
-    width: 160,
-    align: 'center',
-    ellipsis: true
-  },
-  {
-    title: '头像',
-    key: 'avatar',
-    width: 100,
-    align: 'center',
-    ellipsis: true
-  },
-  {
-    title: '邮箱',
-    key: 'email',
-    width: 160,
-    align: 'center',
-    ellipsis: true
-  },
-  {
-    title: '手机号',
-    key: 'phone',
+    title: '字典类型',
+    key: 'dictType',
     width: 160,
     align: 'center',
     ellipsis: true
@@ -142,10 +114,11 @@ const columns = [
     }
   },
   {
-    title: '排序',
-    key: 'orderIndex',
-    width: 100,
-    align: 'center'
+    title: '备注',
+    key: 'remark',
+    width: 160,
+    align: 'center',
+    ellipsis: true
   },
   {
     title: '修改时间',
@@ -230,21 +203,22 @@ const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
   orderBy: '',
-  username: '',
+  dictName: '',
+  dictType: '',
   status: ''
 })
 
 onMounted(() => {
   getData()
 })
-const data = ref<UserInfo[]>([])
+const data = ref<DictInfo[]>([])
 const checkData = ref<string[]>([])
 const handleCheck = (rowKeys: string[]) => {
   checkData.value = rowKeys
 }
 const getData = async () => {
   show.value = true
-  const result = await getUserListApi(queryParams)
+  const result = await getDictListApi(queryParams)
   if (result.code === 200) {
     data.value = result.data.list
     total.value = result.data.total
@@ -252,7 +226,8 @@ const getData = async () => {
   show.value = false
 }
 const resetForm = () => {
-  queryParams.username = ''
+  queryParams.dictName = ''
+  queryParams.dictType = ''
   queryParams.status = ''
   getData()
 }
@@ -299,7 +274,7 @@ defineOptions({
 })
 </script>
 <script lang="ts">
-interface IRowData extends UserInfo, RowData {}
+interface IRowData extends DictInfo, RowData {}
 </script>
 
 <style lang="scss" scoped>
