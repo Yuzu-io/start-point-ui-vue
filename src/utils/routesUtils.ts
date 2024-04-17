@@ -4,7 +4,9 @@ import type { RoutesInfoRes } from '@/types/system/routes'
 // 获取第一个动态路由
 export function getFirstDynamicRoutes() {
   const routesList = router.getRoutes()
-  const firstRoutes = routesList.find((item) => item.meta && item.meta.dynamic)
+  const firstRoutes = routesList.find(
+    (item) => item.meta && item.meta.dynamic && item.meta.isExternalLink === '1'
+  )
   return firstRoutes
 }
 
