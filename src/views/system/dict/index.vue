@@ -17,7 +17,15 @@
         </n-form-item>
 
         <n-form-item path="status" label="状态">
-          <n-input v-model:value="queryParams.status" placeholder="请输入状态"></n-input>
+          <n-form-item path="status" label="状态">
+            <n-select
+              v-model:value="queryParams.status"
+              :options="statusOptions"
+              clearable
+              placeholder="请选择状态"
+              style="width: 140px"
+            />
+          </n-form-item>
         </n-form-item>
 
         <n-form-item>
@@ -56,25 +64,26 @@
       @update-page="getData"
       @update-page-size="getData"
     ></Pagination>
-    <!-- <UserAdd ref="userAddRef" @success="getData"></UserAdd> -->
-    <!-- <UserEdit ref="userEditRef" @success="getData"></UserEdit> -->
-    <!-- <UserBatchEdit ref="userBatchEditRef" @success="getData"></UserBatchEdit> -->
+    <DictAdd ref="dictAddRef" @success="getData"></DictAdd>
+    <DictEdit ref="dictEditRef" @success="getData"></DictEdit>
+    <DictBatchEdit ref="dictBatchEditRef" @success="getData"></DictBatchEdit>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, h } from 'vue'
-import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag, NAvatar } from 'naive-ui'
+import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
 import TableHeader from '@/components/TableHeader/index.vue'
-// import UserAdd from './add/index.vue'
-// import UserEdit from './edit/index.vue'
-// import UserBatchEdit from './batchEdit/index.vue'
+import DictAdd from './add/index.vue'
+import DictEdit from './edit/index.vue'
+import DictBatchEdit from './batchEdit/index.vue'
 import MSIcon from '@/components/MSIcon/index.vue'
 import Pagination from '@/components/Pagination/index.vue'
 import { mainRouteName } from '@/permission'
-import type { DictInfo } from '@/types/system/dict'
-import { getDictListApi } from '@/api/system/dict'
+import type { DictInfo, GetDictParams } from '@/types/system/dict'
+import { batchDeleteDictApi, deleteDictApi, getDictListApi } from '@/api/system/dict'
+import { RouterLink } from 'vue-router'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -98,7 +107,17 @@ const columns = [
     key: 'dictType',
     width: 160,
     align: 'center',
-    ellipsis: true
+    ellipsis: true,
+    render: (row: IRowData) => {
+      return h(
+        RouterLink,
+        {
+          to: `/dictData?dictType=${row.dictType}`,
+          style: `color:#18a058`
+        },
+        { default: () => row.dictType }
+      )
+    }
   },
   {
     title: '状态',
@@ -109,7 +128,7 @@ const columns = [
       return h(
         NTag,
         { type: row.status == '0' ? 'success' : 'error' },
-        { default: () => (row.status == '0' ? '启用' : '停用') }
+        { default: () => (row.status == '0' ? '正常' : '停用') }
       )
     }
   },
@@ -199,14 +218,24 @@ const scrollX = columns.reduce((pre, cur) => {
 // 分页
 const pageSizes = [10, 20, 30, 50]
 const total = ref<number>(0)
-const queryParams = reactive({
+const queryParams = reactive<GetDictParams>({
   pageNum: 1,
   pageSize: 10,
   orderBy: '',
   dictName: '',
   dictType: '',
-  status: ''
+  status: null
 })
+const statusOptions = [
+  {
+    label: '正常',
+    value: '0'
+  },
+  {
+    label: '停用',
+    value: '1'
+  }
+]
 
 onMounted(() => {
   getData()
@@ -228,7 +257,7 @@ const getData = async () => {
 const resetForm = () => {
   queryParams.dictName = ''
   queryParams.dictType = ''
-  queryParams.status = ''
+  queryParams.status = null
   getData()
 }
 
@@ -236,24 +265,24 @@ const refresh = () => {
   getData()
 }
 
-const userAddRef = ref()
+const dictAddRef = ref()
 const addRow = () => {
-  userAddRef.value.showModal()
+  dictAddRef.value.showModal()
 }
 
-const userEditRef = ref()
+const dictEditRef = ref()
 const editRow = (item: IRowData) => {
-  userEditRef.value.showModal(item.id)
+  dictEditRef.value.showModal(item.id)
 }
 
-const userBatchEditRef = ref()
+const dictBatchEditRef = ref()
 const batchEditRow = () => {
-  userBatchEditRef.value.showModal(checkData.value)
+  dictBatchEditRef.value.showModal(checkData.value)
 }
 
 const message = useMessage()
 const deleteRow = async (item: IRowData) => {
-  const result = await deleteUserApi(item.id)
+  const result = await deleteDictApi(item.id)
   if (result.code === 200) {
     message.success(result.message)
     checkData.value = []
@@ -261,7 +290,7 @@ const deleteRow = async (item: IRowData) => {
   }
 }
 const batchDeleteRow = async () => {
-  const result = await batchDeleteUserApi(checkData.value)
+  const result = await batchDeleteDictApi(checkData.value)
   if (result.code === 200) {
     message.success(result.message)
     checkData.value = []
