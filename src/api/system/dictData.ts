@@ -1,33 +1,32 @@
 import type { PageInfo } from '@/types/page'
 import type {
-  AddDictParams,
-  DictInfo,
-  DictInfoRes,
-  EditDictParams,
-  GetDictParams
-} from '@/types/system/dict'
+  AddDictDataParams,
+  DictDataInfo,
+  DictDataInfoRes,
+  EditDictDataParams,
+  GetDictDataParams
+} from '@/types/system/dictData'
 import createAxios from '@/utils/axios'
 
-const prefix = '/system/sysDict'
+const prefix = '/system/sysDictData'
 const Api = {
   list: prefix + '/list',
   add: prefix + '/add',
   edit: prefix + '/edit',
   delete: prefix + '/delete',
   batchDelete: prefix + '/batchDelete',
-  findById: prefix + '/findById',
-  typeOptionSelect: prefix + '/type/optionSelect'
+  findById: prefix + '/findById'
 }
 
-export function getDictListApi(params: GetDictParams) {
-  return createAxios<PageInfo<DictInfoRes>>({
+export function getDictDataListApi(params: GetDictDataParams) {
+  return createAxios<PageInfo<DictDataInfoRes>>({
     url: Api.list,
     method: 'get',
     params
   })
 }
 
-export function addDictApi(data: AddDictParams) {
+export function addDictDataApi(data: AddDictDataParams) {
   return createAxios<void>(
     {
       url: Api.add,
@@ -40,7 +39,7 @@ export function addDictApi(data: AddDictParams) {
   )
 }
 
-export function editDictApi(data: EditDictParams) {
+export function editDictDataApi(data: EditDictDataParams) {
   return createAxios<void>(
     {
       url: Api.edit,
@@ -53,7 +52,7 @@ export function editDictApi(data: EditDictParams) {
   )
 }
 
-export function deleteDictApi(id: string) {
+export function deleteDictDataApi(id: string) {
   return createAxios<void>(
     {
       url: Api.delete,
@@ -66,7 +65,7 @@ export function deleteDictApi(id: string) {
   )
 }
 
-export function batchDeleteDictApi(ids: string[]) {
+export function batchDeleteDictDataApi(ids: string[]) {
   return createAxios<void>(
     {
       url: Api.batchDelete,
@@ -80,16 +79,9 @@ export function batchDeleteDictApi(ids: string[]) {
 }
 
 export function findByIdApi(id: string) {
-  return createAxios<DictInfo>({
+  return createAxios<DictDataInfo>({
     url: Api.findById,
     method: 'get',
     params: { id }
-  })
-}
-
-export function getTypeOptionSelectApi() {
-  return createAxios<DictInfo[]>({
-    url: Api.typeOptionSelect,
-    method: 'get'
   })
 }

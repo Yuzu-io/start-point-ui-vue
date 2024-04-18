@@ -17,15 +17,13 @@
         </n-form-item>
 
         <n-form-item path="status" label="状态">
-          <n-form-item path="status" label="状态">
-            <n-select
-              v-model:value="queryParams.status"
-              :options="statusOptions"
-              clearable
-              placeholder="请选择状态"
-              style="width: 140px"
-            />
-          </n-form-item>
+          <n-select
+            v-model:value="queryParams.status"
+            :options="statusOptions"
+            clearable
+            placeholder="请选择状态"
+            style="width: 140px"
+          />
         </n-form-item>
 
         <n-form-item>
@@ -112,7 +110,7 @@ const columns = [
       return h(
         RouterLink,
         {
-          to: `/dictData?dictType=${row.dictType}`,
+          to: `/dictData/${row.dictType}`,
           style: `color:#18a058`
         },
         { default: () => row.dictType }
