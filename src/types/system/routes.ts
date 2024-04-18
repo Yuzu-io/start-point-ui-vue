@@ -11,31 +11,31 @@ export interface RoutesInfo {
   routesName: string
 
   /*图标 */
-  icon: string
+  icon?: string
 
   /*路由地址 */
   fullPath: string
 
   /*组件路径 */
-  componentPath: string
+  componentPath?: string
 
   /*父级菜单编号  */
-  parentId: string
+  parentId?: string | null
 
   /*显示状态 */
-  showStatus: string
+  showStatus?: string
 
   /*是否为外链 */
-  isExternalLink: string
+  isExternalLink?: string
 
   /*是否缓存 */
-  keepAlive: string
+  keepAlive?: string
 
   /*状态 */
-  status: string
+  status?: string
 
   /*菜单类型 */
-  type: string
+  type?: string
 
   /*排序 */
   orderIndex: number
@@ -68,47 +68,11 @@ export interface GetRoutesParams extends PageParams {
   all?: boolean
 }
 
+type OmitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime' | 'children'
 // 添加路由
-export interface AddRoutesParams {
-  /*页面标题 */
-  title: string
+export interface AddRoutesParams extends Omit<RoutesInfoRes, OmitAddIrrelevantFields> {}
 
-  /*路由名称 */
-  routesName: string
-
-  /*图标 */
-  icon?: string
-
-  /*路由地址 */
-  fullPath: string
-
-  /*组件路径 */
-  componentPath?: string
-
-  /*父级菜单编号  */
-  parentId?: string | null
-
-  /*显示状态 */
-  showStatus?: string
-
-  /*是否为外链 */
-  isExternalLink?: string
-
-  /*是否缓存 */
-  keepAlive?: string
-
-  /*状态 */
-  status?: string
-
-  /*菜单类型 */
-  type?: string
-
-  /*排序 */
-  orderIndex: number
-}
-
-// 修改路由
 export interface EditRoutesParams extends AddRoutesParams {
-  /**路由编号 */
+  /*用户编号 */
   id: string
 }

@@ -28,11 +28,19 @@ export interface DictInfoRes extends DictInfo {}
 
 export interface GetDictParams extends PageParams {
   /*字典名称 */
-  dictName: string
+  dictName?: string
 
   /*字典类型 */
-  dictType: string
+  dictType?: string
 
   /*状态 */
-  status: string
+  status?: string | null
+}
+
+type OmitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime'
+export interface AddDictParams extends Omit<DictInfoRes, OmitAddIrrelevantFields> {}
+
+export interface EditDictParams extends AddDictParams {
+  /*用户编号 */
+  id: string
 }
