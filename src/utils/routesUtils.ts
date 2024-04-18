@@ -5,7 +5,11 @@ import type { RoutesInfoRes } from '@/types/system/routes'
 export function getFirstDynamicRoutes() {
   const routesList = router.getRoutes()
   const firstRoutes = routesList.find(
-    (item) => item.meta && item.meta.dynamic && item.meta.isExternalLink === '1'
+    (item) =>
+      item.meta &&
+      item.meta.dynamic &&
+      item.meta.isExternalLink === '1' &&
+      item.meta.showStatus === '0'
   )
   return firstRoutes
 }
@@ -41,6 +45,7 @@ export function addRoutes(_routes: RoutesInfoRes[], _parentName: string = '') {
           meta: {
             title: item.title,
             keepAlive: item.keepAlive,
+            showStatus: item.showStatus,
             isExternalLink: item.isExternalLink,
             icon: item.icon,
             parentName,

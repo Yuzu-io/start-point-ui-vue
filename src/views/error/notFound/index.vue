@@ -43,7 +43,10 @@ const router = useRouter()
 
 // 判断是否有关联菜单
 const isMenuRoutes = computed(() => {
-  return permissionStore.menuRouters.find((item) => item.type === MenuTypeEnum.Menu)
+  return permissionStore.menuRouters.find(
+    (item) =>
+      item.type === MenuTypeEnum.Menu && item.isExternalLink === '1' && item.showStatus === '0'
+  )
 })
 
 const goBack = () => {
