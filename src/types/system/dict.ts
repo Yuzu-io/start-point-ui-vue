@@ -17,6 +17,9 @@ export interface DictInfo {
   /*备注 */
   remark: string
 
+  /*逻辑删除 */
+  isDelete?: string
+
   /*创建时间 */
   createTime: string
 
