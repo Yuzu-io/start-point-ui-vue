@@ -9,15 +9,21 @@
     >
       <n-flex>
         <n-form-item path="roleName" label="角色名称">
-          <n-input v-model:value="queryParams.roleName" placeholder="请输入标题"></n-input>
+          <n-input v-model:value="queryParams.roleName" placeholder="请输入角色名称"></n-input>
         </n-form-item>
 
         <n-form-item path="roleKey" label="	权限字符">
-          <n-input v-model:value="queryParams.roleKey" placeholder="请输入标题"></n-input>
+          <n-input v-model:value="queryParams.roleKey" placeholder="请输入权限字符"></n-input>
         </n-form-item>
 
         <n-form-item path="status" label="状态">
-          <n-input v-model:value="queryParams.status" placeholder="请输入标题"></n-input>
+          <n-select
+            v-model:value="queryParams.status"
+            :options="statusOptions"
+            clearable
+            placeholder="请选择状态"
+            style="width: 140px"
+          />
         </n-form-item>
 
         <n-form-item>
@@ -67,7 +73,7 @@ import { onMounted, reactive, ref, h } from 'vue'
 import { useMessage, type FormInst, NTooltip, NButton, NPopconfirm, NTag } from 'naive-ui'
 import type { RowData } from 'naive-ui/es/data-table/src/interface'
 import { batchDeleteRoleApi, deleteRoleApi, getRoleListApi } from '@/api/system/role'
-import type { RoleInfo } from '@/types/system/role'
+import type { GetRoleParams, RoleInfo } from '@/types/system/role'
 import TableHeader from '@/components/TableHeader/index.vue'
 import RoleAdd from './add/index.vue'
 import RoleEdit from './edit/index.vue'
@@ -108,7 +114,7 @@ const columns = [
       return h(
         NTag,
         { type: row.status == '0' ? 'success' : 'error' },
-        { default: () => (row.status == '0' ? '启用' : '停用') }
+        { default: () => (row.status == '0' ? '正常' : '停用') }
       )
     }
   },
@@ -197,14 +203,24 @@ const scrollX = columns.reduce((pre, cur) => {
 // 分页
 const pageSizes = [10, 20, 30, 50]
 const total = ref<number>(0)
-const queryParams = reactive({
+const queryParams = reactive<GetRoleParams>({
   pageNum: 1,
   pageSize: 10,
   orderBy: '',
   roleName: '',
   roleKey: '',
-  status: ''
+  status: null
 })
+const statusOptions = [
+  {
+    label: '正常',
+    value: '0'
+  },
+  {
+    label: '停用',
+    value: '1'
+  }
+]
 
 onMounted(() => {
   getData()
@@ -226,7 +242,7 @@ const getData = async () => {
 const resetForm = () => {
   queryParams.roleName = ''
   queryParams.roleKey = ''
-  queryParams.status = ''
+  queryParams.status = null
   getData()
 }
 

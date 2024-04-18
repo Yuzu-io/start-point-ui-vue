@@ -13,7 +13,13 @@
         </n-form-item>
 
         <n-form-item path="status" label="状态">
-          <n-input v-model:value="queryParams.status" placeholder="请输入状态"></n-input>
+          <n-select
+            v-model:value="queryParams.status"
+            :options="statusOptions"
+            clearable
+            placeholder="请选择状态"
+            style="width: 140px"
+          />
         </n-form-item>
 
         <n-form-item>
@@ -67,7 +73,7 @@ import TableHeader from '@/components/TableHeader/index.vue'
 import UserAdd from './add/index.vue'
 import UserEdit from './edit/index.vue'
 import UserBatchEdit from './batchEdit/index.vue'
-import type { UserInfo } from '@/types/system/user'
+import type { GetUserParams, UserInfo } from '@/types/system/user'
 import MSIcon from '@/components/MSIcon/index.vue'
 import Pagination from '@/components/Pagination/index.vue'
 import { mainRouteName } from '@/permission'
@@ -136,7 +142,7 @@ const columns = [
       return h(
         NTag,
         { type: row.status == '0' ? 'success' : 'error' },
-        { default: () => (row.status == '0' ? '启用' : '停用') }
+        { default: () => (row.status == '0' ? '正常' : '停用') }
       )
     }
   },
@@ -225,13 +231,23 @@ const scrollX = columns.reduce((pre, cur) => {
 // 分页
 const pageSizes = [10, 20, 30, 50]
 const total = ref<number>(0)
-const queryParams = reactive({
+const queryParams = reactive<GetUserParams>({
   pageNum: 1,
   pageSize: 10,
   orderBy: '',
   username: '',
-  status: ''
+  status: null
 })
+const statusOptions = [
+  {
+    label: '正常',
+    value: '0'
+  },
+  {
+    label: '停用',
+    value: '1'
+  }
+]
 
 onMounted(() => {
   getData()
@@ -252,7 +268,7 @@ const getData = async () => {
 }
 const resetForm = () => {
   queryParams.username = ''
-  queryParams.status = ''
+  queryParams.status = null
   getData()
 }
 

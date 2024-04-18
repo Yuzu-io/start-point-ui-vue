@@ -50,9 +50,9 @@ export interface UserInfoRes extends UserInfo {
 
 export interface GetUserParams extends PageParams {
   /*用户名 */
-  username: string
+  username?: string
   /*状态 0正常 1禁用 */
-  status: string
+  status?: string | null
 }
 
 type OmitAddIrrelevantFields = 'id' | 'createTime' | 'updateTime' | 'isDelete'

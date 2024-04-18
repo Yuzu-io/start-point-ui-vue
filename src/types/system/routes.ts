@@ -62,7 +62,7 @@ export interface GetRoutesParams extends PageParams {
   fullPath?: string
 
   /*状态 */
-  status?: string
+  status?: string | null
 
   /*是否查询所有 */
   all?: boolean
