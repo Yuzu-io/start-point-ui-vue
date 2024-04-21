@@ -246,7 +246,7 @@ watch(
   () => {
     if (route.meta.dynamic) {
       const data: TagList = {
-        path: route.fullPath,
+        path: route.path,
         title: route.meta.title as string,
         keepAlive: route.meta.keepAlive as string,
         componentName: `${mainRouteName}-${route.name as string}`

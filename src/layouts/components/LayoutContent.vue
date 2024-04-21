@@ -2,7 +2,7 @@
   <RouterView v-slot="{ Component }" v-if="route.meta.isExternalLink === '1'">
     <Transition name="fade" mode="out-in">
       <KeepAlive :include="tagStore.cacheView">
-        <component :is="Component" />
+        <component :is="Component" :key="route.path" />
       </KeepAlive>
     </Transition>
   </RouterView>

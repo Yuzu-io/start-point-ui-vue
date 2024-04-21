@@ -38,7 +38,7 @@ import { MenuTypeEnum } from '@/constants/routesEnum'
 import { getAssetsFile } from '@/utils/assetsUtils'
 
 const route = useRoute()
-const currentRoutes = ref<string>(route.fullPath)
+const currentRoutes = ref<string>(route.path)
 
 const logoUrl = getAssetsFile('images/logo/naivelogo-XQ1U1Js8.svg')
 
@@ -108,7 +108,7 @@ const menuClick = (key: string, item: MenuOption) => {
 watch(
   route,
   () => {
-    currentRoutes.value = route.fullPath
+    currentRoutes.value = route.path
   },
   {
     immediate: true
