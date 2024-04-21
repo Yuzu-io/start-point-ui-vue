@@ -1,7 +1,8 @@
-import merge from 'lodash/merge'
-import langConfig from 'tdesign-vue-next/es/locale/zh_CN'
+import { zhCN } from 'naive-ui'
+import pagination from './pagination'
 
 export default {
   lang: '简体中文',
-  langConfig: merge({}, langConfig, {})
+  langConfig: zhCN,
+  pagination
 }

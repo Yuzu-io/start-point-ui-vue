@@ -5,24 +5,21 @@ import vue from '@vitejs/plugin-vue'
 
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import { TDesignResolver } from 'unplugin-vue-components/resolvers'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
-      resolvers: [
-        TDesignResolver({
-          library: 'vue-next'
-        })
+      imports: [
+        'vue',
+        {
+          'naive-ui': ['useDialog', 'useMessage', 'useNotification', 'useLoadingBar']
+        }
       ]
     }),
     Components({
-      resolvers: [
-        TDesignResolver({
-          library: 'vue-next'
-        })
-      ]
+      resolvers: [NaiveUiResolver()]
     })
   ],
   resolve: {
@@ -33,7 +30,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "@/styles/global.scss";`
+        additionalData: `@import "@/styles/mixin.scss";`
       }
     }
   }

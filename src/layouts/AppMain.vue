@@ -1,18 +1,25 @@
 <template>
-  <t-layout>
-    <t-aside class="aside">
-      <LayoutAside />
-    </t-aside>
-    <t-layout>
-      <t-header class="header">
-        <LayoutHeader />
-      </t-header>
-      <t-content class="content">
+  <n-layout has-sider class="layout">
+    <n-layout-sider
+      class="aside"
+      bordered
+      collapse-mode="width"
+      :collapsed-width="collapsedWidth"
+      :width="width"
+      :collapsed="collapsed"
+      show-trigger
+      @collapse="collapsed = true"
+      @expand="collapsed = false"
+    >
+      <LayoutAside :collapsed="collapsed" />
+    </n-layout-sider>
+    <n-layout>
+      <n-layout-header class="header"> <LayoutHeader /> </n-layout-header>
+      <n-layout-content class="content">
         <LayoutContent />
-      </t-content>
-      <!-- <t-footer>Footer</t-footer> -->
-    </t-layout>
-  </t-layout>
+      </n-layout-content>
+    </n-layout>
+  </n-layout>
 </template>
 
 <script setup lang="ts">
@@ -21,123 +28,54 @@ import LayoutHeader from './components/LayoutHeader.vue'
 import LayoutContent from './components/LayoutContent.vue'
 import { provide, ref } from 'vue'
 import type { ProvideTag } from '@/types/layouts/tag'
-import { MessagePlugin } from 'tdesign-vue-next'
-import { useTagStore } from '@/plugins/stores'
+import { useMessage } from 'naive-ui'
 
-const tagStore = useTagStore()
-
-const data = [
-  {
-    id: 1,
-    name: '首页'
-  },
-  {
-    id: 1,
-    name: '仪表盘'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '根目录'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  },
-  {
-    id: 1,
-    name: '资源列表'
-  }
-]
-
-tagStore.addTag(data)
-
-const demo = ref(0)
+const collapsed = ref<boolean>(false)
+const collapsedWidth = 64
+const width = 240
+const message = useMessage()
 const refresh = () => {
-  MessagePlugin.success({
-    content: '刷新成功!',
-    placement: 'top-right',
+  message.success('刷新成功!', {
     duration: 1000
   })
-  demo.value++
-  console.log(demo)
 }
 
 provide<ProvideTag>('provideTag', {
+  collapsedWidth,
+  width,
+  collapsed,
   refresh
 })
 </script>
 
 <style lang="scss" scoped>
-.t-layout {
-  height: 100vh;
+.layout {
+  height: 100%;
+  background-color: #f5f5f5;
 
   .aside,
   .header,
   .content {
-    background: transparent;
+    background-color: #f5f5f5;
   }
 
   .aside {
-    width: auto;
-    padding: 15px 0 15px 15px;
+    margin: 10px 0 10px 10px;
+    box-sizing: content-box;
+    :deep(.n-layout-sider-scroll-container) {
+      @include divInitialization();
+    }
   }
+
   .header {
-    padding: 15px 15px 0;
+    padding: 10px 10px 0;
   }
+
   .content {
-    padding: 15px;
+    height: calc(100% - 56px);
+    padding: 10px;
+    overflow-y: scroll;
+    @include scrollbar();
   }
 }
 </style>

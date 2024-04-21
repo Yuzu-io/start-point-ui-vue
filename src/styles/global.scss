@@ -1,4 +1,18 @@
-@import "./mixin.scss";
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 20;
+}
 
-// 窗口
+/* 覆盖NProgress默认的进度条颜色 */
+#nprogress .bar {
+  background: #18a058 !important; /* 你想要的颜色 */
+}
 
+html,
+body,
+#app {
+  height: 100%;
+}

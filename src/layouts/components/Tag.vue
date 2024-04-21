@@ -1,5 +1,5 @@
 <template>
-  <div class="tag" ref="tagRef" @wheel="wheelTag">
+  <div class="tag" ref="tagRef" @wheel.passive="wheelTag">
     <div class="tag-list">
       <div
         class="tag-list__item"
@@ -11,62 +11,89 @@
         @contextmenu="openTagMenu(index, $event)"
       >
         <span>
-          {{ item.name }}
+          {{ item.title }}
         </span>
         <div class="close" v-if="tagStore.tagList.length > 1" @click.stop @click="closeTag(index)">
-          <mdicon class="close-icon" name="close" size="14" />
+          <MSIcon name="Close" size="14"></MSIcon>
         </div>
       </div>
       <div class="tag-active-box" :style="{ width: tagWidth, left: tagLeftPosition }"></div>
     </div>
-    <div
-      class="tag-dropdown-box"
-      ref="tagDropdownBox"
-      v-show="showTagMenu"
-      :style="{ left: tagMenuPosition.x, top: tagMenuPosition.y }"
-    >
-      <t-button
+  </div>
+  <div
+    class="tag-dropdown-box"
+    ref="tagDropdownBox"
+    v-show="showTagMenu"
+    :style="{ left: tagMenuPosition.x, top: tagMenuPosition.y }"
+  >
+    <n-space vertical>
+      <n-button
+        quaternary
         block
-        variant="text"
-        @click="tagMenuOperation(TagMenuType.Refresh)"
         :disabled="!isCurrentTag"
+        @click="tagMenuOperation(TagOptionMenuEnum.Refresh)"
       >
-        <mdicon class="btn-icon" name="reload" size="18" />
+        <template #icon>
+          <MSIcon name="Refresh" size="18"></MSIcon>
+        </template>
         重新加载
-      </t-button>
-      <t-button block variant="text" @click="tagMenuOperation(TagMenuType.Close)">
-        <mdicon class="btn-icon" name="close" size="18" />
+      </n-button>
+      <n-button quaternary block @click="tagMenuOperation(TagOptionMenuEnum.Close)">
+        <template #icon>
+          <MSIcon name="Close" size="18"></MSIcon>
+        </template>
         关闭标签
-      </t-button>
-      <t-button
+      </n-button>
+      <n-button
+        quaternary
         block
-        variant="text"
-        @click="tagMenuOperation(TagMenuType.Other)"
         :disabled="tagStore.tagList.length <= 1"
+        @click="tagMenuOperation(TagOptionMenuEnum.Other)"
       >
-        <mdicon class="btn-icon" name="minus" size="18" />
+        <template #icon>
+          <MSIcon name="Remove" size="18"></MSIcon>
+        </template>
         关闭其他标签
-      </t-button>
-      <t-button
+      </n-button>
+      <n-button
+        quaternary
         block
-        variant="text"
-        @click="tagMenuOperation(TagMenuType.All)"
         :disabled="tagStore.tagList.length <= 1"
+        @click="tagMenuOperation(TagOptionMenuEnum.All)"
       >
-        <mdicon class="btn-icon" name="square" size="18" />
+        <template #icon>
+          <MSIcon name="Crop_Square" size="18"></MSIcon>
+        </template>
         关闭全部标签
-      </t-button>
-    </div>
+      </n-button>
+    </n-space>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ProvideTag } from '@/types/layouts/tag'
-import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, onMounted, reactive, inject, watch, nextTick } from 'vue'
 import { useTagStore } from '@/plugins/stores/index'
+import MSIcon from '@/components/MSIcon/index.vue'
+import { useMessage } from 'naive-ui'
+import { TagOptionMenuEnum } from '@/constants/tagEnum'
+import { useRoute, useRouter } from 'vue-router'
+import type { TagList } from '@/types/tag'
+import { mainRouteName } from '@/permission'
 
 const tagStore = useTagStore()
+
+const message = useMessage()
+
+const route = useRoute()
+
+const { collapsedWidth, width, collapsed, refresh } = inject<ProvideTag>('provideTag', {
+  refresh: () => {
+    message.warning('加载失败!', {
+      duration: 1000
+    })
+  }
+})
 
 const tagItemRef = ref<HTMLDivElement[]>([])
 const tagWidth = ref<string>('0px')
@@ -76,7 +103,6 @@ const currentTagIndex = ref<number>(0)
 const tagRef = ref<HTMLDivElement>()
 // 滑动鼠标
 const wheelTag = (event: WheelEvent) => {
-  event.preventDefault()
   tagRef.value!.scrollLeft += event.deltaY
 }
 
@@ -95,10 +121,15 @@ const getTagWidth = () => {
 }
 
 // 选择标签
-const chooseTag = (item: any, index: number) => {
+const router = useRouter()
+const chooseTag = (item: TagList | null, index: number) => {
   if (index === currentTagIndex.value) return
   currentTagIndex.value = index
   getTagWidth()
+  // 跳转路由
+  if (item) {
+    router.push(item.path)
+  }
 }
 
 // 关闭标签
@@ -110,6 +141,7 @@ const closeTag = (index: number) => {
     currentTagIndex.value--
   }
   getTagWidth()
+  router.push(tagStore.tagList[currentTagIndex.value].path)
 }
 
 const showTagMenu = ref<boolean>(false)
@@ -130,25 +162,31 @@ const openTagMenu = (index: number, event: MouseEvent) => {
   }
   currentTagMenuIndex.value = index
   showTagMenu.value = true
-  const x = event!.clientX
-  const y = event!.clientY
-  tagMenuPosition.x = `${x}px`
-  tagMenuPosition.y = `${y}px`
+  if (
+    collapsed instanceof Object &&
+    typeof collapsedWidth === 'number' &&
+    typeof width === 'number'
+  ) {
+    const x = event!.clientX - (collapsed.value ? collapsedWidth : width) - 10
+    const y = event!.clientY
+    tagMenuPosition.x = `${x}px`
+    tagMenuPosition.y = `${y}px`
+  }
 }
 
 // tag菜单操作方法
-const tagMenuOperation = (type: TagMenuType) => {
+const tagMenuOperation = (type: TagOptionMenuEnum) => {
   switch (type) {
-    case TagMenuType.Refresh:
+    case TagOptionMenuEnum.Refresh:
       tagMenuRefresh()
       break
-    case TagMenuType.Close:
+    case TagOptionMenuEnum.Close:
       tagMenuCloseTag()
       break
-    case TagMenuType.Other:
+    case TagOptionMenuEnum.Other:
       tagMenuCloseOtherTags()
       break
-    case TagMenuType.All:
+    case TagOptionMenuEnum.All:
       tagMenuCloseAllTags()
       break
   }
@@ -156,22 +194,16 @@ const tagMenuOperation = (type: TagMenuType) => {
   showTagMenu.value = false
 }
 
-const { refresh } = inject<ProvideTag>('provideTag', {
-  refresh: () => {
-    MessagePlugin.warning({
-      content: '加载失败!',
-      placement: 'top-right',
-      duration: 1000
-    })
-  }
-})
 const tagMenuRefresh = () => {
-  refresh()
+  if (refresh instanceof Function) {
+    refresh()
+  }
 }
 const tagMenuCloseTag = () => {
   tagStore.closeTag(currentTagMenuIndex.value)
   if (currentTagMenuIndex.value === currentTagIndex.value) {
     currentTagIndex.value = tagStore.tagList.length - 1
+    router.push(tagStore.tagList[currentTagIndex.value].path)
   } else if (currentTagMenuIndex.value < currentTagIndex.value) {
     currentTagIndex.value--
   }
@@ -179,9 +211,11 @@ const tagMenuCloseTag = () => {
 const tagMenuCloseOtherTags = () => {
   tagStore.closeOtherTags(currentTagMenuIndex.value)
   currentTagIndex.value = 0
+  router.push(tagStore.tagList[currentTagIndex.value].path)
 }
 const tagMenuCloseAllTags = () => {
-  tagStore.$reset()
+  tagStore.closeAllTags()
+  currentTagIndex.value = 0
 }
 
 // 判断是否点击在非菜单元素中
@@ -192,13 +226,42 @@ const focusTagMenu = (event: MouseEvent) => {
     showTagMenu.value = false
   }
 }
-watch(showTagMenu, (val) => {
-  if (val) {
-    document.addEventListener('click', focusTagMenu)
-  } else {
-    document.removeEventListener('click', focusTagMenu)
+
+watch(
+  showTagMenu,
+  (val) => {
+    if (val) {
+      document.addEventListener('click', focusTagMenu)
+    } else {
+      document.removeEventListener('click', focusTagMenu)
+    }
+  },
+  {
+    immediate: true
   }
-})
+)
+
+watch(
+  route,
+  () => {
+    if (route.meta.dynamic) {
+      const data: TagList = {
+        path: route.path,
+        title: route.meta.title as string,
+        keepAlive: route.meta.keepAlive as string,
+        componentName: `${mainRouteName}-${route.name as string}`
+      }
+      const tagStore = useTagStore()
+      tagStore.addTag(data)
+      // 获取当前标签索引
+      const index = tagStore.tagList.findIndex((item) => item.path === route.path)
+      chooseTag(null, index)
+    }
+  },
+  {
+    immediate: true
+  }
+)
 
 onMounted(() => {
   getTagWidth()
@@ -209,41 +272,25 @@ interface TagMenuPosition {
   x: string
   y: string
 }
-
-enum TagMenuType {
-  Refresh = 'refresh',
-  Close = 'close',
-  Other = 'other',
-  All = 'all'
-}
 </script>
 
 <style lang="scss" scoped>
 .tag {
   overflow-x: scroll;
-  height: 56px;
+  height: 45px;
   margin-right: 15px;
+  position: relative;
 
-  &::-webkit-scrollbar {
-    height: 5px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background-color: rgba($color: #c8c9cc, $alpha: 0.5);
-
-    &:hover {
-      background-color: rgba($color: #c8c9cc, $alpha: 1);
-    }
-  }
+  @include scrollbar();
 
   &-list {
-    position: relative;
+    position: absolute;
     @include flexInit($ais: center);
     flex-wrap: nowrap;
 
     &__item {
       flex: none;
-      padding: 10px 20px;
+      padding: 10px 16px;
       position: relative;
       z-index: 3;
       cursor: pointer;
@@ -251,12 +298,11 @@ enum TagMenuType {
       @include divInitialization($bs: none);
       transition: all 0.3s;
 
-      color: var(--td-text-color-secondary);
       &--active {
-        color: var(--td-text-color-primary);
+        color: #18a058;
       }
       &:hover {
-        color: var(--td-text-color-primary);
+        color: #18a058;
       }
 
       .close {
@@ -265,16 +311,11 @@ enum TagMenuType {
         border-radius: 50%;
         overflow: hidden;
         margin-left: 5px;
-        color: var(--td-text-color-secondary);
         @include flexInit($ais: center, $jc: center);
 
         &:hover {
           color: #fff;
-          background-color: var(--td-brand-color-active);
-        }
-
-        &-icon {
-          transform: translateY(-1px);
+          background-color: #18a058;
         }
       }
     }
@@ -289,29 +330,21 @@ enum TagMenuType {
     top: 0;
     z-index: 1;
     transition: all 0.3s;
-
     @include divInitialization();
   }
+}
 
-  .tag-dropdown-box {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 4;
-    background-color: #fff;
-    padding: 10px 0;
-    @include divInitialization();
+.tag-dropdown-box {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  background-color: #fff;
+  padding: 10px 0;
+  @include divInitialization();
 
-    .t-button {
-      width: 100%;
-      justify-content: flex-start;
-      border: none;
-      border-radius: 0;
-
-      .btn-icon {
-        transform: translateY(-1px);
-      }
-    }
+  .n-button {
+    border-radius: 0;
   }
 }
 </style>

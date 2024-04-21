@@ -1,120 +1,150 @@
 <template>
   <div class="layout-aside">
-    <t-menu
-      theme="light"
-      default-value="item2"
-      style="height: calc(100vh - 30px)"
-      :collapsed="collapsed"
-      @change="changeHandler"
-    >
-      <template #logo>
-        <img :width="collapsed ? 35 : 136" :src="iconUrl" alt="logo" />
-      </template>
-
-      <t-menu-item value="item1">
-        <template #icon>
-          <t-icon name="dashboard" />
-        </template>
-        仪表盘
-      </t-menu-item>
-      <t-menu-item value="resource">
-        <template #icon>
-          <t-icon name="server" />
-        </template>
-        资源列表
-      </t-menu-item>
-      <t-menu-item value="root">
-        <template #icon>
-          <t-icon name="root-list" />
-        </template>
-        根目录
-      </t-menu-item>
-      <t-submenu value="2">
-        <template #icon>
-          <t-icon name="control-platform" />
-        </template>
-        <template #title>
-          <span>调度平台</span>
-        </template>
-        <t-menu-item value="2-1"> 二级菜单内容 </t-menu-item>
-        <t-menu-item value="2-2"> 二级菜单内容 </t-menu-item>
-        <t-menu-item value="2-3"> 二级菜单内容 </t-menu-item>
-      </t-submenu>
-      <t-menu-item value="precise-monitor">
-        <template #icon>
-          <t-icon name="precise-monitor" />
-        </template>
-        精准监控
-      </t-menu-item>
-      <t-submenu title="消息区" value="3" disabled>
-        <template #icon>
-          <t-icon name="mail" />
-        </template>
-        <template #title>
-          <span>消息区</span>
-        </template>
-        <t-menu-item value="3-1"> 二级菜单内容 </t-menu-item>
-        <t-menu-item value="3-2"> 二级菜单内容 </t-menu-item>
-        <t-menu-item value="3-3"> 二级菜单内容 </t-menu-item>
-      </t-submenu>
-      <t-menu-item value="user-circle">
-        <template #icon>
-          <t-icon name="user-circle" />
-        </template>
-        个人中心
-      </t-menu-item>
-      <t-submenu value="4">
-        <template #icon>
-          <t-icon name="play-circle" />
-        </template>
-        <template #title>
-          <span>视频区</span>
-        </template>
-        <t-menu-item value="4-1"> 二级菜单内容 </t-menu-item>
-        <t-menu-item value="4-2"> 二级菜单内容 </t-menu-item>
-        <t-menu-item value="4-3"> 二级菜单内容 </t-menu-item>
-      </t-submenu>
-      <t-menu-item value="edit1">
-        <template #icon>
-          <t-icon name="edit-1" />
-        </template>
-        资源编辑
-      </t-menu-item>
-
-      <template #operations>
-        <t-button
-          class="t-demo-collapse-btn"
-          variant="text"
-          shape="square"
-          @click="changeCollapsed"
-        >
-          <template #icon><t-icon name="view-list" /></template>
-        </t-button>
-      </template>
-    </t-menu>
+    <!-- 头部 -->
+    <div class="layout-aside__head">
+      <div class="logo" v-show="!props.collapsed">start point</div>
+      <div v-show="props.collapsed">
+        <img width="30" :src="logoUrl" alt="" />
+      </div>
+    </div>
+    <!-- 菜单 -->
+    <div class="layout-aside__menu">
+      <ScrollBar>
+        <n-menu
+          v-model:value="currentRoutes"
+          :collapsed="props.collapsed"
+          :collapsed-width="64"
+          :collapsed-icon-size="22"
+          :options="items"
+          key-field="fullPath"
+          label-field="title"
+          children-field="children"
+          @update:value="menuClick"
+        />
+      </ScrollBar>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { h, reactive, ref, watch, type VNode } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { type MenuOption } from 'naive-ui'
+import type { RoutesInfoRes } from '@/types/system/routes'
+import MSIcon from '@/components/MSIcon/index.vue'
+import ScrollBar from '@/components/ScrollBar/index.vue'
+import { usePermissionStore } from '@/plugins/stores'
+import { MenuTypeEnum } from '@/constants/routesEnum'
+import { getAssetsFile } from '@/utils/assetsUtils'
 
-const collapsed = ref(false)
-const iconUrl = ref('https://tdesign.gtimg.com/site/baseLogo-light.png')
+const route = useRoute()
+const currentRoutes = ref<string>(route.path)
 
-const changeCollapsed = () => {
-  collapsed.value = !collapsed.value
-  iconUrl.value = collapsed.value
-    ? 'https://oteam-tdesign-1258344706.cos.ap-guangzhou.myqcloud.com/site/logo%402x.png'
-    : 'https://tdesign.gtimg.com/site/baseLogo-light.png'
+const logoUrl = getAssetsFile('images/logo/naivelogo-XQ1U1Js8.svg')
+
+const props = withDefaults(defineProps<Props>(), {
+  collapsed: true
+})
+// 处理菜单数据
+const permissionStore = usePermissionStore()
+
+const menuList = permissionStore.menuRouters
+const getItem = (
+  title: string,
+  fullPath: string,
+  icon?: () => VNode,
+  children?: MenuOption[] | null,
+  type?: string,
+  link?: boolean
+): MenuOption => {
+  return {
+    fullPath,
+    icon,
+    children,
+    title,
+    type,
+    link
+  } as MenuOption
+}
+const renderIcon = (icon: string) => {
+  return () => h(MSIcon, { name: icon, size: '18' })
+}
+const generateMenu = (item: RoutesInfoRes[]) => {
+  const data: MenuOption[] = []
+  item.forEach((item) => {
+    const { icon, fullPath, children, title, type, showStatus, isExternalLink } = item
+    if (showStatus === '0') {
+      let currentChildren = undefined
+      if (Array.isArray(children)) {
+        currentChildren = generateMenu(children)
+      } else if (type == MenuTypeEnum.Directory && isExternalLink === '1') {
+        currentChildren = []
+      }
+      const menuItem = getItem(
+        title,
+        fullPath,
+        icon ? renderIcon(icon) : undefined,
+        currentChildren
+      )
+      menuItem.link = isExternalLink === '0' // 判断是否为外链 是则为true，否则为false
+      data.push(menuItem)
+    }
+  })
+  return data
+}
+const items = reactive<MenuOption[]>(generateMenu(menuList))
+
+const router = useRouter()
+const menuClick = (key: string, item: MenuOption) => {
+  if (item.link) {
+    window.open(item.fullPath as string, '_blank')
+  } else {
+    router.push({
+      path: key
+    })
+  }
 }
 
-const changeHandler = (active: any) => {
-  console.log('change', active)
+watch(
+  route,
+  () => {
+    currentRoutes.value = route.path
+  },
+  {
+    immediate: true
+  }
+)
+</script>
+<script lang="ts">
+interface Props {
+  collapsed: boolean
 }
 </script>
 
 <style lang="scss" scoped>
+$head-height: 54px;
 .layout-aside {
-  @include divInitialization();
+  height: 100%;
+  background-color: #fff;
+
+  &__head {
+    height: $head-height;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #18a058;
+    background-color: #fcfcfc;
+
+    .logo {
+      flex: 1;
+      text-align: center;
+      font-size: 30px;
+      white-space: nowrap;
+    }
+  }
+
+  &__menu {
+    height: calc(100% - $head-height);
+  }
 }
 </style>

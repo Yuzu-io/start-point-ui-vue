@@ -1,7 +1,8 @@
-import merge from 'lodash/merge'
-import langConfig from 'tdesign-vue-next/es/locale/en_US'
+import { enUS } from 'naive-ui'
+import pagination from './pagination'
 
 export default {
   lang: 'English',
-  langConfig: merge({}, langConfig, {})
+  langConfig: enUS,
+  pagination
 }

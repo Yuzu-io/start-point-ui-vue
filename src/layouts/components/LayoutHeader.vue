@@ -1,8 +1,8 @@
 <template>
   <div class="layout-header">
-    <!-- <div class="layout-header__tag"></div> -->
-    <!-- <div class="layout-header__system-operation"></div> -->
-    <Tag class="layout-header__tag" />
+    <div class="layout-header__tag">
+      <Tag />
+    </div>
     <SystemOperation class="layout-header__system-operation" />
   </div>
 </template>

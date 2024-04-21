@@ -2,6 +2,24 @@
 
 This template should help get you started developing with Vue 3 in Vite.
 
+## 特点 🐳
+
+1. Vite 
+2. Vue3 
+3. 文件路由
+4. 布局系统
+6. Api 自动引入
+7. 组件自动引入
+8. 图标自动引入
+10. TypeScript 
+12. 暗黑模式支持
+14. pinia 状态管理
+16. 跳转进度条支持
+21. 路径别名 `@` 支持
+23. i18n 国际化支持
+27. 环境变量配置支持
+
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).

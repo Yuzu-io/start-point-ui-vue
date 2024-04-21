@@ -1,16 +1,18 @@
-import { useUserStore } from '@/plugins/stores'
+import { useLoadingStore, useUserStore } from '@/plugins/stores'
 import axios, {
   type AxiosRequestConfig,
+  type AxiosResponse,
   type Canceler,
   type InternalAxiosRequestConfig
 } from 'axios'
-import { LoadingPlugin, MessagePlugin, type TdLoadingProps } from 'tdesign-vue-next'
+import { createDiscreteApi } from 'naive-ui'
 
 const pendingMap = new Map<string, Canceler>()
 const loadingInstance: LoadingInstance = {
   target: null,
   count: 0
 }
+const { message: NMessage } = createDiscreteApi(['message'])
 
 /**
  * 根据运行环境获取请求url
@@ -23,12 +25,18 @@ export const getUrl = (): string => {
 /**
  * 创建 axios
  */
-
 export default function createAxios<T>(
   axiosConfig: AxiosRequestConfig,
-  options: Options,
-  loading: boolean | TdLoadingProps
-): IPromise<T> {
+  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat?: true }
+): IPromise<T>
+export default function createAxios<T>(
+  axiosConfig: AxiosRequestConfig,
+  options?: Omit<Options, 'reductDataFormat'> & { reductDataFormat?: false }
+): APromise<T>
+export default function createAxios<T>(
+  axiosConfig: AxiosRequestConfig,
+  options: Options = {}
+): IPromise<T> | APromise<T> {
   const userStore = useUserStore()
 
   const instance = axios.create({
@@ -43,8 +51,7 @@ export default function createAxios<T>(
       loading: false, // 是否开启loading层效果, 默认为false
       reductDataFormat: true, // 是否开启简洁的数据结构响应, 默认为true
       showErrorMessage: true, // 是否开启接口错误信息展示,默认为true
-      showCodeMessage: false, // 是否开启code不为200时的信息提示, 默认为false
-      showSuccessMessage: false // 是否开启code为200时的信息提示, 默认为false
+      showCodeMessage: false // 是否开启code不为200时的信息提示, 默认为false
     },
     options
   )
@@ -58,12 +65,13 @@ export default function createAxios<T>(
       if (options.loading) {
         loadingInstance.count++
         if (loadingInstance.count === 1) {
-          loadingInstance.target = LoadingPlugin(loading)
+          loadingInstance.target = useLoadingStore()
+          loadingInstance.target.isLoading(true)
         }
       }
       // 携带token
-      if (userStore.accessToken && config.headers) {
-        config.headers.token = userStore.accessToken
+      if (userStore.token && config.headers) {
+        config.headers.token = userStore.token
       }
       return config
     },
@@ -79,7 +87,7 @@ export default function createAxios<T>(
       options.loading && closeLoading(options)
 
       if (options.showCodeMessage && response.data && response.data.code !== 200) {
-        MessagePlugin.error(response.data.message)
+        NMessage.error(response.data.message)
         return Promise.reject(response.data) // code不等于200, 页面具体逻辑就不执行了
       }
       return options.reductDataFormat ? response.data : response
@@ -92,7 +100,7 @@ export default function createAxios<T>(
     }
   )
 
-  return instance(axiosConfig)
+  return instance(axiosConfig) as IPromise<T> | APromise<T>
 }
 
 /**
@@ -100,6 +108,7 @@ export default function createAxios<T>(
  * @param {*} error
  */
 function httpErrorStatusHandle(error: any) {
+  const userStore = useUserStore()
   // 处理被取消的请求
   if (axios.isCancel(error)) return console.error('请求的重复请求：' + error.message)
   let message = ''
@@ -113,6 +122,7 @@ function httpErrorStatusHandle(error: any) {
         break
       case 401:
         message = '您未登录，或者登录已经超时，请先登录！'
+        userStore.logout(false) // 登出
         break
       case 403:
         message = '您没有权限操作！'
@@ -153,7 +163,7 @@ function httpErrorStatusHandle(error: any) {
   if (error.message.includes('Network'))
     message = window.navigator.onLine ? '服务端异常！' : '您断网了！'
 
-  MessagePlugin.error(message)
+  NMessage.error(message)
 }
 
 /**
@@ -209,7 +219,7 @@ function getPendingKey(config: InternalAxiosRequestConfig) {
 function closeLoading(options: Options) {
   if (options.loading && loadingInstance.count > 0) loadingInstance.count--
   if (loadingInstance.count === 0) {
-    loadingInstance.target.hide()
+    loadingInstance.target.isLoading(false)
     loadingInstance.target = null
   }
 }
@@ -225,8 +235,6 @@ interface Options {
   showErrorMessage?: boolean
   // 是否开启code不为200时的信息提示, 默认为false
   showCodeMessage?: boolean
-  // 是否开启code为200时的信息提示, 默认为false
-  showSuccessMessage?: boolean
 }
 
 interface LoadingInstance {
@@ -234,7 +242,8 @@ interface LoadingInstance {
   count: number
 }
 
-type IPromise<T> = Promise<IResponse<T>>
+export type IPromise<T> = Promise<IResponse<T>>
+export type APromise<T> = Promise<AxiosResponse<T>>
 interface IResponse<T> {
   code: number
   data: T

@@ -1,3 +1,8 @@
+import type { Ref } from 'vue'
+
 export interface ProvideTag {
-  refresh: () => void
+  collapsedWidth?: number
+  width?: number
+  collapsed?: Ref<boolean>
+  refresh?: () => void
 }
