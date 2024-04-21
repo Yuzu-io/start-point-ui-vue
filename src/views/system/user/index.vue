@@ -17,6 +17,8 @@
             v-model:value="queryParams.status"
             :options="statusOptions"
             clearable
+            :label-field="statusSelectFieldNames.labelField"
+            :value-field="statusSelectFieldNames.valueField"
             placeholder="请选择状态"
             style="width: 140px"
           />
@@ -77,6 +79,8 @@ import type { GetUserParams, UserInfo } from '@/types/system/user'
 import MSIcon from '@/components/MSIcon/index.vue'
 import Pagination from '@/components/Pagination/index.vue'
 import { mainRouteName } from '@/permission'
+import { useDictStore } from '@/plugins/stores'
+import type { DictDataInfo } from '@/types/system/dictData'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -108,7 +112,16 @@ const columns = [
     key: 'sex',
     width: 160,
     align: 'center',
-    ellipsis: true
+    render: (row: IRowData) => {
+      const item = sexOptions.value.find((item) => item.dictValue == row.sex)
+      return h(
+        NTag,
+        { type: item ? item.listClass : 'default' },
+        {
+          default: () => (item ? item.dictTag : '未知')
+        }
+      )
+    }
   },
   {
     title: '头像',
@@ -139,10 +152,13 @@ const columns = [
     width: 80,
     align: 'center',
     render: (row: IRowData) => {
+      const item = statusOptions.value.find((item) => item.dictValue == row.status)
       return h(
         NTag,
-        { type: row.status == '0' ? 'success' : 'error' },
-        { default: () => (row.status == '0' ? '正常' : '停用') }
+        { type: item ? item.listClass : 'error' },
+        {
+          default: () => (item ? item.dictTag : '未知')
+        }
       )
     }
   },
@@ -238,19 +254,18 @@ const queryParams = reactive<GetUserParams>({
   username: '',
   status: null
 })
-const statusOptions = [
-  {
-    label: '正常',
-    value: '0'
-  },
-  {
-    label: '停用',
-    value: '1'
-  }
-]
+const statusSelectFieldNames = {
+  labelField: 'dictTag',
+  valueField: 'dictValue'
+}
+const statusOptions = ref<DictDataInfo[]>([])
+const sexOptions = ref<DictDataInfo[]>([])
 
-onMounted(() => {
+const dictStore = useDictStore()
+onMounted(async () => {
   getData()
+  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+  sexOptions.value = await dictStore.getDictData('sys_user_sex')
 })
 const data = ref<UserInfo[]>([])
 const checkData = ref<string[]>([])
