@@ -8,5 +8,6 @@ export * from './modules/user'
 export * from './modules/tag'
 export * from './modules/permission'
 export * from './modules/loading'
+export * from './modules/dict'
 
 export default pinia
