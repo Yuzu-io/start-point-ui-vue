@@ -15,7 +15,8 @@ const Api = {
   edit: prefix + '/edit',
   delete: prefix + '/delete',
   batchDelete: prefix + '/batchDelete',
-  findById: prefix + '/findById'
+  findById: prefix + '/findById',
+  dictTypeData: prefix + '/dictTypeData'
 }
 
 export function getDictDataListApi(params: GetDictDataParams) {
@@ -83,5 +84,15 @@ export function findByIdApi(id: string) {
     url: Api.findById,
     method: 'get',
     params: { id }
+  })
+}
+
+export function getDictTypeDataApi(dictType: string) {
+  return createAxios<DictDataInfo[]>({
+    url: Api.dictTypeData,
+    method: 'get',
+    params: {
+      dictType
+    }
   })
 }
