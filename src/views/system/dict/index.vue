@@ -21,6 +21,8 @@
             v-model:value="queryParams.status"
             :options="statusOptions"
             clearable
+            :label-field="statusSelectFieldNames.labelField"
+            :value-field="statusSelectFieldNames.valueField"
             placeholder="请选择状态"
             style="width: 140px"
           />
@@ -82,6 +84,8 @@ import { mainRouteName } from '@/permission'
 import type { DictInfo, GetDictParams } from '@/types/system/dict'
 import { batchDeleteDictApi, deleteDictApi, getDictListApi } from '@/api/system/dict'
 import { RouterLink } from 'vue-router'
+import type { DictDataInfo } from '@/types/system/dictData'
+import { useDictStore } from '@/plugins/stores'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -138,8 +142,8 @@ const columns = [
     ellipsis: true
   },
   {
-    title: '修改时间',
-    key: 'updateTime',
+    title: '创建时间',
+    key: 'createTime',
     width: 180,
     align: 'center'
   },
@@ -224,19 +228,16 @@ const queryParams = reactive<GetDictParams>({
   dictType: '',
   status: null
 })
-const statusOptions = [
-  {
-    label: '正常',
-    value: '0'
-  },
-  {
-    label: '停用',
-    value: '1'
-  }
-]
+const statusOptions = ref<DictDataInfo[]>([])
+const statusSelectFieldNames = {
+  labelField: 'dictTag',
+  valueField: 'dictValue'
+}
 
-onMounted(() => {
+const dictStore = useDictStore()
+onMounted(async () => {
   getData()
+  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
 })
 const data = ref<DictInfo[]>([])
 const checkData = ref<string[]>([])

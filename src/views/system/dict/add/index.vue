@@ -17,8 +17,9 @@
 
       <n-form-item label="状态" path="status">
         <n-radio-group v-model:value="formState.status">
-          <n-radio value="0">正常</n-radio>
-          <n-radio value="1">停用</n-radio>
+          <n-radio v-for="item in statusOptions" :key="item.id" :value="item.dictValue">{{
+            item.dictTag
+          }}</n-radio>
         </n-radio-group>
       </n-form-item>
 
@@ -41,6 +42,8 @@ import { ref } from 'vue'
 import { useMessage, type FormRules } from 'naive-ui'
 import type { AddDictParams } from '@/types/system/dict'
 import { addDictApi } from '@/api/system/dict'
+import { useDictStore } from '@/plugins/stores'
+import type { DictDataInfo } from '@/types/system/dictData'
 
 const show = ref(false)
 
@@ -48,12 +51,20 @@ const formRef = ref()
 const formState = ref<AddDictParams>({
   dictName: '',
   dictType: '',
-  status: '0',
+  status: '',
   remark: ''
 })
 const rules: FormRules = {
   dictName: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
   dictType: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }]
+}
+
+const statusOptions = ref<DictDataInfo[]>([])
+const dictStore = useDictStore()
+
+const getDictData = async () => {
+  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+  formState.value.status = statusOptions.value ? statusOptions.value[0].dictValue : ''
 }
 
 const emit = defineEmits(['success'])
@@ -80,13 +91,15 @@ const formInit = () => {
   formState.value = {
     dictName: '',
     dictType: '',
-    status: '0',
+    status: '',
     remark: ''
   }
 }
+
 const showModal = () => {
   show.value = true
   formInit()
+  getDictData()
 }
 
 defineExpose({
