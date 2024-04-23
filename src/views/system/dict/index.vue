@@ -130,7 +130,7 @@ const columns = [
       const item = statusOptions.value.find((item) => item.dictValue == row.status)
       return h(
         NTag,
-        { type: item ? item.listClass : 'error' },
+        { type: item ? item.listClass : 'default' },
         {
           default: () => (item ? item.dictTag : '未知')
         }
@@ -231,16 +231,21 @@ const queryParams = reactive<GetDictParams>({
   dictType: '',
   status: null
 })
-const statusOptions = ref<DictDataInfo[]>([])
+
 const statusSelectFieldNames = {
   labelField: 'dictTag',
   valueField: 'dictValue'
 }
+const statusOptions = ref<DictDataInfo[]>([])
 
 const dictStore = useDictStore()
+const getDictData = async () => {
+  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+}
+
 onMounted(async () => {
   getData()
-  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+  getDictData()
 })
 const data = ref<DictInfo[]>([])
 const checkData = ref<string[]>([])

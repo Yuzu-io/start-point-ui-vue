@@ -169,8 +169,8 @@ const columns = [
     align: 'center'
   },
   {
-    title: '修改时间',
-    key: 'updateTime',
+    title: '创建时间',
+    key: 'createTime',
     width: 180,
     align: 'center'
   },
@@ -262,10 +262,14 @@ const statusOptions = ref<DictDataInfo[]>([])
 const sexOptions = ref<DictDataInfo[]>([])
 
 const dictStore = useDictStore()
-onMounted(async () => {
-  getData()
+const getDictData = async () => {
   statusOptions.value = await dictStore.getDictData('sys_normal_disable')
   sexOptions.value = await dictStore.getDictData('sys_user_sex')
+}
+
+onMounted(async () => {
+  getData()
+  getDictData()
 })
 const data = ref<UserInfo[]>([])
 const checkData = ref<string[]>([])
