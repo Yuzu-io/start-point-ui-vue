@@ -21,6 +21,8 @@
             v-model:value="queryParams.status"
             :options="statusOptions"
             clearable
+            :label-field="statusSelectFieldNames.labelField"
+            :value-field="statusSelectFieldNames.valueField"
             placeholder="请选择状态"
             style="width: 140px"
           />
@@ -81,6 +83,8 @@ import MenuBatchEdit from './batchEdit/index.vue'
 import MSIcon from '@/components/MSIcon/index.vue'
 import Pagination from '@/components/Pagination/index.vue'
 import { mainRouteName } from '@/permission'
+import type { DictDataInfo } from '@/types/system/dictData'
+import { useDictStore } from '@/plugins/stores'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -135,10 +139,13 @@ const columns = [
     width: 80,
     align: 'center',
     render: (row: IRowData) => {
+      const item = statusOptions.value.find((item) => item.dictValue == row.status)
       return h(
         NTag,
-        { type: row.status == '0' ? 'success' : 'error' },
-        { default: () => (row.status == '0' ? '正常' : '停用') }
+        { type: item ? item.listClass : 'default' },
+        {
+          default: () => (item ? item.dictTag : '未知')
+        }
       )
     }
   },
@@ -149,8 +156,8 @@ const columns = [
     align: 'center'
   },
   {
-    title: '修改时间',
-    key: 'updateTime',
+    title: '创建时间',
+    key: 'createTime',
     width: 180,
     align: 'center'
   },
@@ -235,19 +242,21 @@ const queryParams = reactive<GetRoutesParams>({
   fullPath: '',
   status: null
 })
-const statusOptions = [
-  {
-    label: '正常',
-    value: '0'
-  },
-  {
-    label: '停用',
-    value: '1'
-  }
-]
+
+const statusSelectFieldNames = {
+  labelField: 'dictTag',
+  valueField: 'dictValue'
+}
+const statusOptions = ref<DictDataInfo[]>([])
+
+const dictStore = useDictStore()
+const getDictData = async () => {
+  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+}
 
 onMounted(() => {
   getData()
+  getDictData()
 })
 const data = ref<RoutesInfo[]>([])
 const checkData = ref<string[]>([])
