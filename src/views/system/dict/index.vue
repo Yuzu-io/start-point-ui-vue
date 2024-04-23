@@ -127,10 +127,13 @@ const columns = [
     width: 80,
     align: 'center',
     render: (row: IRowData) => {
+      const item = statusOptions.value.find((item) => item.dictValue == row.status)
       return h(
         NTag,
-        { type: row.status == '0' ? 'success' : 'error' },
-        { default: () => (row.status == '0' ? '正常' : '停用') }
+        { type: item ? item.listClass : 'error' },
+        {
+          default: () => (item ? item.dictTag : '未知')
+        }
       )
     }
   },

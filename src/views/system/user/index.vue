@@ -155,7 +155,7 @@ const columns = [
       const item = statusOptions.value.find((item) => item.dictValue == row.status)
       return h(
         NTag,
-        { type: item ? item.listClass : 'error' },
+        { type: item ? item.listClass : 'default' },
         {
           default: () => (item ? item.dictTag : '未知')
         }
