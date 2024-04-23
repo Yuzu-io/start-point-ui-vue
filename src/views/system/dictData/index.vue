@@ -28,6 +28,8 @@
             v-model:value="queryParams.status"
             :options="statusOptions"
             clearable
+            :label-field="statusSelectFieldNames.labelField"
+            :value-field="statusSelectFieldNames.valueField"
             placeholder="请选择状态"
             style="width: 140px"
           />
@@ -95,6 +97,7 @@ import {
 import { useRoute } from 'vue-router'
 import { getTypeOptionSelectApi } from '@/api/system/dict'
 import type { DictInfo } from '@/types/system/dict'
+import { useDictStore } from '@/plugins/stores'
 
 const formRef = ref<FormInst>()
 const show = ref<boolean>(false)
@@ -140,10 +143,13 @@ const columns = [
     width: 80,
     align: 'center',
     render: (row: IRowData) => {
+      const item = statusOptions.value.find((item) => item.dictValue == row.status)
       return h(
         NTag,
-        { type: row.status == '0' ? 'success' : 'error' },
-        { default: () => (row.status == '0' ? '正常' : '停用') }
+        { type: item ? item.listClass : 'default' },
+        {
+          default: () => (item ? item.dictTag : '未知')
+        }
       )
     }
   },
@@ -241,23 +247,26 @@ const queryParams = reactive<GetDictDataParams>({
   dictTag: '',
   status: null
 })
-const statusOptions = [
-  {
-    label: '正常',
-    value: '0'
-  },
-  {
-    label: '停用',
-    value: '1'
-  }
-]
+
 const typeOptionSelect = ref<DictInfo[]>([])
 const typeOptionSelectFieldNames = { label: 'dictName', value: 'dictType' }
+
+const statusSelectFieldNames = {
+  labelField: 'dictTag',
+  valueField: 'dictValue'
+}
+const statusOptions = ref<DictDataInfo[]>([])
+
+const dictStore = useDictStore()
+const getDictData = async () => {
+  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+}
 
 const route = useRoute()
 onMounted(() => {
   queryParams.dictType = route.params.dictType as string
   getData()
+  getDictData()
 })
 const data = ref<IRowData[]>([])
 const checkData = ref<string[]>([])

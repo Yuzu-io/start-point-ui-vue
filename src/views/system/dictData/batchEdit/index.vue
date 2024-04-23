@@ -38,14 +38,17 @@
         <n-select
           v-model:value="formState.listClass"
           :options="listClassOptions"
+          :label-field="listClassSelectFieldNames.labelField"
+          :value-field="listClassSelectFieldNames.valueField"
           placeholder="请选择回显样式"
         />
       </n-form-item>
 
       <n-form-item label="状态" path="status">
         <n-radio-group v-model:value="formState.status">
-          <n-radio value="0">正常</n-radio>
-          <n-radio value="1">停用</n-radio>
+          <n-radio v-for="item in statusOptions" :key="item.id" :value="item.dictValue">{{
+            item.dictTag
+          }}</n-radio>
         </n-radio-group>
       </n-form-item>
 
@@ -66,8 +69,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useMessage, type FormRules } from 'naive-ui'
-import type { EditDictDataParams } from '@/types/system/dictData'
+import type { DictDataInfo, EditDictDataParams } from '@/types/system/dictData'
 import { editDictDataApi, findByIdApi } from '@/api/system/dictData'
+import { useDictStore } from '@/plugins/stores'
 
 const show = ref(false)
 const isMultiple = ref(false)
@@ -90,7 +94,7 @@ const formState = ref<EditDictDataParams>({
   dictTag: '',
   dictValue: '',
   dictOrder: 1,
-  listClass: '',
+  listClass: 'default',
   status: '0',
   remark: ''
 })
@@ -99,29 +103,18 @@ const rules: FormRules = {
   dictValue: [{ required: true, message: '字典键值不能为空', trigger: 'blur' }]
 }
 
-const listClassOptions = [
-  { label: '默认(default)', value: '' },
-  {
-    label: '主要(primary)',
-    value: 'primary'
-  },
-  {
-    label: '成功(success)',
-    value: 'success'
-  },
-  {
-    label: '信息(info)',
-    value: 'info'
-  },
-  {
-    label: '警告(warning)',
-    value: 'warning'
-  },
-  {
-    label: '异常(error)',
-    value: 'error'
-  }
-]
+const listClassSelectFieldNames = {
+  labelField: 'dictTag',
+  valueField: 'dictValue'
+}
+const listClassOptions = ref<DictDataInfo[]>([])
+const statusOptions = ref<DictDataInfo[]>([])
+const dictStore = useDictStore()
+
+const getDictData = async () => {
+  listClassOptions.value = await dictStore.getDictData('sys_style_type')
+  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+}
 
 const getData = async () => {
   const dictInfo = await findByIdApi(idsList.value[currentIndex.value])
@@ -162,7 +155,7 @@ const formInit = () => {
     dictTag: '',
     dictValue: '',
     dictOrder: 1,
-    listClass: '',
+    listClass: 'default',
     status: '0',
     remark: ''
   }
@@ -175,6 +168,7 @@ const showModal = (ids: string[]) => {
   isMultiple.value = idsList.value.length - 1 === currentIndex.value
   submitText.value = isMultiple.value ? '保存' : '保存并编辑下一页'
   getData()
+  getDictData()
 }
 
 defineExpose({
