@@ -125,14 +125,34 @@ const columns = [
   {
     title: '类型',
     key: 'type',
-    width: 80,
-    align: 'center'
+    width: 100,
+    align: 'center',
+    render: (row: IRowData) => {
+      const item = routesTypeOptions.value.find((item) => item.dictValue == row.type)
+      return h(
+        NTag,
+        { type: item ? item.listClass : 'default' },
+        {
+          default: () => (item ? item.dictTag : '未知')
+        }
+      )
+    }
   },
   {
     title: '缓存',
     key: 'keepAlive',
     width: 80,
-    align: 'center'
+    align: 'center',
+    render: (row: IRowData) => {
+      const item = keepAliveOptions.value.find((item) => item.dictValue == row.keepAlive)
+      return h(
+        NTag,
+        { type: item ? item.listClass : 'default' },
+        {
+          default: () => (item ? item.dictTag : '未知')
+        }
+      )
+    }
   },
   {
     title: '状态',
@@ -249,10 +269,14 @@ const statusSelectFieldNames = {
   valueField: 'dictValue'
 }
 const statusOptions = ref<DictDataInfo[]>([])
+const routesTypeOptions = ref<DictDataInfo[]>([])
+const keepAliveOptions = ref<DictDataInfo[]>([])
 
 const dictStore = useDictStore()
 const getDictData = async () => {
   statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+  routesTypeOptions.value = await dictStore.getDictData('sys_routes_type')
+  keepAliveOptions.value = await dictStore.getDictData('sys_routes_keep_alive')
 }
 
 onMounted(() => {
