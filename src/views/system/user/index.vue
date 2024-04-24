@@ -274,6 +274,8 @@ onMounted(async () => {
 const data = ref<UserInfo[]>([])
 const checkData = ref<string[]>([])
 const handleCheck = (rowKeys: string[]) => {
+  console.log(rowKeys)
+
   checkData.value = rowKeys
 }
 const getData = async () => {
@@ -316,6 +318,12 @@ const deleteRow = async (item: IRowData) => {
   if (result.code === 200) {
     message.success(result.message)
     checkData.value = []
+    // 判断当前页数据是否已经为空，如果为空则跳转到上一页
+    if (queryParams.pageNum && queryParams.pageSize) {
+      let totalPage = Math.ceil((total.value - 1) / queryParams.pageSize)
+      let currentPage = queryParams.pageNum > totalPage ? totalPage : queryParams.pageNum
+      queryParams.pageNum = currentPage < 1 ? 1 : currentPage
+    }
     getData()
   }
 }
@@ -324,6 +332,12 @@ const batchDeleteRow = async () => {
   if (result.code === 200) {
     message.success(result.message)
     checkData.value = []
+    // 判断当前页数据是否已经为空，如果为空则跳转到上一页
+    if (queryParams.pageNum && queryParams.pageSize) {
+      let totalPage = Math.ceil((total.value - 1) / queryParams.pageSize)
+      let currentPage = queryParams.pageNum > totalPage ? totalPage : queryParams.pageNum
+      queryParams.pageNum = currentPage < 1 ? 1 : currentPage
+    }
     getData()
   }
 }
