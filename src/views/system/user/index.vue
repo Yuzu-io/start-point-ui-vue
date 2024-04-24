@@ -48,6 +48,7 @@
         :scroll-x="scrollX"
         bordered
         :single-line="false"
+        :checked-row-keys="checkData"
         @update:checked-row-keys="handleCheck"
       >
       </n-data-table>
