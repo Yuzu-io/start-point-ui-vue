@@ -73,9 +73,13 @@ provide<ProvideTag>('provideTag', {
 
   .content {
     height: calc(100% - 56px);
+    overflow: hidden;
     padding: 10px;
-    overflow-y: scroll;
-    @include scrollbar();
+    :deep(.n-layout-scroll-container) {
+      margin-inline-end: -5px;
+      overflow-y: scroll;
+      @include scrollbar();
+    }
   }
 }
 </style>
