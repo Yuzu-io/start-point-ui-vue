@@ -130,6 +130,14 @@ const roleOptions = ref<RoleInfo[]>([])
 
 const statusOptions = ref<DictDataInfo[]>([])
 const sexOptions = ref<DictDataInfo[]>([])
+const dictStore = useDictStore()
+
+const getDictData = async () => {
+  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+  sexOptions.value = await dictStore.getDictData('sys_user_sex')
+  formState.value.sex = sexOptions.value ? sexOptions.value[0].dictValue : ''
+  formState.value.status = statusOptions.value ? statusOptions.value[0].dictValue : ''
+}
 
 const getData = async () => {
   const roleParams = {
@@ -181,13 +189,11 @@ const formInit = () => {
   }
 }
 
-const dictStore = useDictStore()
 const showModal = async () => {
   show.value = true
   formInit()
   getData()
-  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
-  sexOptions.value = await dictStore.getDictData('sys_user_sex')
+  getDictData()
 }
 
 defineExpose({

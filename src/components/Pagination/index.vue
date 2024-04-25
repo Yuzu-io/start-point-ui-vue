@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import { t } from '@/locales/index'
+import { nextTick } from 'vue'
 const pageNum = defineModel<number>('pageNum')
 const pageSize = defineModel<number>('pageSize')
 
@@ -26,10 +27,16 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['updatePage', 'updatePageSize'])
 
 const updatePage = (page: number) => {
-  emit('updatePage', page)
+  // 新特性 defineModel 疑似bug或异步，导致值修改无法获取到新的 pageNum
+  // 临时解决方法
+  nextTick(() => {
+    emit('updatePage', page)
+  })
 }
 const updatePageSize = (pageSize: number) => {
-  emit('updatePageSize', pageSize)
+  nextTick(() => {
+    emit('updatePageSize', pageSize)
+  })
 }
 </script>
 <script lang="ts">

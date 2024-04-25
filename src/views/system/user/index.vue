@@ -48,6 +48,7 @@
         :scroll-x="scrollX"
         bordered
         :single-line="false"
+        :checked-row-keys="checkData"
         @update:checked-row-keys="handleCheck"
       >
       </n-data-table>
@@ -155,7 +156,7 @@ const columns = [
       const item = statusOptions.value.find((item) => item.dictValue == row.status)
       return h(
         NTag,
-        { type: item ? item.listClass : 'error' },
+        { type: item ? item.listClass : 'default' },
         {
           default: () => (item ? item.dictTag : '未知')
         }
@@ -169,8 +170,8 @@ const columns = [
     align: 'center'
   },
   {
-    title: '修改时间',
-    key: 'updateTime',
+    title: '创建时间',
+    key: 'createTime',
     width: 180,
     align: 'center'
   },
@@ -262,14 +263,20 @@ const statusOptions = ref<DictDataInfo[]>([])
 const sexOptions = ref<DictDataInfo[]>([])
 
 const dictStore = useDictStore()
-onMounted(async () => {
-  getData()
+const getDictData = async () => {
   statusOptions.value = await dictStore.getDictData('sys_normal_disable')
   sexOptions.value = await dictStore.getDictData('sys_user_sex')
+}
+
+onMounted(async () => {
+  getData()
+  getDictData()
 })
 const data = ref<UserInfo[]>([])
 const checkData = ref<string[]>([])
 const handleCheck = (rowKeys: string[]) => {
+  console.log(rowKeys)
+
   checkData.value = rowKeys
 }
 const getData = async () => {
@@ -312,6 +319,12 @@ const deleteRow = async (item: IRowData) => {
   if (result.code === 200) {
     message.success(result.message)
     checkData.value = []
+    // 判断当前页数据是否已经为空，如果为空则跳转到上一页
+    if (queryParams.pageNum && queryParams.pageSize) {
+      let totalPage = Math.ceil((total.value - 1) / queryParams.pageSize)
+      let currentPage = queryParams.pageNum > totalPage ? totalPage : queryParams.pageNum
+      queryParams.pageNum = currentPage < 1 ? 1 : currentPage
+    }
     getData()
   }
 }
@@ -320,6 +333,12 @@ const batchDeleteRow = async () => {
   if (result.code === 200) {
     message.success(result.message)
     checkData.value = []
+    // 判断当前页数据是否已经为空，如果为空则跳转到上一页
+    if (queryParams.pageNum && queryParams.pageSize) {
+      let totalPage = Math.ceil((total.value - 1) / queryParams.pageSize)
+      let currentPage = queryParams.pageNum > totalPage ? totalPage : queryParams.pageNum
+      queryParams.pageNum = currentPage < 1 ? 1 : currentPage
+    }
     getData()
   }
 }

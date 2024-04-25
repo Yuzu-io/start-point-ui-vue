@@ -26,9 +26,9 @@
 
       <n-form-item label="菜单类型" path="type">
         <n-radio-group v-model:value="formState.type">
-          <n-radio value="0">目录</n-radio>
-          <n-radio value="1">菜单</n-radio>
-          <n-radio value="2">按钮</n-radio>
+          <n-radio v-for="item in routesTypeOptions" :key="item.id" :value="item.dictValue">{{
+            item.dictTag
+          }}</n-radio>
         </n-radio-group>
       </n-form-item>
 
@@ -105,15 +105,17 @@
 
       <n-form-item label="是否缓存" path="keepAlive" v-show="formState.type === MenuTypeEnum.Menu">
         <n-radio-group v-model:value="formState.keepAlive">
-          <n-radio value="0">是</n-radio>
-          <n-radio value="1">否</n-radio>
+          <n-radio v-for="item in keepAliveOptions" :key="item.id" :value="item.dictValue">{{
+            item.dictTag
+          }}</n-radio>
         </n-radio-group>
       </n-form-item>
 
       <n-form-item label="状态" path="status">
         <n-radio-group v-model:value="formState.status">
-          <n-radio value="0">正常</n-radio>
-          <n-radio value="1">停用</n-radio>
+          <n-radio v-for="item in statusOptions" :key="item.id" :value="item.dictValue">{{
+            item.dictTag
+          }}</n-radio>
         </n-radio-group>
       </n-form-item>
 
@@ -143,6 +145,8 @@ import { recursiveTree } from '@/utils/recursiveTree'
 import { useMessage, type FormRules, type FormItemRule } from 'naive-ui'
 import MSIcon from '@/components/MSIcon/index.vue'
 import { MenuTypeEnum } from '@/constants/routesEnum'
+import type { DictDataInfo } from '@/types/system/dictData'
+import { useDictStore } from '@/plugins/stores'
 
 const show = ref(false)
 
@@ -176,6 +180,17 @@ const rules: FormRules = {
 
 const treeSelectFieldNames = { children: 'children', label: 'title', value: 'id' }
 const treeData = ref<RoutesInfoRes[]>([])
+
+const statusOptions = ref<DictDataInfo[]>([])
+const routesTypeOptions = ref<DictDataInfo[]>([])
+const keepAliveOptions = ref<DictDataInfo[]>([])
+const dictStore = useDictStore()
+
+const getDictData = async () => {
+  statusOptions.value = await dictStore.getDictData('sys_normal_disable')
+  routesTypeOptions.value = await dictStore.getDictData('sys_routes_type')
+  keepAliveOptions.value = await dictStore.getDictData('sys_routes_keep_alive')
+}
 
 const getData = async () => {
   const result = await getParentRoutesListApi()
@@ -240,6 +255,7 @@ const showModal = (id: string) => {
   formInit()
   formState.value.id = id
   getData()
+  getDictData()
 }
 
 defineExpose({
