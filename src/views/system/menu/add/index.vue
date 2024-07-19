@@ -77,7 +77,9 @@
       >
         <n-flex vertical :size="[0, 0]" style="width: 100%">
           <n-input v-model:value="formState.componentPath" placeholder="请输入组件路径" />
-          <span class="hint">web端组件路径，请以/src开头，如:/views/dashboard/index.vue</span>
+          <span class="hint"
+            >web端组件路径，如:/views/dashboard/index，只需要添加组件名即可，不需要添加文件后缀</span
+          >
         </n-flex>
       </n-form-item>
 
