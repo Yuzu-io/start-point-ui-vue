@@ -99,6 +99,7 @@ const getValidateCode = () => {
   getValidateCodeApi().then((res) => {
     formData.codeKey = res.data.codeKey
     imgCode.value = res.data.codeValue
+    formData.captcha = ''
   })
 }
 
@@ -117,23 +118,27 @@ const onSubmit = () => {
       } else if (loginInfo !== null && loginInfo.password !== formData.password) {
         params.password = md5(formData.password).toLocaleUpperCase()
       }
-      await userStore.login(params)
-      message.success('登录成功')
-      if (rbPassword.value) {
-        userStore.setLoginInfo({
-          account: params.account,
-          password: params.password
+      await userStore
+        .login(params)
+        .then(() => {
+          message.success('登录成功')
+          if (rbPassword.value) {
+            userStore.setLoginInfo({
+              account: params.account,
+              password: params.password
+            })
+          } else {
+            userStore.setLoginInfo(null)
+          }
+          const redirect = route.query.redirect as string
+          if (redirect) {
+            const redirectUrl = decodeURIComponent(redirect)
+            router.push(redirectUrl)
+          } else {
+            router.push('/')
+          }
         })
-      } else {
-        userStore.setLoginInfo(null)
-      }
-      const redirect = route.query.redirect as string
-      if (redirect) {
-        const redirectUrl = decodeURIComponent(redirect)
-        router.push(redirectUrl)
-      } else {
-        router.push('/')
-      }
+        .catch(() => getValidateCode())
     } else {
       if (error) {
         message.warning(error[0][0].message as string)
