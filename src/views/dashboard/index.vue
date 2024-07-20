@@ -9,7 +9,7 @@
             </div>
             <div class="version">
               <span class="version-title">当前版本：</span>
-              <span class="version-number">v1.0.0</span>
+              <span class="version-number">v1.1.0</span>
             </div>
             <template #footer>
               <n-button type="primary" @click="accessGit">
@@ -20,7 +20,11 @@
               </n-button>
             </template>
           </n-card>
-          <n-card size="medium" title="联系信息"> QQ：1581523609 </n-card>
+          <n-card size="medium" title="联系信息">
+            QQ：1581523609
+            <br />
+            邮箱：yuzuchan80@163.com
+          </n-card>
         </n-flex>
       </n-gi>
       <n-gi>
@@ -41,6 +45,8 @@
                 Axios
                 <br />
                 Sass
+                <br />
+                Day.js
                 <br />
                 ...
               </n-card>
