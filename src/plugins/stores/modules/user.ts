@@ -5,7 +5,7 @@ import router from '@/plugins/router/index'
 import { usePermissionStore, useTagStore } from '..'
 
 export const useUserStore = defineStore('userStore', {
-  state: (): State => ({
+  state: (): UserState => ({
     token: '',
     userInfo: {
       id: '',
@@ -22,7 +22,8 @@ export const useUserStore = defineStore('userStore', {
       createTime: '',
       updateTime: '',
       roleList: []
-    }
+    },
+    loginInfo: null
   }),
   actions: {
     async login(params: LoginParams) {
@@ -44,18 +45,46 @@ export const useUserStore = defineStore('userStore', {
      */
     async logout(flag: boolean = true) {
       const res = flag ? await logout().catch((e) => console.log(e)) : null
-      useUserStore().$reset()
+      this.destruction()
       usePermissionStore().destruction()
       useTagStore().destruction()
       router.replace('/login') // 返回登录页
       if (!res) return Promise.reject()
       return Promise.resolve()
+    },
+    destruction() {
+      this.token = ''
+      this.userInfo = {
+        id: '',
+        username: '',
+        account: '',
+        sex: '',
+        avatar: '',
+        age: 0,
+        email: '',
+        phone: '',
+        status: '',
+        orderIndex: 0,
+        isDelete: '',
+        createTime: '',
+        updateTime: '',
+        roleList: []
+      }
+    },
+    setLoginInfo(data: LoginInfo | null) {
+      this.loginInfo = data
     }
   },
   persist: true
 })
 
-interface State {
+interface UserState {
   token: string
   userInfo: LoginUserInfoRes
+  loginInfo: LoginInfo | null
+}
+
+interface LoginInfo {
+  account: string
+  password: string
 }

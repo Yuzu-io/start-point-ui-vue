@@ -81,8 +81,8 @@ import MSIcon from '@/components/MSIcon/index.vue'
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)
 const formData = reactive<LoginParams>({
-  account: 'yuzu',
-  password: '123',
+  account: '',
+  password: '',
   captcha: '',
   codeKey: ''
 })
@@ -109,11 +109,24 @@ const onSubmit = () => {
   formRef.value?.validate(async (error) => {
     if (!error) {
       let params = {
-        ...formData,
-        password: md5(formData.password).toLocaleUpperCase()
+        ...formData
+      }
+      let loginInfo = userStore.loginInfo
+      if (loginInfo === null) {
+        params.password = md5(formData.password).toLocaleUpperCase()
+      } else if (loginInfo !== null && loginInfo.password !== formData.password) {
+        params.password = md5(formData.password).toLocaleUpperCase()
       }
       await userStore.login(params)
       message.success('登录成功')
+      if (rbPassword.value) {
+        userStore.setLoginInfo({
+          account: params.account,
+          password: params.password
+        })
+      } else {
+        userStore.setLoginInfo(null)
+      }
       const redirect = route.query.redirect as string
       if (redirect) {
         const redirectUrl = decodeURIComponent(redirect)
@@ -130,6 +143,12 @@ const onSubmit = () => {
 }
 
 onMounted(() => {
+  let loginInfo = userStore.loginInfo
+  if (loginInfo != null) {
+    rbPassword.value = true
+    formData.account = loginInfo.account
+    formData.password = loginInfo.password
+  }
   getValidateCode()
 })
 </script>
